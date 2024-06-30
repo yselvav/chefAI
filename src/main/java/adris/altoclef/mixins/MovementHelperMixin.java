@@ -11,7 +11,13 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(MovementHelper.class)
 public interface MovementHelperMixin {
 
-    @Redirect(method = "avoidBreaking", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", ordinal = 1))
+    @Redirect(method = "avoidBreaking", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;",
+            //#if MC >= 12001
+            ordinal = 1
+            //#else
+            //$$ ordinal = 0
+            //#endif
+    ))
     private static Block allowInfested(BlockState instance) {
         // we are able to handle breaking infested blocks...
         if (instance.getBlock() instanceof InfestedBlock infestedBlock) {

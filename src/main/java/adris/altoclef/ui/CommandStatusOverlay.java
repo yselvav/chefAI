@@ -1,6 +1,7 @@
 package adris.altoclef.ui;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.multiversion.DrawContextVer;
 import adris.altoclef.tasksystem.Task;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -23,37 +24,39 @@ public class CommandStatusOverlay {
     private long timeRunning;
     private long lastTime = 0;
 
-    public void render(AltoClef mod, MatrixStack matrixstack) {
+    public void render(AltoClef mod, DrawContextVer context) {
         List<Task> tasks = Collections.emptyList();
         if (mod.getTaskRunner().getCurrentTaskChain() != null) {
             tasks = mod.getTaskRunner().getCurrentTaskChain().getTasks();
         }
 
-        matrixstack.push();
+        MatrixStack matrixStack = context.getMatrices();
 
-        drawTaskChain(MinecraftClient.getInstance().textRenderer, 10, 10,
-                matrixstack.peek().getPositionMatrix(),
+        matrixStack.push();
+
+        drawTaskChain(context,MinecraftClient.getInstance().textRenderer, 10, 10,
+                matrixStack.peek().getPositionMatrix(),
                 MinecraftClient.getInstance().getBufferBuilders().getOutlineVertexConsumers(),
                 TextRenderer.TextLayerType.SEE_THROUGH, 10, tasks, mod);
 
-        matrixstack.pop();
+        matrixStack.pop();
     }
 
-    private void drawTaskChain(TextRenderer renderer, float x, float y, Matrix4f matrix, VertexConsumerProvider vertexConsumers, TextRenderer.TextLayerType layerType, int maxLines, List<Task> tasks, AltoClef mod) {
+    private void drawTaskChain(DrawContextVer context,TextRenderer renderer, int x, int y, Matrix4f matrix, VertexConsumerProvider vertexConsumers, TextRenderer.TextLayerType layerType, int maxLines, List<Task> tasks, AltoClef mod) {
         int whiteColor = 0xFFFFFFFF;
 
         matrix.scale(0.5F, 0.5F, 0.5F);
 
-        float fontHeight = renderer.fontHeight;
-        float addX = 4;
-        float addY = fontHeight + 2;
+        int fontHeight = renderer.fontHeight;
+        int addX = 4;
+        int addY = fontHeight + 2;
 
-        renderer.draw(mod.getTaskRunner().statusReport, x, y, Color.LIGHT_GRAY.getRGB(), true, matrix, vertexConsumers, layerType, 0, 255);
+        context.drawText(renderer,mod.getTaskRunner().statusReport, x, y, Color.LIGHT_GRAY.getRGB(), true);
         y += addY;
 
         if (tasks.isEmpty()) {
             if (mod.getTaskRunner().isActive()) {
-                renderer.draw(" (no task running) ", x, y, whiteColor, true, matrix, vertexConsumers, layerType, 0, 255);
+                context.drawText(renderer," (no task running) ", x, y, whiteColor, true);
             }
             if (lastTime + 10000 < Instant.now().toEpochMilli() && mod.getModSettings().shouldShowTimer()) {//if it doesn't run any task in 10 secs
                 timeRunning = Instant.now().toEpochMilli();//reset the timer
@@ -65,14 +68,14 @@ public class CommandStatusOverlay {
             lastTime = Instant.now().toEpochMilli();
 
             String realTime = DATE_TIME_FORMATTER.format(Instant.now().minusMillis(timeRunning));
-            renderer.draw("<" + realTime + ">", x, y, whiteColor, true, matrix, vertexConsumers, layerType, 0, 255);
+            context.drawText(renderer, "<" + realTime + ">", x, y, whiteColor, true);
             x += addX;
             y += addY;
         }
 
         if (tasks.size() <= maxLines) {
             for (Task task : tasks) {
-                renderTask(task, renderer, x, y, matrix, vertexConsumers, layerType);
+                renderTask(task, context, renderer, x, y);
 
                 x += addX;
                 y += addY;
@@ -83,10 +86,10 @@ public class CommandStatusOverlay {
         for (int i = 0; i < tasks.size(); ++i) {
             if (i == 1) {
                 x += addX * 2;
-                renderer.draw("...", x, y, whiteColor, true, matrix, vertexConsumers, layerType, 0, 255);
+                context.drawText(renderer, "...", x, y, whiteColor, true);
 
             } else if (i == 0 || i > tasks.size() - maxLines) {
-                renderTask(tasks.get(i), renderer, x, y, matrix, vertexConsumers, layerType);
+                renderTask(tasks.get(i),context ,renderer, x, y);
             } else {
                 continue;
             }
@@ -99,11 +102,11 @@ public class CommandStatusOverlay {
     }
 
 
-    private void renderTask(Task task, TextRenderer renderer, float x, float y, Matrix4f matrix, VertexConsumerProvider vertexConsumers, TextRenderer.TextLayerType layerType) {
+    private void renderTask(Task task, DrawContextVer context, TextRenderer renderer, int x, int y) {
         String taskName = task.getClass().getSimpleName() + " ";
-        renderer.draw(taskName, x, y, new Color(128, 128, 128).getRGB(), true, matrix, vertexConsumers, layerType, 0, 255);
+        context.drawText(renderer, taskName, x, y, new Color(128, 128, 128).getRGB(), true);
 
-        renderer.draw(task.toString(), x + renderer.getWidth(taskName), y, new Color(255, 255, 255).getRGB(), true, matrix, vertexConsumers, layerType, 0, 255);
+        context.drawText(renderer, task.toString(), x + renderer.getWidth(taskName), y, new Color(255, 255, 255).getRGB(), true);
 
     }
 

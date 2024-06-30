@@ -8,4 +8,8 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface EntityAccessor {
     @Accessor("inNetherPortal")
     boolean isInNetherPortal();
+
+    @Accessor("portalCooldown")
+    int getPortalCooldown();
+
 }

@@ -9,12 +9,14 @@ import net.minecraft.client.network.ServerInfo;
 public class ConnectScreenVer {
 
 
-    @Pattern
-    private static void connect(Screen screen, MinecraftClient client, ServerAddress address, ServerInfo info, boolean quickPlay) {
+    // some weird bugs with patterns cuz 1.19.4 is missing the quickPlay argument
+    public static void connect(Screen screen, MinecraftClient client, ServerAddress address, ServerInfo info, boolean quickPlay) {
         //#if MC >= 12005
         ConnectScreen.connect(screen, client, address, info, quickPlay,null);
-        //#else
+        //#elseif MC >= 12001
         //$$ ConnectScreen.connect(screen, client, address, info, quickPlay);
+        //#else
+        //$$ ConnectScreen.connect(screen, client, address, info);
         //#endif
     }
 

@@ -13,6 +13,8 @@ import adris.altoclef.eventbus.events.ClientRenderEvent;
 import adris.altoclef.eventbus.events.ClientTickEvent;
 import adris.altoclef.eventbus.events.SendChatEvent;
 import adris.altoclef.eventbus.events.TitleScreenEntryEvent;
+import adris.altoclef.multiversion.DrawContextVer;
+import adris.altoclef.multiversion.RenderLayerVer;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.tasksystem.TaskRunner;
 import adris.altoclef.trackers.*;
@@ -36,6 +38,7 @@ import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.*;
@@ -225,9 +228,10 @@ public class AltoClef implements ModInitializer {
 
     /// GETTERS AND SETTERS
 
-    private void onClientRenderOverlay(DrawContext context) {
+    private void onClientRenderOverlay(DrawContextVer context) {
+        context.setRenderLayer(RenderLayerVer.getGuiOverlay());
         if (settings.shouldShowTaskChain()) {
-            commandStatusOverlay.render(this, context.getMatrices());
+            commandStatusOverlay.render(this, context);
         }
 
         if (settings.shouldShowDebugTickMs()) {

@@ -2,9 +2,9 @@ package adris.altoclef.ui;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.multiversion.InGameHudVer;
-import net.minecraft.client.MinecraftClient;
+import adris.altoclef.multiversion.DrawContextVer;
+import adris.altoclef.multiversion.RenderLayerVer;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.ColorHelper;
@@ -31,11 +31,11 @@ public class AltoClefTickChart {
         list.add(nanoTime);
     }
 
-    public void render(AltoClef mod,DrawContext context, int x, int width) {
+    public void render(AltoClef mod, DrawContextVer context, int x, int width) {
         if (InGameHudVer.shouldShowDebugHud() || !mod.getTaskRunner().isActive()) return;
 
         int height = context.getScaledWindowHeight();
-        context.fill(RenderLayer.getGuiOverlay(), x, height - 37, x + width, height, 0x90505050);
+        context.fill(x, height - 37, x + width, height, 0x90505050);
 
         long m = Integer.MAX_VALUE;
         long n = Integer.MIN_VALUE;
@@ -54,21 +54,22 @@ public class AltoClefTickChart {
 
             this.drawTotalBar(context, p, height, i);
         }
-        context.drawHorizontalLine(RenderLayer.getGuiOverlay(), x, x + width - 1, height - 37, 0xFFDDDDDD);
-        context.drawHorizontalLine(RenderLayer.getGuiOverlay(), x, x + width - 1, height - 1, 0xFFDDDDDD);
-        context.drawVerticalLine(RenderLayer.getGuiOverlay(), x, height - 37, height, 0xFFDDDDDD);
-        context.drawVerticalLine(RenderLayer.getGuiOverlay(), x + width - 1, height - 37, height, 0xFFDDDDDD);
+
+        context.drawHorizontalLine(x, x + width - 1, height - 37, 0xFFDDDDDD);
+        context.drawHorizontalLine(x, x + width - 1, height - 1, 0xFFDDDDDD);
+        context.drawVerticalLine(x, height - 37, height, 0xFFDDDDDD);
+        context.drawVerticalLine(x + width - 1, height - 37, height, 0xFFDDDDDD);
 
 
         this.drawBorderedText(context, "50 ms", x + 1, height - 37 + 1);
     }
 
 
-    protected void drawTotalBar(DrawContext context, int x, int y, int index) {
+    protected void drawTotalBar(DrawContextVer context, int x, int y, int index) {
         long l = list.get(index);
         int i = this.getHeight(l);
         int j = this.getColor(l);
-        context.fill(RenderLayer.getGuiOverlay(), x, y - i, x + 1, y, j);
+        context.fill(x, y - i, x + 1, y, j);
     }
 
     protected long get(int index) {
@@ -76,12 +77,12 @@ public class AltoClefTickChart {
     }
 
 
-    protected void drawBorderedText(DrawContext context, String string, int x, int y) {
+    protected void drawBorderedText(DrawContextVer context, String string, int x, int y) {
         MatrixStack matrixStack = context.getMatrices();
         matrixStack.push();
         matrixStack.scale(0.5f,0.5f,1);
 
-        context.fill(RenderLayer.getGuiOverlay(), x*2, y*2, x*2 + this.textRenderer.getWidth(string) + 2, y*2 + this.textRenderer.fontHeight+1, 0x90505050);
+        context.fill(x*2, y*2, x*2 + this.textRenderer.getWidth(string) + 2, y*2 + this.textRenderer.fontHeight+1, 0x90505050);
         context.drawText(this.textRenderer, string, (x + 1)*2, (y + 1)*2, 0xE9E9E9, false);
 
         matrixStack.pop();
