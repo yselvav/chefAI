@@ -2,12 +2,11 @@ package adris.altoclef.ui;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.multiversion.InGameHudVer;
-import adris.altoclef.multiversion.DrawContextVer;
-import adris.altoclef.multiversion.RenderLayerVer;
+import adris.altoclef.multiversion.DrawContextWrapper;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.ColorHelper;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,7 @@ public class AltoClefTickChart {
         list.add(nanoTime);
     }
 
-    public void render(AltoClef mod, DrawContextVer context, int x, int width) {
+    public void render(AltoClef mod, DrawContextWrapper context, int x, int width) {
         if (InGameHudVer.shouldShowDebugHud() || !mod.getTaskRunner().isActive()) return;
 
         int height = context.getScaledWindowHeight();
@@ -65,7 +64,7 @@ public class AltoClefTickChart {
     }
 
 
-    protected void drawTotalBar(DrawContextVer context, int x, int y, int index) {
+    protected void drawTotalBar(DrawContextWrapper context, int x, int y, int index) {
         long l = list.get(index);
         int i = this.getHeight(l);
         int j = this.getColor(l);
@@ -77,7 +76,7 @@ public class AltoClefTickChart {
     }
 
 
-    protected void drawBorderedText(DrawContextVer context, String string, int x, int y) {
+    protected void drawBorderedText(DrawContextWrapper context, String string, int x, int y) {
         MatrixStack matrixStack = context.getMatrices();
         matrixStack.push();
         matrixStack.scale(0.5f,0.5f,1);
@@ -108,9 +107,17 @@ public class AltoClefTickChart {
 
     protected int getColor(double value, int minColor, int medianColor, int maxColor) {
         if (value < 0.5) {
-            return ColorHelper.Argb.lerp((float)((value) / (0.5)), minColor, medianColor);
+            return lerp((float)((value) / (0.5)), minColor, medianColor);
         }
-        return ColorHelper.Argb.lerp((float)((value - 0.5) / 0.5), medianColor, maxColor);
+        return lerp((float)((value - 0.5) / 0.5), medianColor, maxColor);
+    }
+
+    private static int lerp(float delta, int start, int end) {
+        int i = (int) MathHelper.lerp(delta, ColorHelper.Argb.getAlpha(start), ColorHelper.Argb.getAlpha(end));
+        int j = (int) MathHelper.lerp(delta, ColorHelper.Argb.getRed(start), ColorHelper.Argb.getRed(end));
+        int k = (int) MathHelper.lerp(delta, ColorHelper.Argb.getGreen(start), ColorHelper.Argb.getGreen(end));
+        int l = (int) MathHelper.lerp(delta, ColorHelper.Argb.getBlue(start), ColorHelper.Argb.getBlue(end));
+        return ColorHelper.Argb.getArgb(i, j, k, l);
     }
 
     private static double nanosToMillis(double nanos) {

@@ -1,6 +1,7 @@
 package adris.altoclef.util.helpers;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.multiversion.DamageSourceWrapper;
 import adris.altoclef.multiversion.MethodWrapper;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.DamageUtil;
@@ -8,14 +9,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.registry.tag.DamageTypeTags;
 
 /**
  * Helper functions to interpret entity state
@@ -70,21 +69,22 @@ public class EntityHelper {
      * Calculate the resulting damage dealt to a player as a result of some damage.
      * If this player were to receive this damage, the player's health will be subtracted by the resulting value.
      */
-    public static double calculateResultingPlayerDamage(PlayerEntity player, DamageSource source, double damageAmount) {
+    public static double calculateResultingPlayerDamage(PlayerEntity player, DamageSource src, double damageAmount) {
         // Copied logic from `PlayerEntity.applyDamage`
+        DamageSourceWrapper source = DamageSourceWrapper.of(src);
 
-        if (player.isInvulnerableTo(source))
+        if (player.isInvulnerableTo(src))
             return 0;
 
         // Armor Base
-        if (!source.isIn(DamageTypeTags.BYPASSES_ARMOR)) {
-            damageAmount = MethodWrapper.getDamageLeft(damageAmount,source,player.getArmor(),player.getAttributeValue(EntityAttributes.GENERIC_ARMOR_TOUGHNESS));
+        if (!source.bypassesArmor()) {
+            damageAmount = MethodWrapper.getDamageLeft(damageAmount,src,player.getArmor(),player.getAttributeValue(EntityAttributes.GENERIC_ARMOR_TOUGHNESS));
         }
 
         // Enchantments & Potions
-        if (!source.isIn(DamageTypeTags.BYPASSES_SHIELD)) {
+        if (!source.bypassesShield()) {
             int k;
-            if (player.hasStatusEffect(StatusEffects.RESISTANCE) && source.isOf(DamageTypes.OUT_OF_WORLD)) {
+            if (player.hasStatusEffect(StatusEffects.RESISTANCE) && source.isOutOfWorld()) {
                 //noinspection ConstantConditions
                 k = (player.getStatusEffect(StatusEffects.RESISTANCE).getAmplifier() + 1) * 5;
                 int j = 25 - k;
@@ -96,7 +96,7 @@ public class EntityHelper {
             if (damageAmount <= 0.0) {
                 damageAmount = 0.0;
             } else {
-                k = EnchantmentHelper.getProtectionAmount(player.getArmorItems(), source);
+                k = EnchantmentHelper.getProtectionAmount(player.getArmorItems(), src);
                 if (k > 0) {
                     damageAmount = DamageUtil.getInflictedDamage((float) damageAmount, (float) k);
                 }

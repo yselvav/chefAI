@@ -1,5 +1,7 @@
 package adris.altoclef;
 
+import adris.altoclef.multiversion.versionedfields.Blocks;
+import adris.altoclef.multiversion.versionedfields.Items;
 import adris.altoclef.tasks.CraftInInventoryTask;
 import adris.altoclef.tasks.ResourceTask;
 import adris.altoclef.tasks.container.CraftInTableTask;
@@ -11,12 +13,10 @@ import adris.altoclef.tasks.squashed.CataloguedResourceTask;
 import adris.altoclef.util.*;
 import adris.altoclef.util.helpers.ItemHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.MapColor;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.*;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 import net.minecraft.util.DyeColor;
 
 import java.util.*;
@@ -635,6 +635,14 @@ public class TaskCatalogue {
     }
 
     private static CataloguedResource put(String name, Item[] matches, Function<Integer, ResourceTask> getTask) {
+        List<Item> supportedMatches = new ArrayList<>();
+        for (Item item : matches) {
+            if (item != Items.UNSUPPORTED) {
+                supportedMatches.add(item);
+            }
+        }
+        matches = supportedMatches.toArray(new Item[0]);
+
         CataloguedResource result = new CataloguedResource(matches, getTask);
         Block[] blocks = ItemHelper.itemsToBlocks(matches);
         // DEFAULT BEHAVIOUR: Mine if present & assume overworld is required!

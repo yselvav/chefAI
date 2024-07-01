@@ -9,7 +9,7 @@ public interface EntityAccessor {
     @Accessor("inNetherPortal")
     boolean isInNetherPortal();
 
-    @Accessor("portalCooldown")
+    @Accessor
     int getPortalCooldown();
 
 }

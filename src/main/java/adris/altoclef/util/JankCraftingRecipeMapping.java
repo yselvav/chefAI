@@ -1,5 +1,6 @@
 package adris.altoclef.util;
 
+import adris.altoclef.multiversion.RecipeVer;
 import adris.altoclef.multiversion.recipemanager.RecipeManagerWrapper;
 import adris.altoclef.multiversion.recipemanager.WrappedRecipeEntry;
 import net.minecraft.client.MinecraftClient;
@@ -34,7 +35,7 @@ public class JankCraftingRecipeMapping {
                 for (WrappedRecipeEntry recipe : recipes.values()) {
                     assert world != null;
                     Recipe<?> value = recipe.value();
-                    Item output = value.getResult(world.getRegistryManager()).getItem();
+                    Item output = RecipeVer.getOutput(value,world).getItem();
                     recipeMapping.computeIfAbsent(output, k -> new ArrayList<>()).add(recipe);
                 }
             }

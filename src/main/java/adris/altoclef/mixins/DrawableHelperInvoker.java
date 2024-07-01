@@ -10,13 +10,9 @@ public interface DrawableHelperInvoker {
 
     //#if MC <= 11904
     //$$ @Invoker("drawHorizontalLine")
-    //$$ public static void drawHorizontalLine(MatrixStack matrices, int x1, int x2, int y, int color) {
-    //$$    throw new AssertionError();
-    //$$ }
+    //$$ void invokeDrawHorizontalLine(MatrixStack matrices, int x1, int x2, int y, int color);
     //$$
     //$$ @Invoker("drawVerticalLine")
-    //$$ public static void drawVerticalLine(MatrixStack matrices, int x, int y1, int y2, int color) {
-    //$$    throw new AssertionError();
-    //$$ }
+    //$$ void invokeDrawVerticalLine(MatrixStack matrices, int x, int y1, int y2, int color);
     //#endif
 }

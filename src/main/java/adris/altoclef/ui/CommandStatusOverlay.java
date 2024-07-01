@@ -1,7 +1,7 @@
 package adris.altoclef.ui;
 
 import adris.altoclef.AltoClef;
-import adris.altoclef.multiversion.DrawContextVer;
+import adris.altoclef.multiversion.DrawContextWrapper;
 import adris.altoclef.tasksystem.Task;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -24,7 +24,7 @@ public class CommandStatusOverlay {
     private long timeRunning;
     private long lastTime = 0;
 
-    public void render(AltoClef mod, DrawContextVer context) {
+    public void render(AltoClef mod, DrawContextWrapper context) {
         List<Task> tasks = Collections.emptyList();
         if (mod.getTaskRunner().getCurrentTaskChain() != null) {
             tasks = mod.getTaskRunner().getCurrentTaskChain().getTasks();
@@ -35,17 +35,19 @@ public class CommandStatusOverlay {
         matrixStack.push();
 
         drawTaskChain(context,MinecraftClient.getInstance().textRenderer, 10, 10,
-                matrixStack.peek().getPositionMatrix(),
-                MinecraftClient.getInstance().getBufferBuilders().getOutlineVertexConsumers(),
-                TextRenderer.TextLayerType.SEE_THROUGH, 10, tasks, mod);
+                matrixStack.peek().getPositionMatrix(), 10, tasks, mod);
 
         matrixStack.pop();
     }
 
-    private void drawTaskChain(DrawContextVer context,TextRenderer renderer, int x, int y, Matrix4f matrix, VertexConsumerProvider vertexConsumers, TextRenderer.TextLayerType layerType, int maxLines, List<Task> tasks, AltoClef mod) {
+    private void drawTaskChain(DrawContextWrapper context, TextRenderer renderer, int x, int y, Matrix4f matrix, int maxLines, List<Task> tasks, AltoClef mod) {
         int whiteColor = 0xFFFFFFFF;
 
+        //#if MC >= 11904
         matrix.scale(0.5F, 0.5F, 0.5F);
+        //#else
+        //$$ matrix.load(Matrix4f.scale(0.5f,0.5f,0.5f));
+        //#endif
 
         int fontHeight = renderer.fontHeight;
         int addX = 4;
@@ -102,7 +104,7 @@ public class CommandStatusOverlay {
     }
 
 
-    private void renderTask(Task task, DrawContextVer context, TextRenderer renderer, int x, int y) {
+    private void renderTask(Task task, DrawContextWrapper context, TextRenderer renderer, int x, int y) {
         String taskName = task.getClass().getSimpleName() + " ";
         context.drawText(renderer, taskName, x, y, new Color(128, 128, 128).getRGB(), true);
 

@@ -6,11 +6,20 @@ public class BlockStateVer {
 
 
     @Pattern
-    public boolean isSolid(BlockState state) {
+    private static boolean isSolid(BlockState state) {
         //#if MC >= 12001
         return state.isSolid();
         //#else
         //$$ return state.getMaterial().isSolid();
+        //#endif
+    }
+
+    @Pattern
+    private static boolean isReplaceable(BlockState state) {
+        //#if MC >= 11904
+        return state.isReplaceable();
+        //#else
+        //$$ return state.getMaterial().isReplaceable();
         //#endif
     }
 

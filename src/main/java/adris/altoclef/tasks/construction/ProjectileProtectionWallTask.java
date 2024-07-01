@@ -189,7 +189,7 @@ public class ProjectileProtectionWallTask extends Task implements ITaskRequiresG
         boolean wasSneaking = mod.getPlayer().input.sneaking;
         mod.getPlayer().input.sneaking = false;
 
-        ActionResult result = mod.getController().interactBlock(mod.getPlayer(), hand, blockHitResult);
+        ActionResult result = mod.getController().interactBlock(mod.getPlayer(),hand, blockHitResult);
 
         if (result.shouldSwingHand()) {
             mod.getPlayer().swingHand(hand);

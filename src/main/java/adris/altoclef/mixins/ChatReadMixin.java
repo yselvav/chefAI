@@ -2,6 +2,7 @@ package adris.altoclef.mixins;
 
 import adris.altoclef.eventbus.EventBus;
 import adris.altoclef.eventbus.events.ChatMessageEvent;
+import adris.altoclef.multiversion.MessageTypeVer;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.network.message.MessageHandler;
 import net.minecraft.network.message.MessageType;
@@ -19,7 +20,7 @@ public final class ChatReadMixin {
             at = @At("HEAD")
     )
     private void onChatMessage(SignedMessage message, GameProfile sender, MessageType.Parameters params, CallbackInfo ci) {
-        ChatMessageEvent evt = new ChatMessageEvent(message, sender, params);
+        ChatMessageEvent evt = new ChatMessageEvent(message.getContent().getString(), sender.getName(), MessageTypeVer.getMessageType(params));
         EventBus.publish(evt);
     }
 }

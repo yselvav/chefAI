@@ -20,6 +20,11 @@ public class CollectHangingSignTask extends CraftWithMatchingStrippedLogsTask {
 
     public CollectHangingSignTask(int count) {
         this(ItemHelper.WOOD_HANGING_SIGN, TaskCatalogue.getItemTarget("stripped_logs", 1), count);
+
+
+        //#if MC <= 11802
+        //$$ throw new IllegalStateException("Hanging signs dont exist yet!");
+        //#endif
     }
 
 

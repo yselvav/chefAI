@@ -1,6 +1,8 @@
 package adris.altoclef.tasks.resources;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.multiversion.versionedfields.Blocks;
+import adris.altoclef.multiversion.versionedfields.Items;
 import adris.altoclef.tasks.ResourceTask;
 import adris.altoclef.tasks.construction.DestroyBlockTask;
 import adris.altoclef.tasks.movement.DefaultGoToDimensionTask;
@@ -8,8 +10,6 @@ import adris.altoclef.tasks.movement.SearchChunkForBlockTask;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.Dimension;
 import adris.altoclef.util.helpers.WorldHelper;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 
 public class GetSmithingTemplateTask extends ResourceTask {

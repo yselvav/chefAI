@@ -8,29 +8,31 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.math.MatrixStack;
 import org.jetbrains.annotations.Nullable;
 
-public class DrawContextVer {
+public class DrawContextWrapper {
 
 
     //#if MC >= 12001
-    public static DrawContextVer of(DrawContext context) {
+    public static DrawContextWrapper of(DrawContext context) {
         if (context == null) return null;
-        return new DrawContextVer(context);
+        return new DrawContextWrapper(context);
     }
     private final DrawContext context;
 
-    private DrawContextVer(DrawContext context) {
+    private DrawContextWrapper(DrawContext context) {
         this.context = context;
     }
     //#else
-    //$$ public static DrawContextVer of(MatrixStack matrices) {
+    //$$ public static DrawContextWrapper of(MatrixStack matrices) {
     //$$    if (matrices == null) return null;
-    //$$    return new DrawContextVer(matrices);
+    //$$    return new DrawContextWrapper(matrices);
     //$$ }
     //$$
     //$$ private final MatrixStack matrices;
-    //$$ private DrawContextVer(MatrixStack matrices) {
+    //$$ private final DrawableHelper helper;
+    //$$ private DrawContextWrapper(MatrixStack matrices) {
     //$$        this.matrices = matrices;
-    //$$    }
+    //$$        this.helper = new DrawableHelper(){};
+    //$$ }
     //#endif
 
     private RenderLayer renderLayer = null;
@@ -52,7 +54,7 @@ public class DrawContextVer {
         //#if MC >= 12001
         context.drawHorizontalLine(renderLayer, x1, x2, y, color);
         //#else
-        //$$ DrawableHelperInvoker.drawHorizontalLine(matrices, x1, x2, y, color);
+        //$$ ((DrawableHelperInvoker) helper).invokeDrawHorizontalLine(matrices, x1, x2, y, color);
         //#endif
     }
 
@@ -60,7 +62,7 @@ public class DrawContextVer {
         //#if MC >= 12001
         context.drawVerticalLine(renderLayer, x, y1, y2, color);
         //#else
-        //$$ DrawableHelperInvoker.drawVerticalLine(matrices, x, y1, y2, color);
+        //$$ ((DrawableHelperInvoker) helper).invokeDrawVerticalLine(matrices, x, y1, y2, color);
         //#endif
     }
 

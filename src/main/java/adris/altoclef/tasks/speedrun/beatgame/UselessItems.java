@@ -1,8 +1,8 @@
 package adris.altoclef.tasks.speedrun.beatgame;
 
+import adris.altoclef.multiversion.versionedfields.Items;
 import adris.altoclef.tasks.speedrun.BeatMinecraftConfig;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 
 import java.util.ArrayList;
 import java.util.List;

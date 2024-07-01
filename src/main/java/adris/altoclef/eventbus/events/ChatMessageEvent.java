@@ -1,31 +1,29 @@
 package adris.altoclef.eventbus.events;
 
-import com.mojang.authlib.GameProfile;
 import net.minecraft.network.message.MessageType;
-import net.minecraft.network.message.SignedMessage;
 
 /**
  * Whenever chat appears
  */
 public class ChatMessageEvent {
-    SignedMessage message;
-    GameProfile sender;
-    MessageType.Parameters messageType;
+    private final String message;
+    private final String senderName;
+    private final MessageType messageType;
 
-    public ChatMessageEvent(SignedMessage message, GameProfile sender, MessageType.Parameters messageType) {
+    public ChatMessageEvent(String message, String senderName, MessageType messageType) {
         this.message = message;
-        this.sender = sender;
+        this.senderName = senderName;
         this.messageType = messageType;
     }
     public String messageContent() {
-        return message.getContent().getString();
+        return message;
     }
 
     public String senderName() {
-        return sender.getName();
+        return senderName;
     }
 
     public MessageType messageType() {
-        return messageType.type().value();
+        return messageType;
     }
 }

@@ -2,6 +2,7 @@ package adris.altoclef.tasks.movement;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
+import adris.altoclef.multiversion.DamageSourceVer;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.helpers.*;
 import adris.altoclef.util.serialization.ItemDeserializer;
@@ -107,7 +108,7 @@ public class MLGBucketTask extends Task {
         double baseFallDamage = MathHelper.ceil(totalFallDistance - 3.0F);
         // Be a bit conservative, assume MORE damage
         assert world != null;
-        return EntityHelper.calculateResultingPlayerDamage(player, world.getDamageSources().fall(), baseFallDamage);
+        return EntityHelper.calculateResultingPlayerDamage(player, DamageSourceVer.getFallDamageSource(world), baseFallDamage);
     }
 
     private static void moveLeftRight(AltoClef mod, int delta) {

@@ -53,9 +53,7 @@ public class Butler {
             String sender = evt.senderName();
             MessageType messageType = evt.messageType();
             String receiver = mod.getPlayer().getName().getString();
-            if (sender != null && !Objects.equals(sender, receiver) && messageType.chat().style().isItalic()
-                    && messageType.chat().style().getColor() != null
-                    && Objects.equals(messageType.chat().style().getColor().getName(), "gray")) {
+            if (sender != null && !Objects.equals(sender, receiver) && shouldAccept(messageType)) {
                 String wholeMessage = sender + " " + receiver + " " + message;
                 if (debug) {
                     Debug.logMessage("RECEIVED WHISPER: \"" + wholeMessage + "\".");
@@ -63,6 +61,17 @@ public class Butler {
                 this.mod.getButler().receiveMessage(wholeMessage, receiver);
             }
         });
+    }
+
+    private static boolean shouldAccept(MessageType messageType) {
+        //#if MC >= 11904
+        return messageType.chat().style().isItalic()
+                && messageType.chat().style().getColor() != null
+                && Objects.equals(messageType.chat().style().getColor().getName(), "gray");
+        //#else
+        //$$ //it doesnt look like previous versions did any type of checking
+        //$$ return true;
+        //#endif
     }
 
     private void receiveMessage(String msg, String receiver) {
