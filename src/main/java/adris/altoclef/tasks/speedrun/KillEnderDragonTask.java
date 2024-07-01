@@ -2,6 +2,7 @@ package adris.altoclef.tasks.speedrun;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
+import adris.altoclef.multiversion.BlockPosVer;
 import adris.altoclef.multiversion.OptionsVer;
 import adris.altoclef.tasks.DoToClosestBlockTask;
 import adris.altoclef.tasks.entity.AbstractKillEntityTask;
@@ -311,7 +312,7 @@ public class KillEnderDragonTask extends Task {
                                             // We have sort of a rounded circle here.
                                             if (Math.abs(dx) == 2 && Math.abs(dz) == 2) continue;
                                             BlockPos toCheck = exitPortalTop.add(dx, bottomYDelta, dz);
-                                            double distSq = toCheck.getSquaredDistance(head.getPos());
+                                            double distSq = BlockPosVer.getSquaredDistance(toCheck,head.getPos());
                                             if (distSq < closestDist) {
                                                 closest = toCheck;
                                                 closestDist = distSq;

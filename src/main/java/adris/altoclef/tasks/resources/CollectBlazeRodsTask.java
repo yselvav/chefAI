@@ -2,6 +2,7 @@ package adris.altoclef.tasks.resources;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
+import adris.altoclef.multiversion.BlockPosVer;
 import adris.altoclef.tasks.ResourceTask;
 import adris.altoclef.tasks.construction.PutOutFireTask;
 import adris.altoclef.tasks.entity.KillEntitiesTask;
@@ -84,7 +85,7 @@ public class CollectBlazeRodsTask extends ResourceTask {
                 if (sqDistanceToPlayer > SPAWNER_BLAZE_RADIUS * SPAWNER_BLAZE_RADIUS) {
                     // If the blaze can see us it needs to go lol
                     BlockHitResult hit = mod.getWorld().raycast(new RaycastContext(mod.getPlayer().getCameraPosVec(1.0F), kill.getCameraPosVec(1.0F), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, mod.getPlayer()));
-                    if (hit != null && hit.getBlockPos().getSquaredDistance(mod.getPlayer().getPos()) < sqDistanceToPlayer) {
+                    if (hit != null && BlockPosVer.getSquaredDistance(hit.getBlockPos(),mod.getPlayer().getPos()) < sqDistanceToPlayer) {
                         toKill = Optional.empty();
                     }
                 }

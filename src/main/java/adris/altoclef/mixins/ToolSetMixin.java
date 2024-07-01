@@ -60,8 +60,6 @@ public class ToolSetMixin {
 
     @Redirect(method = "getBestSlot(Lnet/minecraft/block/Block;ZZ)I",at = @At(value = "FIELD", target = "Lbaritone/api/Settings;itemSaver:Lbaritone/api/Settings$Setting;"), remap = false)
     public Settings.Setting<Boolean> redirected(Settings instance,Block block ,@Local ItemStack stack) {
-    //    if (instance.itemSaver.value) return instance.itemSaver;
-
         if (StorageHelper.shouldSaveStack(AltoClef.INSTANCE,block,stack)) {
             return trueSetting;
         }

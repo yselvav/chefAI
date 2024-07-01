@@ -1,6 +1,7 @@
 package adris.altoclef.util.helpers;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.multiversion.BlockTagVer;
 import adris.altoclef.multiversion.ItemVer;
 import adris.altoclef.multiversion.versionedfields.Blocks;
 import adris.altoclef.multiversion.versionedfields.Items;
@@ -13,8 +14,6 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.DyeColor;
 
 import java.util.*;
@@ -374,12 +373,8 @@ public class ItemHelper {
                         || b == Blocks.DEAD_BUSH
                         || b == Blocks.VINE
                         || b == Blocks.TRIPWIRE
-                        || isOfBlockType(b, BlockTags.WOOL)
+                        || BlockTagVer.isWool(b)
                         || b == Blocks.NETHER_SPROUTS;
-    }
-
-    public static boolean isOfBlockType(Block b, TagKey<Block> tag) {
-        return Registries.BLOCK.getKey(b).map(e -> Registries.BLOCK.entryOf(e).streamTags().anyMatch(t -> t == tag)).orElse(false);
     }
 
     private static boolean isStackProtected(AltoClef mod, ItemStack stack) {

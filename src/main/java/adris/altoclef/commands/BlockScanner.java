@@ -4,6 +4,7 @@ import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
 import adris.altoclef.eventbus.EventBus;
 import adris.altoclef.eventbus.events.BlockPlaceEvent;
+import adris.altoclef.multiversion.BlockPosVer;
 import adris.altoclef.trackers.blacklisting.WorldLocateBlacklist;
 import adris.altoclef.util.Dimension;
 import adris.altoclef.util.helpers.BaritoneHelper;
@@ -209,7 +210,7 @@ public class BlockScanner {
 
     public double distanceToClosest(Vec3d pos, Block... blocks) {
         Optional<BlockPos> blockPos = getNearestBlock(blocks);
-        return blockPos.map(value -> Math.sqrt(value.getSquaredDistance(pos))).orElse(Double.POSITIVE_INFINITY);
+        return blockPos.map(value ->  Math.sqrt(BlockPosVer.getSquaredDistance(value, pos))).orElse(Double.POSITIVE_INFINITY);
     }
 
     // Checks if 'pos' one of 'blocks' block

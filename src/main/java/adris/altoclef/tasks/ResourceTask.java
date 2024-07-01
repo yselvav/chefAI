@@ -1,6 +1,7 @@
 package adris.altoclef.tasks;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.multiversion.BlockPosVer;
 import adris.altoclef.tasks.container.PickupFromContainerTask;
 import adris.altoclef.tasks.movement.DefaultGoToDimensionTask;
 import adris.altoclef.tasks.movement.PickupDroppedItemTask;
@@ -149,7 +150,7 @@ public abstract class ResourceTask extends Task implements ITaskCanForce {
         if (currentContainer == null && allowContainers) {
             List<ContainerCache> containersWithItem = mod.getItemStorage().getContainersWithItem(Arrays.stream(itemTargets).reduce(new Item[0], (items, target) -> ArrayUtils.addAll(items, target.getMatches()), ArrayUtils::addAll));
             if (!containersWithItem.isEmpty()) {
-                ContainerCache closest = containersWithItem.stream().min(StlHelper.compareValues(container -> container.getBlockPos().getSquaredDistance(mod.getPlayer().getPos()))).get();
+                ContainerCache closest = containersWithItem.stream().min(StlHelper.compareValues(container -> BlockPosVer.getSquaredDistance(container.getBlockPos(),mod.getPlayer().getPos()))).get();
                 if (closest.getBlockPos().isWithinDistance(mod.getPlayer().getPos(), mod.getModSettings().getResourceChestLocateRange())) {
                     currentContainer = closest;
                 }

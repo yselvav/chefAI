@@ -4,6 +4,7 @@ import adris.altoclef.AltoClef;
 import adris.altoclef.mixins.ClientConnectionAccessor;
 import adris.altoclef.mixins.EntityAccessor;
 import adris.altoclef.multiversion.MethodWrapper;
+import adris.altoclef.multiversion.WorldVer;
 import adris.altoclef.util.Dimension;
 import baritone.api.BaritoneAPI;
 import baritone.pathing.movement.CalculationContext;
@@ -20,11 +21,14 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.network.ClientConnection;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
+
+//#if MC >= 11802
+import net.minecraft.registry.entry.RegistryEntry;
+//#endif
 
 import java.util.*;
 
@@ -32,10 +36,6 @@ import java.util.*;
  * Super useful helper functions for getting information about the world.
  */
 public interface WorldHelper {
-
-    // God bless 1.18
-    int WORLD_CEILING_Y = 255;
-    int WORLD_FLOOR_Y = -64;
 
     /**
      * Get the number of in-game ticks the game/world has been active for.
@@ -180,7 +180,7 @@ public interface WorldHelper {
     }
 
     static int getGroundHeight(AltoClef mod, int x, int z) {
-        for (int y = WORLD_CEILING_Y; y >= WORLD_FLOOR_Y; --y) {
+        for (int y = mod.getWorld().getTopY(); y >= mod.getWorld().getBottomY(); --y) {
             BlockPos check = new BlockPos(x, y, z);
             if (isSolidBlock(mod, check)) return y;
         }
@@ -207,7 +207,7 @@ public interface WorldHelper {
 
     static int getGroundHeight(AltoClef mod, int x, int z, Block... groundBlocks) {
         Set<Block> possibleBlocks = new HashSet<>(Arrays.asList(groundBlocks));
-        for (int y = WORLD_CEILING_Y; y >= WORLD_FLOOR_Y; --y) {
+        for (int y = mod.getWorld().getTopY(); y >= mod.getWorld().getBottomY(); --y) {
             BlockPos check = new BlockPos(x, y, z);
             if (possibleBlocks.contains(mod.getWorld().getBlockState(check).getBlock())) return y;
 
@@ -240,7 +240,7 @@ public interface WorldHelper {
             return true;
         }
         // Fall down
-        for (int dy = 1; dy <= toBreak.getY() - WORLD_FLOOR_Y; ++dy) {
+        for (int dy = 1; dy <= toBreak.getY() - mod.getWorld().getBottomY(); ++dy) {
             BlockPos check = toBreak.down(dy);
             BlockState s = mod.getWorld().getBlockState(check);
             boolean tooFarToFall = dy > mod.getClientBaritoneSettings().maxFallHeightNoWater.value;
@@ -279,16 +279,20 @@ public interface WorldHelper {
         return !mod.getBlockScanner().isUnreachable(pos);
     }
 
+    //#if MC >= 11802
     static boolean isOcean(RegistryEntry<Biome> b) {
-        return (b.matchesKey(BiomeKeys.OCEAN)
-                || b.matchesKey(BiomeKeys.COLD_OCEAN)
-                || b.matchesKey(BiomeKeys.DEEP_COLD_OCEAN)
-                || b.matchesKey(BiomeKeys.DEEP_OCEAN)
-                || b.matchesKey(BiomeKeys.DEEP_FROZEN_OCEAN)
-                || b.matchesKey(BiomeKeys.DEEP_LUKEWARM_OCEAN)
-                || b.matchesKey(BiomeKeys.LUKEWARM_OCEAN)
-                || b.matchesKey(BiomeKeys.WARM_OCEAN)
-                || b.matchesKey(BiomeKeys.FROZEN_OCEAN));
+    //#else
+    //$$ static boolean isOcean(Biome b) {
+    //#endif
+        return (WorldVer.isBiome(b,BiomeKeys.OCEAN)
+                || WorldVer.isBiome(b,BiomeKeys.COLD_OCEAN)
+                || WorldVer.isBiome(b,BiomeKeys.DEEP_COLD_OCEAN)
+                || WorldVer.isBiome(b,BiomeKeys.DEEP_OCEAN)
+                || WorldVer.isBiome(b,BiomeKeys.DEEP_FROZEN_OCEAN)
+                || WorldVer.isBiome(b,BiomeKeys.DEEP_LUKEWARM_OCEAN)
+                || WorldVer.isBiome(b,BiomeKeys.LUKEWARM_OCEAN)
+                || WorldVer.isBiome(b,BiomeKeys.WARM_OCEAN)
+                || WorldVer.isBiome(b,BiomeKeys.FROZEN_OCEAN));
     }
 
     static boolean isAir(AltoClef mod, BlockPos pos) {

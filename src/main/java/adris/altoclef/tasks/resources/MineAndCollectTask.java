@@ -2,6 +2,7 @@ package adris.altoclef.tasks.resources;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
+import adris.altoclef.multiversion.BlockPosVer;
 import adris.altoclef.multiversion.ToolMaterialVer;
 import adris.altoclef.tasks.AbstractDoToClosestObjectTask;
 import adris.altoclef.tasks.ResourceTask;
@@ -218,7 +219,7 @@ public class MineAndCollectTask extends ResourceTask {
             }, blocks);
 
             return new Pair<>(
-                    closestBlock.map(blockPos -> blockPos.getSquaredDistance(pos)).orElse(Double.POSITIVE_INFINITY),
+                    closestBlock.map(blockPos -> BlockPosVer.getSquaredDistance(blockPos, pos)).orElse(Double.POSITIVE_INFINITY),
                     closestBlock
             );
         }

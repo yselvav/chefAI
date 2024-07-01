@@ -6,6 +6,7 @@ import adris.altoclef.TaskCatalogue;
 import adris.altoclef.commands.BlockScanner;
 import adris.altoclef.commands.SetGammaCommand;
 import adris.altoclef.mixins.EntityAccessor;
+import adris.altoclef.multiversion.BlockPosVer;
 import adris.altoclef.multiversion.versionedfields.Blocks;
 import adris.altoclef.tasks.*;
 import adris.altoclef.tasks.construction.DestroyBlockTask;
@@ -219,7 +220,7 @@ public class BeatMinecraftTask extends Task {
             Optional<BlockPos> optionalPos = mod.getBlockScanner().getNearestBlock(Blocks.WATER);
             if (optionalPos.isEmpty()) return pair;
 
-            double distance = Math.sqrt(optionalPos.get().getSquaredDistance(mod.getPlayer().getPos()));
+            double distance = Math.sqrt(BlockPosVer.getSquaredDistance(optionalPos.get(),mod.getPlayer().getPos()));
             if (distance > 55) return pair;
 
             pair.setRight(10 / distance * 77.3);
@@ -582,7 +583,7 @@ public class BeatMinecraftTask extends Task {
                 return pair;
             }
 
-            double dst = Math.sqrt(chest.get().getSquaredDistance(mod.getPlayer().getPos()));
+            double dst = Math.sqrt(BlockPosVer.getSquaredDistance(chest.get(),mod.getPlayer().getPos()));
             pair.setRight(30d / dst * 175);
             pair.setLeft(new GetToBlockTask(chest.get().up()));
 

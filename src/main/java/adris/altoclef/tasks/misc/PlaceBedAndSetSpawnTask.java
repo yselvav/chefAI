@@ -7,6 +7,7 @@ import adris.altoclef.eventbus.EventBus;
 import adris.altoclef.eventbus.Subscription;
 import adris.altoclef.eventbus.events.ChatMessageEvent;
 import adris.altoclef.eventbus.events.GameOverlayEvent;
+import adris.altoclef.multiversion.BlockPosVer;
 import adris.altoclef.tasks.DoToClosestBlockTask;
 import adris.altoclef.tasks.InteractWithBlockTask;
 import adris.altoclef.tasks.construction.DestroyBlockTask;
@@ -524,7 +525,7 @@ public class PlaceBedAndSetSpawnTask extends Task {
                 outer:
                 for (int y = origin.getY() - SCAN_RANGE; y < origin.getY() + SCAN_RANGE; ++y) {
                     BlockPos attemptPos = new BlockPos(x, y, z);
-                    double distance = attemptPos.getSquaredDistance(mod.getPlayer().getPos());
+                    double distance = BlockPosVer.getSquaredDistance(attemptPos,mod.getPlayer().getPos());
 
                     Debug.logInternal("Checking position: " + attemptPos);
 
