@@ -2,7 +2,7 @@ package adris.altoclef.control;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.multiversion.versionedfields.Entities;
-import adris.altoclef.multiversion.ItemVer;
+import adris.altoclef.multiversion.item.ItemVer;
 import adris.altoclef.util.helpers.LookHelper;
 import adris.altoclef.util.helpers.StlHelper;
 import adris.altoclef.util.helpers.StorageHelper;

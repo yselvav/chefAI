@@ -2,7 +2,7 @@ package adris.altoclef.tasks.speedrun;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
-import adris.altoclef.multiversion.BlockPosVer;
+import adris.altoclef.multiversion.blockpos.BlockPosVer;
 import adris.altoclef.multiversion.OptionsVer;
 import adris.altoclef.tasks.DoToClosestBlockTask;
 import adris.altoclef.tasks.entity.AbstractKillEntityTask;
@@ -11,7 +11,6 @@ import adris.altoclef.tasks.misc.EquipArmorTask;
 import adris.altoclef.tasks.movement.GetToBlockTask;
 import adris.altoclef.tasks.movement.PickupDroppedItemTask;
 import adris.altoclef.tasks.resources.CollectBlockByOneTask;
-import adris.altoclef.tasks.resources.MineAndCollectTask;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.ItemTarget;
 import adris.altoclef.util.MiningRequirement;
@@ -23,9 +22,7 @@ import baritone.api.pathing.goals.GoalGetToBlock;
 import baritone.api.utils.Rotation;
 import baritone.api.utils.RotationUtils;
 import baritone.api.utils.input.Input;
-import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonPart;
@@ -153,7 +150,7 @@ public class KillEnderDragonTask extends Task {
                             mod.getControllerExtras().attack(toDestroy);
                         }
                         // Go next to the crystal, arbitrary where we just need to get close.
-                        return new GetToBlockTask(toDestroy.getBlockPos().add(1, 0, 0), false);
+                        return new GetToBlockTask(toDestroy.getBlockPos().add(1,0,0), false);
                     },
                     EndCrystalEntity.class
             );
@@ -311,7 +308,7 @@ public class KillEnderDragonTask extends Task {
                                         for (int dz = -2; dz <= 2; ++dz) {
                                             // We have sort of a rounded circle here.
                                             if (Math.abs(dx) == 2 && Math.abs(dz) == 2) continue;
-                                            BlockPos toCheck = exitPortalTop.add(dx, bottomYDelta, dz);
+                                            BlockPos toCheck = exitPortalTop.add(dx,bottomYDelta,dz);
                                             double distSq = BlockPosVer.getSquaredDistance(toCheck,head.getPos());
                                             if (distSq < closestDist) {
                                                 closest = toCheck;

@@ -84,5 +84,61 @@ public class Items extends net.minecraft.item.Items {
     //$$ public static final Item MUD = UNSUPPORTED;
     //#endif
 
+    //#if MC <=11605
+    //$$ public static final Item COBBLED_DEEPSLATE = UNSUPPORTED;
+    //$$ public static final Item CALCITE = UNSUPPORTED;
+    //$$ public static final Item TUFF = UNSUPPORTED;
+    //$$ public static final Item RAW_IRON = UNSUPPORTED;
+    //$$ public static final Item RAW_GOLD = UNSUPPORTED;
+    //$$ public static final Item RAW_COPPER = UNSUPPORTED;
+    //$$ public static final Item AMETHYST_SHARD = UNSUPPORTED;
+    //$$ public static final Item POINTED_DRIPSTONE = UNSUPPORTED;
+    //$$ public static final Item AMETHYST_BLOCK = UNSUPPORTED;
+    //$$ public static final Item DRIPSTONE_BLOCK = UNSUPPORTED;
+    //$$ public static final Item COPPER_INGOT = UNSUPPORTED;
+    //$$ public static final Item ROOTED_DIRT = UNSUPPORTED;
+    //$$ public static final Item GLOW_INK_SAC = UNSUPPORTED;
+    //$$ public static final Item GLOW_LICHEN = UNSUPPORTED;
+    //$$ public static final Item DEEPSLATE = UNSUPPORTED;
+    //$$ public static final Item SMOOTH_BASALT = UNSUPPORTED;
+    //$$ public static final Item COPPER_ORE = UNSUPPORTED;
+    //$$ public static final Item COPPER_BLOCK = UNSUPPORTED;
+    //$$ public static final Item RAW_IRON_BLOCK = UNSUPPORTED;
+    //$$ public static final Item RAW_GOLD_BLOCK = UNSUPPORTED;
+    //$$ public static final Item RAW_COPPER_BLOCK = UNSUPPORTED;
+    //$$ public static final Item CUT_COPPER_SLAB = UNSUPPORTED;
+    //$$ public static final Item CUT_COPPER_STAIRS = UNSUPPORTED;
+    //$$ public static final Item COBBLED_DEEPSLATE_SLAB = UNSUPPORTED;
+    //$$ public static final Item COBBLED_DEEPSLATE_STAIRS = UNSUPPORTED;
+    //$$ public static final Item DEEPSLATE_WALL = UNSUPPORTED;
+    //$$ public static final Item POLISHED_DEEPSLATE_SLAB = UNSUPPORTED;
+    //$$ public static final Item POLISHED_DEEPSLATE_STAIRS = UNSUPPORTED;
+    //$$ public static final Item POLISHED_DEEPSLATE_WALL = UNSUPPORTED;
+    //$$ public static final Item DEEPSLATE_BRICK_SLAB = UNSUPPORTED;
+    //$$ public static final Item DEEPSLATE_BRICK_STAIRS = UNSUPPORTED;
+    //$$ public static final Item DEEPSLATE_BRICK_WALL = UNSUPPORTED;
+    //$$ public static final Item DEEPSLATE_TILE_SLAB = UNSUPPORTED;
+    //$$ public static final Item DEEPSLATE_TILE_STAIRS = UNSUPPORTED;
+    //$$ public static final Item DEEPSLATE_TILE_WALL = UNSUPPORTED;
+    //$$ public static final Item CHISELED_DEEPSLATE = UNSUPPORTED;
+    //$$ public static final Item MOSS_BLOCK = UNSUPPORTED;
+    //$$ public static final Item MOSS_CARPET = UNSUPPORTED;
+    //$$ public static final Item AMETHYST_CLUSTER = UNSUPPORTED;
+    //$$ public static final Item BUDDING_AMETHYST = UNSUPPORTED;
+    //$$ public static final Item FLOWERING_AZALEA = UNSUPPORTED;
+    //$$ public static final Item AXOLOTL_BUCKET = UNSUPPORTED;
+    //$$ public static final Item POWDER_SNOW_BUCKET = UNSUPPORTED;
+    //$$ public static final Item POLISHED_DEEPSLATE = UNSUPPORTED;
+    //$$ public static final Item DEEPSLATE_BRICKS = UNSUPPORTED;
+    //$$ public static final Item DEEPSLATE_TILES = UNSUPPORTED;
+    //$$ public static final Item CUT_COPPER = UNSUPPORTED;
+    //$$ public static final Item CRACKED_DEEPSLATE_BRICKS = UNSUPPORTED;
+    //$$ public static final Item CRACKED_DEEPSLATE_TILES = UNSUPPORTED;
+    //$$ public static final Item SPYGLASS = UNSUPPORTED;
+    //$$ public static final Item CANDLE = UNSUPPORTED;
+    //$$ public static final Item LIGHTNING_ROD = UNSUPPORTED;
+    //$$ public static final Item TINTED_GLASS = UNSUPPORTED;
+    //$$ public static final Item GLOW_ITEM_FRAME = UNSUPPORTED;
+    //#endif
 
 }

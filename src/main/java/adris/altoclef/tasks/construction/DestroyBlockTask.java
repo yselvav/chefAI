@@ -17,6 +17,7 @@ import baritone.api.pathing.goals.GoalNear;
 import baritone.api.utils.Rotation;
 import baritone.api.utils.input.Input;
 import net.minecraft.block.*;
+import adris.altoclef.multiversion.versionedfields.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.PillagerEntity;
 import net.minecraft.item.ItemStack;

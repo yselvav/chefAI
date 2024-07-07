@@ -123,7 +123,7 @@ public class Playground {
                 Debug.logWarning("Please specify a test (ex. stacked, bed, terminate)");
                 break;
             case "pickup":
-                mod.runUserTask(new PickupDroppedItemTask(new ItemTarget(Items.IRON_ORE, 3), true));
+                mod.runUserTask(new PickupDroppedItemTask(new ItemTarget(Items.RAW_IRON, 3), true));
                 break;
             case "chunk": {
                 // We may have missed a chunk that's far away...

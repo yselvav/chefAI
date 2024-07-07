@@ -5,7 +5,7 @@ import adris.altoclef.Debug;
 import adris.altoclef.eventbus.EventBus;
 import adris.altoclef.eventbus.Subscription;
 import adris.altoclef.eventbus.events.BlockPlaceEvent;
-import adris.altoclef.multiversion.BlockPosVer;
+import adris.altoclef.multiversion.blockpos.BlockPosVer;
 import adris.altoclef.tasks.movement.TimeoutWanderTask;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.helpers.ItemHelper;
@@ -249,8 +249,8 @@ public class PlaceBlockNearbyTask extends Task {
         int range = 7;
         BlockPos best = null;
         double smallestScore = Double.POSITIVE_INFINITY;
-        BlockPos start = mod.getPlayer().getBlockPos().add(-range, -range, -range);
-        BlockPos end = mod.getPlayer().getBlockPos().add(range, range, range);
+        BlockPos start = mod.getPlayer().getBlockPos().add(-range,-range,-range);
+        BlockPos end = mod.getPlayer().getBlockPos().add(range,range,range);
         for (BlockPos blockPos : WorldHelper.scanRegion(mod, start, end)) {
             boolean solid = WorldHelper.isSolidBlock(mod, blockPos);
             boolean inside = WorldHelper.isInsidePlayer(mod, blockPos);

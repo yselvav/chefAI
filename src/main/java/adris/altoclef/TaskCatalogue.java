@@ -1,6 +1,7 @@
 package adris.altoclef;
 
 import adris.altoclef.multiversion.versionedfields.Blocks;
+import adris.altoclef.multiversion.versionedfields.Entities;
 import adris.altoclef.multiversion.versionedfields.Items;
 import adris.altoclef.tasks.CraftInInventoryTask;
 import adris.altoclef.tasks.ResourceTask;
@@ -111,7 +112,7 @@ public class TaskCatalogue {
             mob("slime_ball", Items.SLIME_BALL, SlimeEntity.class);
             mob("wither_skeleton_skull", Items.WITHER_SKELETON_SKULL, WitherSkeletonEntity.class).forceDimension(Dimension.NETHER);
             mob("ink_sac", Items.INK_SAC, SquidEntity.class); // Warning, this probably won't work.
-            mob("glow_ink_sac", Items.GLOW_INK_SAC, GlowSquidEntity.class); // Warning, this probably won't work.
+            mob("glow_ink_sac", Items.GLOW_INK_SAC, Entities.GLOW_SQUID); // Warning, this probably won't work.
             mob("string", Items.STRING, SpiderEntity.class); // Warning, this probably won't work.
             mine("sugar_cane", Items.SUGAR_CANE);
             mine("brown_mushroom", MiningRequirement.HAND, new Block[]{Blocks.BROWN_MUSHROOM, Blocks.BROWN_MUSHROOM_BLOCK}, Items.BROWN_MUSHROOM);

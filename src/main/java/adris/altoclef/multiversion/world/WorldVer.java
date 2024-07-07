@@ -1,5 +1,6 @@
-package adris.altoclef.multiversion;
+package adris.altoclef.multiversion.world;
 
+import adris.altoclef.multiversion.Pattern;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.registry.Registries;
@@ -36,5 +37,33 @@ public class WorldVer {
     //$$     return world.getRegistryManager().get(Registry.BIOME_KEY).get(biome2) == biome1;
     //$$ }
     //#endif
+
+
+    @Pattern
+    public static int getBottomY(World world) {
+        //#if MC >= 11701
+        return world.getBottomY();
+        //#else
+        //$$ return adris.altoclef.multiversion.world.WorldHelper.getBottomY(world);
+        //#endif
+    }
+
+    @Pattern
+    public static int getTopY(World world) {
+        //#if MC >= 11701
+        return world.getTopY();
+        //#else
+        //$$ return adris.altoclef.multiversion.world.WorldHelper.getTopY(world);
+        //#endif
+    }
+
+    @Pattern
+    private static boolean isOutOfHeightLimit(World world,BlockPos pos) {
+        //#if MC >= 11701
+        return world.isOutOfHeightLimit(pos);
+        //#else
+        //$$ return adris.altoclef.multiversion.world.WorldHelper.isOutOfHeightLimit(world,pos);
+        //#endif
+    }
 
 }

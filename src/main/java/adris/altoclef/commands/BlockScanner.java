@@ -4,7 +4,7 @@ import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
 import adris.altoclef.eventbus.EventBus;
 import adris.altoclef.eventbus.events.BlockPlaceEvent;
-import adris.altoclef.multiversion.BlockPosVer;
+import adris.altoclef.multiversion.blockpos.BlockPosVer;
 import adris.altoclef.trackers.blacklisting.WorldLocateBlacklist;
 import adris.altoclef.util.Dimension;
 import adris.altoclef.util.helpers.BaritoneHelper;

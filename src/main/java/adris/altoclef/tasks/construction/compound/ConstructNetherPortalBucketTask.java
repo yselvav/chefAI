@@ -378,7 +378,7 @@ public class ConstructNetherPortalBucketTask extends Task {
                 for (int dx = -1; dx < sizeAllocation.getX() + 1; ++dx) {
                     for (int dz = -1; dz < sizeAllocation.getZ() + 1; ++dz) {
                         for (int dy = -1; dy < sizeAllocation.getY(); ++dy) {
-                            BlockPos toCheck = lava.add(offset).add(sizeOffset).add(dx, dy, dz);
+                            BlockPos toCheck = lava.add(offset).add(sizeOffset).add(dx,dy,dz);
                             assert MinecraftClient.getInstance().world != null;
                             BlockState state = MinecraftClient.getInstance().world.getBlockState(toCheck);
                             if (state.getBlock() == Blocks.LAVA || state.getBlock() == Blocks.WATER || state.getBlock() == Blocks.BEDROCK) {

@@ -1,5 +1,6 @@
 package adris.altoclef.multiversion;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 
 public class BlockStateVer {
@@ -20,6 +21,24 @@ public class BlockStateVer {
         return state.isReplaceable();
         //#else
         //$$ return state.getMaterial().isReplaceable();
+        //#endif
+    }
+
+    @Pattern
+    private static float getHardness(BlockState state) {
+        //#if MC >= 11701
+        return state.getBlock().getHardness();
+        //#else
+        //$$ return state.getHardness(null, null);
+        //#endif
+    }
+
+    @Pattern
+    private static float getHardness(Block block) {
+        //#if MC >= 11701
+        return block.getHardness();
+        //#else
+        //$$ return block.getDefaultState().getHardness(null, null);
         //#endif
     }
 

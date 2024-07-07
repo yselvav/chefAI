@@ -1,12 +1,11 @@
 package adris.altoclef.ui;
 
 import adris.altoclef.Debug;
-import adris.altoclef.multiversion.PlayerVer;
+import adris.altoclef.multiversion.entity.PlayerVer;
 import adris.altoclef.util.time.BaseTimer;
 import adris.altoclef.util.time.TimerReal;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.text.Text;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;

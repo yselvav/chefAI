@@ -2,7 +2,7 @@ package adris.altoclef.tasks.resources;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.TaskCatalogue;
-import adris.altoclef.multiversion.ItemVer;
+import adris.altoclef.multiversion.item.ItemVer;
 import adris.altoclef.tasks.container.SmeltInSmokerTask;
 import adris.altoclef.tasks.movement.PickupDroppedItemTask;
 import adris.altoclef.tasks.movement.TimeoutWanderTask;

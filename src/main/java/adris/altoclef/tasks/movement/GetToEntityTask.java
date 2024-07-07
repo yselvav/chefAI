@@ -8,6 +8,7 @@ import adris.altoclef.util.helpers.WorldHelper;
 import adris.altoclef.util.progresscheck.MovementProgressChecker;
 import baritone.api.utils.input.Input;
 import net.minecraft.block.*;
+import adris.altoclef.multiversion.versionedfields.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 
@@ -46,14 +47,14 @@ public class GetToEntityTask extends Task implements ITaskRequiresGrounded {
 
     private static BlockPos[] generateSides(BlockPos pos) {
         return new BlockPos[]{
-                pos.add(1, 0, 0),
-                pos.add(-1, 0, 0),
-                pos.add(0, 0, 1),
-                pos.add(0, 0, -1),
-                pos.add(1, 0, -1),
-                pos.add(1, 0, 1),
-                pos.add(-1, 0, -1),
-                pos.add(-1, 0, 1)
+                pos.add(1,0,0),
+                pos.add(-1,0,0),
+                pos.add(0,0,1),
+                pos.add(0,0,-1),
+                pos.add(1,0,-1),
+                pos.add(1,0,1),
+                pos.add(-1,0,-1),
+                pos.add(-1,0,1)
         };
     }
 

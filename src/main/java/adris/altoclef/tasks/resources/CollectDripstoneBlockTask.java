@@ -1,14 +1,13 @@
 package adris.altoclef.tasks.resources;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.multiversion.versionedfields.Blocks;
+import adris.altoclef.multiversion.versionedfields.Items;
 import adris.altoclef.tasks.CraftInInventoryTask;
 import adris.altoclef.tasks.ResourceTask;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.*;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 
 public class CollectDripstoneBlockTask extends ResourceTask {
 

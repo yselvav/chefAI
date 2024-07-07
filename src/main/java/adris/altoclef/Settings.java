@@ -1,6 +1,7 @@
 package adris.altoclef;
 
 import adris.altoclef.control.KillAura;
+import adris.altoclef.multiversion.versionedfields.Items;
 import adris.altoclef.tasks.movement.DefaultGoToDimensionTask;
 import adris.altoclef.util.BlockRange;
 import adris.altoclef.util.helpers.ConfigHelper;
@@ -15,7 +16,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.Streams;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Arrays;

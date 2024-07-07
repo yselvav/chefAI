@@ -4,7 +4,7 @@ import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
 import adris.altoclef.mixins.DeathScreenAccessor;
 import adris.altoclef.multiversion.ConnectScreenVer;
-import adris.altoclef.multiversion.PlayerVer;
+import adris.altoclef.multiversion.entity.PlayerVer;
 import adris.altoclef.tasksystem.TaskChain;
 import adris.altoclef.tasksystem.TaskRunner;
 import adris.altoclef.util.time.TimerGame;

@@ -4,7 +4,7 @@ import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
 import adris.altoclef.control.KillAura;
 import adris.altoclef.multiversion.versionedfields.Entities;
-import adris.altoclef.multiversion.ItemVer;
+import adris.altoclef.multiversion.item.ItemVer;
 import adris.altoclef.tasks.construction.ProjectileProtectionWallTask;
 import adris.altoclef.tasks.entity.KillEntitiesTask;
 import adris.altoclef.tasks.movement.CustomBaritoneGoalTask;
@@ -39,6 +39,7 @@ import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Difficulty;
+
 
 import java.util.*;
 
@@ -391,14 +392,14 @@ public class MobDefenseChain extends SingleTaskChain {
         BlockPos p = mod.getPlayer().getBlockPos();
         BlockPos[] toCheck = new BlockPos[]{
                 p,
-                p.add(1, 0, 0),
-                p.add(1, 0, -1),
-                p.add(0, 0, -1),
-                p.add(-1, 0, -1),
-                p.add(-1, 0, 0),
-                p.add(-1, 0, 1),
-                p.add(0, 0, 1),
-                p.add(1, 0, 1)
+                p.add(1,0,0),
+                p.add(1,0,-1),
+                p.add(0,0,-1),
+                p.add(-1,0,-1),
+                p.add(-1,0,0),
+                p.add(-1,0,1),
+                p.add(0,0,1),
+                p.add(1,0,1)
         };
         for (BlockPos check : toCheck) {
             Block b = mod.getWorld().getBlockState(check).getBlock();

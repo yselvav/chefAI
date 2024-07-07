@@ -4,10 +4,13 @@ import net.minecraft.entity.DamageUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.CheckedRandom;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.block.spawner.MobSpawnerLogic;
 import net.minecraft.world.World;
+
+//#if MC >= 11701
+import net.minecraft.util.math.random.CheckedRandom;
+import net.minecraft.util.math.random.Random;
+//#endif
 
 public class MethodWrapper {
 
@@ -18,8 +21,10 @@ public class MethodWrapper {
         return logic.getRenderedEntity(world, pos);
         //#elseif MC >= 11904
         //$$ return logic.getRenderedEntity(world,Random.create() ,pos);
-        //#else
+        //#elseif MC >= 11701
         //$$ return logic.getRenderedEntity(world);
+        //#else
+        //$$ return logic.getRenderedEntity();
         //#endif
     }
 

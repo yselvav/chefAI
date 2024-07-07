@@ -6,7 +6,7 @@ import adris.altoclef.TaskCatalogue;
 import adris.altoclef.commands.BlockScanner;
 import adris.altoclef.commands.SetGammaCommand;
 import adris.altoclef.mixins.EntityAccessor;
-import adris.altoclef.multiversion.BlockPosVer;
+import adris.altoclef.multiversion.blockpos.BlockPosVer;
 import adris.altoclef.multiversion.versionedfields.Blocks;
 import adris.altoclef.tasks.*;
 import adris.altoclef.tasks.construction.DestroyBlockTask;
@@ -43,14 +43,11 @@ import net.minecraft.entity.mob.*;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.*;
 import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.util.Pair;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.*;
 import net.minecraft.world.Difficulty;
 import org.apache.commons.lang3.ArrayUtils;
+import adris.altoclef.multiversion.versionedfields.Items;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -1019,8 +1016,10 @@ public class BeatMinecraftTask extends Task {
 
             // TODO use shipwreck finder instead
 
-            Stream<BlockState> states = mod.getWorld().getStatesInBox(new Box(blockPos.getX() - 5, blockPos.getY() - 5, blockPos.getZ() - 5,
-                    blockPos.getX() + 5, blockPos.getY() + 5, blockPos.getZ() + 5));
+            Box box = new Box(blockPos.getX() - 5, blockPos.getY() - 5, blockPos.getZ() - 5,
+                    blockPos.getX() + 5, blockPos.getY() + 5, blockPos.getZ() + 5);
+
+            Stream<BlockState> states = BlockPos.stream(box).map(pos -> mod.getWorld().getBlockState(pos));
 
             if (states.anyMatch((state) -> state.getBlock().equals(Blocks.WATER))) {
                 blacklistedChests.add(blockPos);
@@ -1313,7 +1312,7 @@ public class BeatMinecraftTask extends Task {
             for (int x = -radius; x < radius; x++) {
                 for (int y = -radius; y < radius; y++) {
                     for (int z = -radius; z < radius; z++) {
-                        BlockPos p = pos.add(x, y, z);
+                        BlockPos p = pos.add(x,y,z);
                         Block block = mod.getWorld().getBlockState(p).getBlock();
 
                         if (ancientCityBlocks.contains(block)) {

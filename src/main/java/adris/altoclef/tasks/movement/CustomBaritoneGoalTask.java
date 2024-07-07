@@ -2,6 +2,7 @@ package adris.altoclef.tasks.movement;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
+import adris.altoclef.multiversion.versionedfields.Blocks;
 import adris.altoclef.tasksystem.ITaskRequiresGrounded;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.helpers.WorldHelper;
@@ -50,14 +51,14 @@ public abstract class CustomBaritoneGoalTask extends Task implements ITaskRequir
 
     private static BlockPos[] generateSides(BlockPos pos) {
         return new BlockPos[]{
-                pos.add(1, 0, 0),
-                pos.add(-1, 0, 0),
-                pos.add(0, 0, 1),
-                pos.add(0, 0, -1),
-                pos.add(1, 0, -1),
-                pos.add(1, 0, 1),
-                pos.add(-1, 0, -1),
-                pos.add(-1, 0, 1)
+                pos.add(1,0,0),
+                pos.add(-1,0,0),
+                pos.add(0,0,1),
+                pos.add(0,0,-1),
+                pos.add(1,0,-1),
+                pos.add(1,0,1),
+                pos.add(-1,0,-1),
+                pos.add(-1,0,1)
         };
     }
 

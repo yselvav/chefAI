@@ -1,23 +1,20 @@
 package adris.altoclef.chains;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.multiversion.entity.PlayerVer;
+import adris.altoclef.multiversion.versionedfields.Blocks;
 import adris.altoclef.tasks.construction.DestroyBlockTask;
 import adris.altoclef.tasks.movement.GetOutOfWaterTask;
 import adris.altoclef.tasks.movement.SafeRandomShimmyTask;
 import adris.altoclef.tasksystem.TaskRunner;
-import adris.altoclef.util.helpers.LookHelper;
 import adris.altoclef.util.helpers.StorageHelper;
 import adris.altoclef.util.helpers.WorldHelper;
 import adris.altoclef.util.time.TimerGame;
-import baritone.api.utils.Rotation;
 import baritone.api.utils.input.Input;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.EndPortalFrameBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -72,7 +69,7 @@ public class UnstuckChain extends SingleTaskChain {
     private void checkStuckInPowderedSnow(AltoClef mod) {
         PlayerEntity player = mod.getPlayer();
 
-        if (player.inPowderSnow) {
+        if (PlayerVer.inPowderedSnow(player)) {
             isProbablyStuck = true;
             BlockPos destroyPos = null;
 

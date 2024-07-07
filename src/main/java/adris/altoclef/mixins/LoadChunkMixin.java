@@ -14,6 +14,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+//#if MC <= 11701
+//$$ import net.minecraft.world.biome.source.BiomeArray;
+//#endif
+
 import java.util.BitSet;
 import java.util.function.Consumer;
 
@@ -36,8 +40,10 @@ public class LoadChunkMixin {
     )
     //#if MC >= 11802
     private void onLoadChunk(int x, int z, PacketByteBuf buf, NbtCompound nbt, Consumer<net.minecraft.network.packet.s2c.play.ChunkData.BlockEntityVisitor> consumer, CallbackInfoReturnable<WorldChunk> cir) {
-    //#else
+    //#elseif MC >= 11701
     //$$ private void onLoadChunk(int x, int z, net.minecraft.world.biome.source.BiomeArray biomes, PacketByteBuf buf, NbtCompound nbt, BitSet bitSet, CallbackInfoReturnable<WorldChunk> cir) {
+    //#else
+    //$$ private void onLoadChunk(int x, int z, BiomeArray biomes, PacketByteBuf buf, NbtCompound tag, int verticalStripBitmask, boolean complete, CallbackInfoReturnable<WorldChunk> cir) {
     //#endif
         // Publish a ChunkLoadEvent with the return value of the method as the argument
         EventBus.publish(new ChunkLoadEvent(cir.getReturnValue()));

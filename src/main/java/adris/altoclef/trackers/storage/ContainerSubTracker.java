@@ -4,7 +4,7 @@ import adris.altoclef.Debug;
 import adris.altoclef.eventbus.EventBus;
 import adris.altoclef.eventbus.events.BlockInteractEvent;
 import adris.altoclef.eventbus.events.ScreenOpenEvent;
-import adris.altoclef.multiversion.BlockPosVer;
+import adris.altoclef.multiversion.blockpos.BlockPosVer;
 import adris.altoclef.trackers.Tracker;
 import adris.altoclef.trackers.TrackerManager;
 import adris.altoclef.util.Dimension;

@@ -3,7 +3,7 @@ package adris.altoclef.tasks.speedrun.beatgame.prioritytask.tasks;
 import adris.altoclef.AltoClef;
 import adris.altoclef.tasks.speedrun.beatgame.prioritytask.prioritycalculators.PriorityCalculator;
 import adris.altoclef.tasksystem.Task;
-import net.minecraft.util.Pair;
+import adris.altoclef.util.Pair;
 
 import java.util.function.Function;
 

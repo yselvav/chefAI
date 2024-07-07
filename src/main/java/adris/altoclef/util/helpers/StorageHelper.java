@@ -4,8 +4,9 @@ import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
 import adris.altoclef.TaskCatalogue;
 import adris.altoclef.mixins.AbstractFurnaceScreenHandlerAccessor;
-import adris.altoclef.multiversion.ItemVer;
+import adris.altoclef.multiversion.item.ItemVer;
 import adris.altoclef.multiversion.ToolMaterialVer;
+import adris.altoclef.multiversion.versionedfields.Blocks;
 import adris.altoclef.tasks.CraftInInventoryTask;
 import adris.altoclef.util.CraftingRecipe;
 import adris.altoclef.util.ItemTarget;
@@ -18,7 +19,6 @@ import adris.altoclef.util.slots.Slot;
 import baritone.utils.ToolSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.GameMenuScreen;
@@ -41,6 +41,7 @@ import java.util.stream.Stream;
 public class StorageHelper {
 
     public static List<PlayerSlot> INACCESSIBLE_PLAYER_SLOTS = Stream.concat(Stream.of(PlayerSlot.CRAFT_INPUT_SLOTS), Stream.of(PlayerSlot.ARMOR_SLOTS)).toList();
+    private static final int OFF_HAND_SLOT = 40;
 
     public static void closeScreen() {
         if (MinecraftClient.getInstance().player == null)
@@ -140,8 +141,7 @@ public class StorageHelper {
         //      PREFER (Always use silk touch if we have)
         //      AVOID  (Don't use silk touch if we can)
         //  }
-        Block block = state.getBlock();
-        if (block.getHardness() == 0) return Optional.ofNullable(PlayerSlot.getEquipSlot());
+        if (state.getBlock().getHardness() == 0) return Optional.ofNullable(PlayerSlot.getEquipSlot());
 
         Slot bestToolSlot = null;
         double highestSpeed = Double.NEGATIVE_INFINITY;
@@ -151,7 +151,7 @@ public class StorageHelper {
             ItemStack stack = getItemStackInSlot(slot);
             if (stack.getItem() instanceof ToolItem) {
                 if (stack.getItem().getDefaultStack().isSuitableFor(state)) {
-                    if (shouldSaveStack(mod, block, stack)) continue;
+                    if (shouldSaveStack(mod,  state.getBlock(), stack)) continue;
 
                     double speed = ToolSet.calculateSpeedVsBlock(stack, state);
                     if (speed > highestSpeed) {
@@ -420,7 +420,7 @@ public class StorageHelper {
                     return true;
             }
             if (item instanceof ShieldItem shield) {
-                ItemStack equippedStack = mod.getPlayer().getInventory().getStack(PlayerInventory.OFF_HAND_SLOT);
+                ItemStack equippedStack = mod.getPlayer().getInventory().getStack(OFF_HAND_SLOT);
                 if (equippedStack.getItem().equals(shield))
                     return true;
             }

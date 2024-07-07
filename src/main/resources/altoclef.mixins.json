@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "AbstractFurnaceScreenHandlerAccessor",
+    "AxeItemAccessor",
     "BlockModifiedByPlayerMixin",
     "ClientBlockBreakAccessor",
     "ClientConnectionAccessor",
@@ -13,6 +14,7 @@
     "DeathScreenAccessor",
     "EntityAccessor",
     "GameOverlayMixin",
+    "MiningToolItemAccessor",
     "MovementHelperMixin",
     "PersistentProjectileEntityAccessor",
     "SlotClickMixin",

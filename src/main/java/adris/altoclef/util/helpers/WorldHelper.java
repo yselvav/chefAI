@@ -4,7 +4,7 @@ import adris.altoclef.AltoClef;
 import adris.altoclef.mixins.ClientConnectionAccessor;
 import adris.altoclef.mixins.EntityAccessor;
 import adris.altoclef.multiversion.MethodWrapper;
-import adris.altoclef.multiversion.WorldVer;
+import adris.altoclef.multiversion.world.WorldVer;
 import adris.altoclef.util.Dimension;
 import baritone.api.BaritoneAPI;
 import baritone.pathing.movement.CalculationContext;

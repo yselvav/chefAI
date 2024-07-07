@@ -2,8 +2,8 @@ package adris.altoclef.tasks.movement;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
+import adris.altoclef.multiversion.versionedfields.Blocks;
 import adris.altoclef.tasks.entity.KillEntitiesTask;
-import adris.altoclef.tasks.speedrun.beatgame.BeatMinecraftTask;
 import adris.altoclef.tasksystem.ITaskRequiresGrounded;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.helpers.ItemHelper;
@@ -14,7 +14,6 @@ import adris.altoclef.util.slots.Slot;
 import adris.altoclef.util.time.TimerGame;
 import baritone.api.utils.input.Input;
 import net.minecraft.block.*;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.ItemStack;
@@ -78,14 +77,14 @@ public class TimeoutWanderTask extends Task implements ITaskRequiresGrounded {
 
     private static BlockPos[] generateSides(BlockPos pos) {
         return new BlockPos[]{
-                pos.add(1, 0, 0),
-                pos.add(-1, 0, 0),
-                pos.add(0, 0, 1),
-                pos.add(0, 0, -1),
-                pos.add(1, 0, -1),
-                pos.add(1, 0, 1),
-                pos.add(-1, 0, -1),
-                pos.add(-1, 0, 1)
+                pos.add(1,0,0),
+                pos.add(-1,0,0),
+                pos.add(0,0,1),
+                pos.add(0,0,-1),
+                pos.add(1,0,-1),
+                pos.add(1,0,1),
+                pos.add(-1,0,-1),
+                pos.add(-1,0,1)
         };
     }
 

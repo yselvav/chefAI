@@ -3,7 +3,7 @@ package adris.altoclef.tasks.movement;
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
 import adris.altoclef.TaskCatalogue;
-import adris.altoclef.multiversion.BlockPosVer;
+import adris.altoclef.multiversion.blockpos.BlockPosVer;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.Dimension;
 import adris.altoclef.util.helpers.LookHelper;
@@ -165,7 +165,7 @@ public class LocateStrongholdCoordinatesTask extends Task {
                 double sqDist = mod.getPlayer().squaredDistanceTo(_cachedEyeDirection.getOrigin());
                 // If first eye thrown, go perpendicular from eye direction until a good distance away
                 if (sqDist < SECOND_EYE_THROW_DISTANCE * SECOND_EYE_THROW_DISTANCE && _cachedEyeDirection != null) {
-                    return new GoInDirectionXZTask(_cachedEyeDirection.getOrigin(), _cachedEyeDirection.getDelta().rotateY(MathHelper.PI / 2), 1);
+                    return new GoInDirectionXZTask(_cachedEyeDirection.getOrigin(), _cachedEyeDirection.getDelta().rotateY((float) (Math.PI / 2)), 1);
                 }
             }
             // Throw it

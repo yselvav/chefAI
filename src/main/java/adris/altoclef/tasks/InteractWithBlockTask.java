@@ -23,6 +23,7 @@ import baritone.api.process.ICustomGoalProcess;
 import baritone.api.utils.Rotation;
 import baritone.api.utils.input.Input;
 import net.minecraft.block.*;
+import adris.altoclef.multiversion.versionedfields.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.SlotActionType;
@@ -145,14 +146,14 @@ public class InteractWithBlockTask extends Task {
 
     private static BlockPos[] generateSides(BlockPos pos) {
         return new BlockPos[]{
-                pos.add(1, 0, 0),
-                pos.add(-1, 0, 0),
-                pos.add(0, 0, 1),
-                pos.add(0, 0, -1),
-                pos.add(1, 0, -1),
-                pos.add(1, 0, 1),
-                pos.add(-1, 0, -1),
-                pos.add(-1, 0, 1)
+                pos.add(1,0,0),
+                pos.add(-1,0,0),
+                pos.add(0,0,1),
+                pos.add(0,0,-1),
+                pos.add(1,0,-1),
+                pos.add(1,0,1),
+                pos.add(-1,0,-1),
+                pos.add(-1,0,1)
         };
     }
 

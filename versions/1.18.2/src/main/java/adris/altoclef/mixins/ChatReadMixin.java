@@ -28,7 +28,12 @@ public final class ChatReadMixin {
     )
     private void onChatMessage(MessageType messageType, Text message, UUID senderUuid, CallbackInfo ci) {
         String msg;
-        String senderName = client.getNetworkHandler().getWorld().getPlayerByUuid(senderUuid).getName().asString();
+        String senderName;
+        if (MinecraftClient.getInstance().isInSingleplayer() || client.getNetworkHandler() == null) {
+            senderName = MinecraftClient.getInstance().player.getName().asString();
+        } else {
+            senderName = client.getNetworkHandler().getWorld().getPlayerByUuid(senderUuid).getName().asString();
+        }
 
         if (message instanceof TranslatableText translatable) {
             msg = "";

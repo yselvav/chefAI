@@ -2,7 +2,7 @@ package adris.altoclef.tasks.resources;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
-import adris.altoclef.multiversion.BlockPosVer;
+import adris.altoclef.multiversion.blockpos.BlockPosVer;
 import adris.altoclef.multiversion.ToolMaterialVer;
 import adris.altoclef.tasks.AbstractDoToClosestObjectTask;
 import adris.altoclef.tasks.ResourceTask;

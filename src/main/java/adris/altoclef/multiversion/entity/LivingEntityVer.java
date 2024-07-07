@@ -1,7 +1,7 @@
-package adris.altoclef.multiversion;
+package adris.altoclef.multiversion.entity;
 
+import adris.altoclef.multiversion.Pattern;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

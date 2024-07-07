@@ -36,6 +36,7 @@ version = "${project.name}-${project.mod_version}"
 group = project.maven_group
 
 def mappingsVersions = [
+        11605: "1.16.5+build.10",
         11701: "1.17.1+build.65",
         11802: "1.18.2+build.4",
         11904: "1.19.4+build.2",
@@ -47,6 +48,7 @@ def mappingsVersions = [
 ]
 
 def fabricApiVersions = [
+        11605: "0.42.0+1.16",
         11701: "0.46.1+1.17",
         11802: "0.77.0+1.18.2",
         11904: "0.87.2+1.19.4",
@@ -99,7 +101,7 @@ dependencies {
     shadow('com.fasterxml.jackson.core:jackson-databind:2.16.0')
 
     // Thank you georgeagostino for fixing my garbage
-    if (getProject().hasProperty("altoclef.development")) {
+    if (getProject().hasProperty("altoclef.development") || mcVersion == 11605) {
         // Must run build from baritone-plus once
         modImplementation "baritone-api-fabric:baritone-unoptimized-fabric-${project.name}"
         include "baritone-api-fabric:baritone-unoptimized-fabric-${project.name}"

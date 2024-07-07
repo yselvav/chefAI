@@ -3,7 +3,7 @@ package adris.altoclef.chains;
 import adris.altoclef.AltoClef;
 import adris.altoclef.Settings;
 import adris.altoclef.multiversion.FoodComponentWrapper;
-import adris.altoclef.multiversion.ItemVer;
+import adris.altoclef.multiversion.item.ItemVer;
 import adris.altoclef.tasks.resources.CollectFoodTask;
 import adris.altoclef.tasks.speedrun.DragonBreathTracker;
 import adris.altoclef.tasksystem.TaskRunner;

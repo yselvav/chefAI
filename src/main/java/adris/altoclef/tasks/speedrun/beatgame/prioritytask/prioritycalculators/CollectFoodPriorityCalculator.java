@@ -1,7 +1,7 @@
 package adris.altoclef.tasks.speedrun.beatgame.prioritytask.prioritycalculators;
 
 import adris.altoclef.AltoClef;
-import adris.altoclef.multiversion.ItemVer;
+import adris.altoclef.multiversion.item.ItemVer;
 import adris.altoclef.tasks.resources.CollectFoodTask;
 import adris.altoclef.util.helpers.StorageHelper;
 import adris.altoclef.util.helpers.WorldHelper;
