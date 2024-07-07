@@ -24,7 +24,8 @@ import java.util.List;
 @Mixin(ScreenHandler.class)
 public abstract class SlotClickMixin {
 
-    /*@Redirect(
+    //#if MC >= 11701
+    @Redirect(
             method = "internalOnSlotClick",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/ScreenHandler;internalOnSlotClick(IILnet/minecraft/screen/slot/SlotActionType;Lnet/minecraft/entity/player/PlayerEntity;)V")
     )
@@ -49,5 +50,7 @@ public abstract class SlotClickMixin {
                 EventBus.publish(new SlotClickChangedEvent(slot, before, after));
             }
         }
-    }*/
+    }
+    //#endif
+
 }
