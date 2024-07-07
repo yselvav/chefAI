@@ -101,7 +101,7 @@ dependencies {
     shadow('com.fasterxml.jackson.core:jackson-databind:2.16.0')
 
     // Thank you georgeagostino for fixing my garbage
-    if (getProject().hasProperty("altoclef.development") || mcVersion == 11605) {
+    if (getProject().hasProperty("altoclef.development")) {
         // Must run build from baritone-plus once
         modImplementation "baritone-api-fabric:baritone-unoptimized-fabric-${project.name}"
         include "baritone-api-fabric:baritone-unoptimized-fabric-${project.name}"
