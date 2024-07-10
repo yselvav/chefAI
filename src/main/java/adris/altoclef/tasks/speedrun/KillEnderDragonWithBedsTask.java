@@ -16,6 +16,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonPart;
+import net.minecraft.entity.boss.dragon.phase.LandingApproachPhase;
+import net.minecraft.entity.boss.dragon.phase.LandingPhase;
 import net.minecraft.entity.boss.dragon.phase.Phase;
 import net.minecraft.entity.boss.dragon.phase.PhaseType;
 import net.minecraft.item.Items;
@@ -130,19 +132,22 @@ public class KillEnderDragonWithBedsTask extends Task {
                 return null;
             }
 
-            boolean perching = dragonPhase.getType() == PhaseType.LANDING || dragonPhase.isSittingOrHovering() || dragonPhase.getType() == PhaseType.LANDING_APPROACH;
+            boolean perching = dragonPhase instanceof LandingPhase || dragonPhase instanceof LandingApproachPhase || dragonPhase.isSittingOrHovering();
             if (dragon.getY() < endPortalTop.getY() + 2) {
                 // Dragon is already perched.
+                Debug.logMessage("too close :(");
                 perching = false;
             }
-            Debug.logMessage(dragonPhase.getType() + " : " + dragonPhase.isSittingOrHovering());
+            Debug.logMessage(dragonPhase.getType() + " : " + dragonPhase.isSittingOrHovering() + " : " + perching);
             whenNotPerchingTask.setPerchState(perching);
             // When the dragon is not perching...
             if (whenNotPerchingTask.isActive() && !whenNotPerchingTask.isFinished(mod)) {
+                Debug.logMessage("When not perching not finished "+whenNotPerchingTask.isActive() + " : "+ !whenNotPerchingTask.isFinished(mod) );
                 setDebugState("Dragon not perching, performing special behavior...");
                 return whenNotPerchingTask;
             }
             if (perching) {
+                Debug.logMessage("Performing one cycle");
                 return performOneCycle(mod, dragon);
             }
         }
