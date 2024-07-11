@@ -135,19 +135,16 @@ public class KillEnderDragonWithBedsTask extends Task {
             boolean perching = dragonPhase instanceof LandingPhase || dragonPhase instanceof LandingApproachPhase || dragonPhase.isSittingOrHovering();
             if (dragon.getY() < endPortalTop.getY() + 2) {
                 // Dragon is already perched.
-                Debug.logMessage("too close :(");
                 perching = false;
             }
-            Debug.logMessage(dragonPhase.getType() + " : " + dragonPhase.isSittingOrHovering() + " : " + perching);
+
             whenNotPerchingTask.setPerchState(perching);
             // When the dragon is not perching...
             if (whenNotPerchingTask.isActive() && !whenNotPerchingTask.isFinished(mod)) {
-                Debug.logMessage("When not perching not finished "+whenNotPerchingTask.isActive() + " : "+ !whenNotPerchingTask.isFinished(mod) );
                 setDebugState("Dragon not perching, performing special behavior...");
                 return whenNotPerchingTask;
             }
             if (perching) {
-                Debug.logMessage("Performing one cycle");
                 return performOneCycle(mod, dragon);
             }
         }
