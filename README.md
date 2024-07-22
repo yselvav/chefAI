@@ -22,11 +22,18 @@ I am currently using the [replay mod preprocessor](https://github.com/ReplayMod/
 
 ### Versions
 Thanks to that, the mod is currently available on **fabric** for the following versions:
-- 1.20.1
-- 1.20.2
-- 1.20.4
-- 1.20.5
+
+- 1.21
 - 1.20.6
+- 1.20.5
+- 1.20.4
+- 1.20.2
+- 1.20.1
+- 1.19.4
+- 1.18.2
+- 1.18
+- 1.17.1
+- 1.16.5
 
 *note: All of the versions use the "same release" of Altoclef, altough some of them use older versions of baritone.* 
 
