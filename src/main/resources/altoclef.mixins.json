@@ -17,6 +17,7 @@
     "MiningToolItemAccessor",
     "MovementHelperMixin",
     "PersistentProjectileEntityAccessor",
+    "PortalManagerAccessor",
     "SlotClickMixin",
     "ToolSetMixin",
     "WorldBlockModifiedMixin"

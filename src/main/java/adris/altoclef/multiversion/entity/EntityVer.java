@@ -12,6 +12,15 @@ public class EntityVer {
 
 
     @Pattern
+    public boolean isInNetherPortal(Entity entity) {
+        //#if MC <= 12006
+        //$$ return ((EntityAccessor)entity).isInNetherPortal();
+        //#else
+        return adris.altoclef.multiversion.entity.EntityHelper.isInNetherPortal(entity);
+        //#endif
+    }
+
+    @Pattern
     public int getPortalCooldown(Entity entity) {
         //#if MC >= 12001
         return entity.getPortalCooldown();

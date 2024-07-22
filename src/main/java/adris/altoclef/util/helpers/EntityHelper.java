@@ -78,16 +78,16 @@ public class EntityHelper {
 
         // Armor Base
         if (!source.bypassesArmor()) {
-            damageAmount = MethodWrapper.getDamageLeft(damageAmount,src,player.getArmor(),player.getAttributeValue(EntityAttributes.GENERIC_ARMOR_TOUGHNESS));
+            damageAmount = MethodWrapper.getDamageLeft(player, damageAmount,src,player.getArmor(),player.getAttributeValue(EntityAttributes.GENERIC_ARMOR_TOUGHNESS));
         }
 
         // Enchantments & Potions
         if (!source.bypassesShield()) {
-            int k;
+            float k;
             if (player.hasStatusEffect(StatusEffects.RESISTANCE) && source.isOutOfWorld()) {
                 //noinspection ConstantConditions
                 k = (player.getStatusEffect(StatusEffects.RESISTANCE).getAmplifier() + 1) * 5;
-                int j = 25 - k;
+                float j = 25 - k;
                 double f = damageAmount * (double) j;
                 double g = damageAmount;
                 damageAmount = Math.max(f / 25.0F, 0.0F);
@@ -96,7 +96,11 @@ public class EntityHelper {
             if (damageAmount <= 0.0) {
                 damageAmount = 0.0;
             } else {
-                k = EnchantmentHelper.getProtectionAmount(player.getArmorItems(), src);
+                //#if MC >= 12100
+                k = EnchantmentHelper.getProtectionAmount(null, player, src);
+                //#else
+                //$$ k = EnchantmentHelper.getProtectionAmount(player.getArmorItems(), src);
+                //#endif
                 if (k > 0) {
                     damageAmount = DamageUtil.getInflictedDamage((float) damageAmount, (float) k);
                 }
