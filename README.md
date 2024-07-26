@@ -62,7 +62,7 @@ So I just decided to remove that behaviour (at least for now).
 #### Please note that for newest version of minecraft I need to wait for [baritone](https://github.com/MeteorDevelopment/baritone) to be ported first. Unless there is a branch for the specific version, please do not message me about that version since I need to wait for baritone to be ported first. 
 I am planning to support all versions from 1.16.5 and above.
 
-You can open a ticket if you want support for specific version in that range that isn't supported yet.
+You can open an issue if you want support for specific version in that range that isn't supported yet.
 
 ### Can you add integration with LLM?
 no.
