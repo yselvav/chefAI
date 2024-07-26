@@ -51,6 +51,23 @@ configurations will interfere with altoclef and introduce bugs. This will be fix
 
 [Check releases](https://github.com/MiranCZ/altoclef/releases)
 
+
+## FAQ
+
+### Why was `terminator` and the ability to attack players removed?
+I don't feel like this bot should be focused on use on servers and having to handle players complicates things.
+So I just decided to remove that behaviour (at least for now).
+
+### Can you add X version of Minecraft?
+#### Please note that for newest version of minecraft I need to wait for [baritone](https://github.com/MeteorDevelopment/baritone) to be ported first. Unless there is a branch for the specific version, please do not message me about that version since I need to wait for baritone to be ported first. 
+I am planning to support all versions from 1.16.5 and above.
+
+You can open a ticket if you want support for specific version in that range that isn't supported yet.
+
+### Can you add integration with LLM?
+no.
+
+
 ## [Usage Guide](usage.md)
 
 ## [TODO's/Future Features](TODO.md)
