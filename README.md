@@ -85,7 +85,7 @@ So I just decided to remove that behaviour (at least for now).
 
 I am planning to support all versions from 1.16.5 and above.
 
-You can open a ticket if you want support for specific version in that range that isn't supported yet.
+You can open an issue if you want support for specific version in that range that isn't supported yet.
 
 ### Can you add integration with LLM?
 no.
