@@ -54,12 +54,35 @@ configurations will interfere with altoclef and introduce bugs. This will be fix
 
 ## FAQ
 
+### My Altoclef is crashing! What do I do?
+
+*note: If you are trying to run AltoClef on cracked launchers (TLauncher, launchers to run the game on mobile etc...) or unofficial launchers there is a high change I might not help you.*
+
+- First check if you downloaded the right file for the right Minecraft version, every release has the name in the following pattern: `altoclef-<minecraftVersion>-<altoclefVersion>.jar`.
+
+
+- You **DO NOT** need to include baritone in your `mods` folder, it is already included in Altoclef. If you did include it, remove it.
+
+
+- Altoclef **is not** intended to be used with other mods, so if the cause of the crash is another mod you are using it is very likely I won't do anything about that.
+
+
+If you checked everything above and are still having trouble you can reach out to me on Altoclef discord (or create an issue).
+
+**Your message should include the following things:** exactly what problem you are having,
+what Minecraft version are you trying to run with what Altoclef version,
+specify that you are referring to this fork (there are multiple forks, so it makes everyone's life easier), what mods (if any) you are using and a crash-log
+(if the mod didn't crash on startup but rather after a specific action recording or description of that would also help).
+
 ### Why was `terminator` and the ability to attack players removed?
 I don't feel like this bot should be focused on use on servers and having to handle players complicates things.
 So I just decided to remove that behaviour (at least for now).
 
 ### Can you add X version of Minecraft?
-#### Please note that for newest version of minecraft I need to wait for [baritone](https://github.com/MeteorDevelopment/baritone) to be ported first. Unless there is a branch for the specific version, please do not message me about that version since I need to wait for baritone to be ported first. 
+
+**Please note that for newest version of minecraft I need to wait for [baritone](https://github.com/MeteorDevelopment/baritone) to be ported first. Unless there is a branch for the specific version, please do not message me about that version since I need to wait for baritone to be ported first.**
+
+
 I am planning to support all versions from 1.16.5 and above.
 
 You can open a ticket if you want support for specific version in that range that isn't supported yet.
