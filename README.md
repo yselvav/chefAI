@@ -21,21 +21,13 @@ Because I rewrote a good portion of the `BeatMinecraftTask` a lot of the config 
 I am currently using the [replay mod preprocessor](https://github.com/ReplayMod/preprocessor) to keep the mod updated across multiple versions at the same time.
 
 ### Versions
-Thanks to that, the mod is currently available on **fabric** for the following versions:
+Thanks to that, the mod is currently available on **fabric** for (basically) all versions between `1.21.1` and `1.17.1`.
 
-- 1.21
-- 1.20.6
-- 1.20.5
-- 1.20.4
-- 1.20.2
-- 1.20.1
-- 1.19.4
-- 1.18.2
-- 1.18
-- 1.17.1
-- 1.16.5
+(If there is a specific version in this range that you would like to use, and it isn't supported you can try creating a ticket).
 
-*note: All of the versions use the "same release" of Altoclef, altough some of them use older versions of baritone.* 
+
+
+*note: All of the versions use the "same release" of Altoclef, although some of them use older versions of baritone.* 
 
 
 ## How it works
