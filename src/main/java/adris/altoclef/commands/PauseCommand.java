@@ -3,7 +3,6 @@ package adris.altoclef.commands;
 import adris.altoclef.AltoClef;
 import adris.altoclef.commandsystem.ArgParser;
 import adris.altoclef.commandsystem.Command;
-import adris.altoclef.tasksystem.Task;
 
 public class PauseCommand extends Command {
     public PauseCommand() {
@@ -12,8 +11,8 @@ public class PauseCommand extends Command {
 
     @Override
     protected void call(AltoClef mod, ArgParser parser) {
-        mod.setStoragedTask(mod.getUserTaskChain().getCurrentTask());
-        mod.setIsPaused(true);
+        mod.setStoredTask(mod.getUserTaskChain().getCurrentTask());
+        mod.setPaused(true);
         mod.getUserTaskChain().stop(mod);
         mod.log("Pausing Bot and time");
         finish();

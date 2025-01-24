@@ -7,7 +7,6 @@ import adris.altoclef.util.ItemTarget;
 import adris.altoclef.util.helpers.ItemHelper;
 import net.minecraft.item.Item;
 
-
 public class CollectBoatTask extends CraftWithMatchingPlanksTask {
 
     public CollectBoatTask(Item[] targets, ItemTarget planks, int count) {

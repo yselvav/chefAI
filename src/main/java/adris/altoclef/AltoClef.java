@@ -81,8 +81,8 @@ public class AltoClef implements ModInitializer {
     // Butler
     private Butler butler;
     // Pausing
-    private boolean isPaused = false;
-    private Task storageTask;
+    private boolean paused = false;
+    private Task storedTask;
 
     //TODO refactor this later
     public static AltoClef INSTANCE;
@@ -321,25 +321,26 @@ public class AltoClef implements ModInitializer {
     /**
      * Controls tasks, for pausing and unpausing the bot
      */
-    public boolean getIsPaused() {
-        return isPaused;
+    public boolean isPaused() {
+        return paused;
     }
-    public void setIsPaused(boolean pausing) {
-        this.isPaused = pausing;
+
+    public void setPaused(boolean pausing) {
+        this.paused = pausing;
     }
 
     /**
      * storages the task you where doing before pausing.
      */
-    public void setStoragedTask(Task currentTask) {
-        this.storageTask = currentTask;
+    public void setStoredTask(Task currentTask) {
+        this.storedTask = currentTask;
     }
 
     /**
      * Gets the task you where doing before pausing.
      */
-    public Task getStoragedTask() {
-        return storageTask;
+    public Task getStoredTask() {
+        return storedTask;
     }
 
     /**

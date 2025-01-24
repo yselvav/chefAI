@@ -3,7 +3,6 @@ package adris.altoclef.commands;
 import adris.altoclef.AltoClef;
 import adris.altoclef.commandsystem.ArgParser;
 import adris.altoclef.commandsystem.Command;
-import adris.altoclef.tasksystem.Task;
 
 public class UnPauseCommand extends Command {
     public UnPauseCommand() {
@@ -12,12 +11,11 @@ public class UnPauseCommand extends Command {
 
     @Override
     protected void call(AltoClef mod, ArgParser parser) {
-        if (!mod.getIsPaused()) {
+        if (!mod.isPaused()) {
             mod.log("Bot isn't paused");
-        }
-        else {
-            mod.runUserTask(mod.getStoragedTask());
-            mod.setIsPaused(false);
+        } else {
+            mod.runUserTask(mod.getStoredTask());
+            mod.setPaused(false);
             mod.log("Unpausing Bot and time");
         }
         finish();

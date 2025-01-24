@@ -69,13 +69,11 @@ public class FoodChain extends SingleTaskChain {
             if (mod.getItemStorage().hasItem(Items.SHIELD) || mod.getItemStorage().hasItemInOffhand(Items.SHIELD)) {
                 if (StorageHelper.getItemStackInSlot(PlayerSlot.OFFHAND_SLOT).getItem() != Items.SHIELD) {
                     mod.getSlotHandler().forceEquipItemToOffhand(Items.SHIELD);
-                }
-                else {
+                } else {
                     isTryingToEat = false;
                     requestFillup = false;
                 }
-            }
-            else {
+            } else {
                 isTryingToEat = false;
                 requestFillup = false;
             }
@@ -155,15 +153,11 @@ public class FoodChain extends SingleTaskChain {
             Item toUse = cachedPerfectFood.get();
 
             // Make sure we're not facing a container
-            if (!LookHelper.tryAvoidingInteractable(mod))
-            {
+            if (!LookHelper.tryAvoidingInteractable(mod)) {
                 return Float.NEGATIVE_INFINITY;
             }
             startEat(mod, toUse);
-        }
-
-        else
-        {
+        } else {
             stopEat(mod);
         }
 
