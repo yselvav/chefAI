@@ -6,7 +6,7 @@
 A client side bot that tries to beat Minecraft on its own...
 
 **This fork is still under development and is nowhere near perfect, if you have any questions, suggestions, ideas or find a bug don't hesitate to reach out!
-You can use the [issues](https://github.com/MiranCZ/altoclef/issues). Or contact me on discord! Dont forget to go to miran not to me I still learning**
+You can use the [issues](https://github.com/MiranCZ/altoclef/issues). Or contact me on discord!**
 
 Became [the first bot to beat Minecraft fully autonomously](https://youtu.be/baAa6s8tahA) on May 24, 2021.
 

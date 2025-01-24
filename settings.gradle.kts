@@ -21,7 +21,6 @@ rootProject.name = "altoclef"
 rootProject.buildFileName = "root.gradle.kts"
 
 listOf(
-    //"1.21.3",
     "1.21.1",
     "1.21",
     "1.20.6",

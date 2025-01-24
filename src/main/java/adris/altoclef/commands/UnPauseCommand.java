@@ -11,14 +11,11 @@ public class UnPauseCommand extends Command {
     }
 
     @Override
-    protected void call(AltoClef mod, ArgParser parser)
-    {
-        if (!mod.getIsPaused())
-        {
+    protected void call(AltoClef mod, ArgParser parser) {
+        if (!mod.getIsPaused()) {
             mod.log("Bot isn't paused");
         }
-        else
-        {
+        else {
             mod.runUserTask(mod.getStoragedTask());
             mod.setIsPaused(false);
             mod.log("Unpausing Bot and time");

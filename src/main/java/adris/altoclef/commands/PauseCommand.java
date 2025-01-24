@@ -11,8 +11,7 @@ public class PauseCommand extends Command {
     }
 
     @Override
-    protected void call(AltoClef mod, ArgParser parser)
-    {
+    protected void call(AltoClef mod, ArgParser parser) {
         mod.setStoragedTask(mod.getUserTaskChain().getCurrentTask());
         mod.setIsPaused(true);
         mod.getUserTaskChain().stop(mod);
