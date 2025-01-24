@@ -16,7 +16,7 @@ public class PauseCommand extends Command {
         mod.setStoragedTask(mod.getUserTaskChain().getCurrentTask());
         mod.setIsPaused(true);
         mod.getUserTaskChain().stop(mod);
-        mod.log("Pausing Bot");
+        mod.log("Pausing Bot and time");
         finish();
     }
 }

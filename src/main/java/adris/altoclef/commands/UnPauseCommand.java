@@ -21,7 +21,7 @@ public class UnPauseCommand extends Command {
         {
             mod.runUserTask(mod.getStoragedTask());
             mod.setIsPaused(false);
-            mod.log("Unpausing Bot");
+            mod.log("Unpausing Bot and time");
         }
         finish();
     }
