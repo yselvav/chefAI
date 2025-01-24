@@ -9,6 +9,6 @@
 
 ### Common death causes
 - Improve escaping from lava.
-- Do not hit pigmen in the nether (or implement a special behaviour when do).
 - Prevent from looking endermen in the eyes.
+- Do not hit pigmen in the nether (or implement a special behaviour when do).
 - Maybe avoid bastions somehow?
