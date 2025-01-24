@@ -27,6 +27,8 @@ public class AltoClefCommands {
                 new InventoryCommand(),
                 new LocateStructureCommand(),
                 new StopCommand(),
+                new PauseCommand(),
+                new UnPauseCommand(),
                 new SetGammaCommand(),
                 new TestCommand(),
                 new FoodCommand(),

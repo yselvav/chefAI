@@ -54,6 +54,7 @@ public class FoodChain extends SingleTaskChain {
         if (mod.getPlayer().isBlocking()) {
             mod.log("want to eat, trying to stop shielding...");
             mod.getInputControls().release(Input.CLICK_RIGHT);
+            mod.getInputControls().hold(Input.MOVE_BACK);
             return;
         }
 
@@ -64,20 +65,29 @@ public class FoodChain extends SingleTaskChain {
         mod.getExtraBaritoneSettings().setInteractionPaused(true);
     }
 
-    private void stopEat(AltoClef mod) {
-        if (isTryingToEat) {
-            if (mod.getItemStorage().hasItem(Items.SHIELD) || mod.getItemStorage().hasItemInOffhand(Items.SHIELD)) {
-                if (StorageHelper.getItemStackInSlot(PlayerSlot.OFFHAND_SLOT).getItem() != Items.SHIELD) {
+    private void stopEat(AltoClef mod)
+    {
+        if (isTryingToEat)
+        {
+            if (mod.getItemStorage().hasItem(Items.SHIELD) || mod.getItemStorage().hasItemInOffhand(Items.SHIELD))
+            {
+                if (StorageHelper.getItemStackInSlot(PlayerSlot.OFFHAND_SLOT).getItem() != Items.SHIELD)
+                {
                     mod.getSlotHandler().forceEquipItemToOffhand(Items.SHIELD);
-                } else {
+                }
+                else
+                {
                     isTryingToEat = false;
                     requestFillup = false;
                 }
-            } else {
+            }
+            else
+            {
                 isTryingToEat = false;
                 requestFillup = false;
             }
             mod.getInputControls().release(Input.CLICK_RIGHT);
+            mod.getInputControls().release(Input.MOVE_BACK);
             mod.getExtraBaritoneSettings().setInteractionPaused(false);
         }
     }
@@ -153,11 +163,15 @@ public class FoodChain extends SingleTaskChain {
             Item toUse = cachedPerfectFood.get();
 
             // Make sure we're not facing a container
-            if (!LookHelper.tryAvoidingInteractable(mod)) {
+            if (!LookHelper.tryAvoidingInteractable(mod))
+            {
                 return Float.NEGATIVE_INFINITY;
             }
             startEat(mod, toUse);
-        } else {
+        }
+
+        else
+        {
             stopEat(mod);
         }
 
