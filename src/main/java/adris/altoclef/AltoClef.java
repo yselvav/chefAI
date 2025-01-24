@@ -321,28 +321,24 @@ public class AltoClef implements ModInitializer {
     /**
      * Controls tasks, for pausing and unpausing the bot
      */
-    public boolean getIsPaused()
-    {
+    public boolean getIsPaused() {
         return isPaused;
     }
-    public void setIsPaused(boolean pausing)
-    {
+    public void setIsPaused(boolean pausing) {
         this.isPaused = pausing;
     }
 
     /**
      * storages the task you where doing before pausing.
      */
-    public void setStoragedTask(Task currentTask)
-    {
+    public void setStoragedTask(Task currentTask) {
         this.storageTask = currentTask;
     }
 
     /**
      * Gets the task you where doing before pausing.
      */
-    public Task getStoragedTask()
-    {
+    public Task getStoragedTask() {
         return storageTask;
     }
 
