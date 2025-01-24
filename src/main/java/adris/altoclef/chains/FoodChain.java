@@ -80,7 +80,6 @@ public class FoodChain extends SingleTaskChain {
                 requestFillup = false;
             }
             mod.getInputControls().release(Input.CLICK_RIGHT);
-            mod.getInputControls().release(Input.MOVE_BACK);
             mod.getExtraBaritoneSettings().setInteractionPaused(false);
         }
     }
