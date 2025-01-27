@@ -29,12 +29,14 @@ public class MoveItemToSlotTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         if (mod.getSlotHandler().canDoSlotAction()) {
             // Rough plan
             // - If empty slot or wrong item
@@ -67,7 +69,7 @@ public class MoveItemToSlotTask extends Task {
                 }
                 if (toPlace.isEmpty()) {
                     Debug.logWarning("Called MoveItemToSlotTask when item/not enough item is available! valid items: " + StlHelper.toString(validItems, Item::getTranslationKey));
-                    this.stop(mod);
+                    this.stop();
                     return null;
                 }
                 mod.getSlotHandler().clickSlot(toPlace.get(), 0, SlotActionType.PICKUP);
@@ -88,12 +90,12 @@ public class MoveItemToSlotTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         ItemStack atDestination = StorageHelper.getItemStackInSlot(destination);
         return (toMove.matches(atDestination.getItem()) && atDestination.getCount() >= toMove.getTargetCount());
     }

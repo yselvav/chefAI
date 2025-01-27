@@ -50,17 +50,17 @@ public class CataloguedResourceTask extends ResourceTask {
         for (ResourceTask task : tasksToComplete) {
             for (ItemTarget target : task.getItemTargets()) {
                 // If we failed to meet this task's targets, do the task.
-                if (!StorageHelper.itemTargetsMetInventory(mod, target)) return task;
+                if (!StorageHelper.itemTargetsMetInventory(target)) return task;
             }
         }
         return null;
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         for (ResourceTask task : tasksToComplete) {
             for (ItemTarget target : task.getItemTargets()) {
-                if (!StorageHelper.itemTargetsMetInventory(mod, target)) return false;
+                if (!StorageHelper.itemTargetsMetInventory(target)) return false;
             }
         }
         // All targets are met.

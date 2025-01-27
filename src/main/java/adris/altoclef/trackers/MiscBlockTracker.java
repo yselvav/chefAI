@@ -5,7 +5,6 @@ import adris.altoclef.util.Dimension;
 import adris.altoclef.util.helpers.WorldHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import adris.altoclef.multiversion.blockpos.BlockPosHelper;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.HashMap;
@@ -37,7 +36,7 @@ public class MiscBlockTracker {
         }
 
         if (AltoClef.inGame() && newDimensionTriggered) {
-            for (BlockPos check : WorldHelper.scanRegion(mod, mod.getPlayer().getBlockPos().add(-1,-1,-1), mod.getPlayer().getBlockPos().add(1,1,1))) {
+            for (BlockPos check : WorldHelper.scanRegion(mod.getPlayer().getBlockPos().add(-1,-1,-1), mod.getPlayer().getBlockPos().add(1,1,1))) {
                 Block currentBlock = mod.getWorld().getBlockState(check).getBlock();
                 if (currentBlock == Blocks.NETHER_PORTAL) {
                     // Make sure we get the lowest nether portal, as we can only really enter from the bottom.
@@ -49,7 +48,7 @@ public class MiscBlockTracker {
                         }
                     }
                     BlockPos below = check.down();
-                    if (WorldHelper.isSolidBlock(mod, below)) {
+                    if (WorldHelper.isSolidBlock(below)) {
                         lastNetherPortalsUsed.put(WorldHelper.getCurrentDimension(), check);
                         newDimensionTriggered = false;
                     }

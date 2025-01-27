@@ -7,7 +7,6 @@ import adris.altoclef.eventbus.EventBus;
 import adris.altoclef.eventbus.Subscription;
 import adris.altoclef.eventbus.events.ChatMessageEvent;
 import adris.altoclef.eventbus.events.GameOverlayEvent;
-import adris.altoclef.multiversion.blockpos.BlockPosHelper;
 import adris.altoclef.multiversion.blockpos.BlockPosVer;
 import adris.altoclef.tasks.DoToClosestBlockTask;
 import adris.altoclef.tasks.InteractWithBlockTask;
@@ -119,7 +118,9 @@ public class PlaceBedAndSetSpawnTask extends Task {
      * It initializes various variables and sets up behaviours for the mod.
      */
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
+        AltoClef mod = AltoClef.getInstance();
+
         // Push the current behaviour
         mod.getBehaviour().push();
 
@@ -200,7 +201,7 @@ public class PlaceBedAndSetSpawnTask extends Task {
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
         // Summary:
         // If we find a bed nearby, sleep in it.
         // Otherwise, place bed:
@@ -208,12 +209,14 @@ public class PlaceBedAndSetSpawnTask extends Task {
         //      Find a 3x2x1 region and clear it
         //      Stand on the edge of the long (3) side
         //      Place on the middle block, reliably placing the bed.
+        AltoClef mod = AltoClef.getInstance();
+
         if (!progressChecker.check(mod) && currentBedRegion != null) {
             progressChecker.reset();
             Debug.logMessage("Searching new bed region.");
             currentBedRegion = null;
         }
-        if (WorldHelper.isInNetherPortal(mod)) {
+        if (WorldHelper.isInNetherPortal()) {
             setDebugState("We are in nether portal. Wandering");
             currentBedRegion = null;
             return new TimeoutWanderTask();
@@ -240,9 +243,9 @@ public class PlaceBedAndSetSpawnTask extends Task {
                 return null;
             }
         }
-        if (mod.getBlockScanner().anyFound(blockPos -> (WorldHelper.canReach(mod, blockPos) &&
+        if (mod.getBlockScanner().anyFound(blockPos -> (WorldHelper.canReach(blockPos) &&
                 blockPos.isWithinDistance(mod.getPlayer().getPos(), 40) &&
-                mod.getItemStorage().hasItem(ItemHelper.BED)) || (WorldHelper.canReach(mod, blockPos) &&
+                mod.getItemStorage().hasItem(ItemHelper.BED)) || (WorldHelper.canReach(blockPos) &&
                 !mod.getItemStorage().hasItem(ItemHelper.BED)), ItemHelper.itemsToBlocks(ItemHelper.BED))) {
             // Sleep in the nearest bed
             setDebugState("Going to bed to sleep...");
@@ -263,7 +266,7 @@ public class PlaceBedAndSetSpawnTask extends Task {
                         }
                     }
                 }
-                bedForSpawnPoint = WorldHelper.getBedHead(mod, toSleepIn);
+                bedForSpawnPoint = WorldHelper.getBedHead(toSleepIn);
                 if (bedForSpawnPoint == null) {
                     bedForSpawnPoint = toSleepIn;
                 }
@@ -327,7 +330,7 @@ public class PlaceBedAndSetSpawnTask extends Task {
 
         for (Vec3i baseOffs : BED_BOTTOM_PLATFORM) {
             BlockPos toPlace = currentBedRegion.add(baseOffs);
-            if (!WorldHelper.isSolidBlock(mod, toPlace)) {
+            if (!WorldHelper.isSolidBlock(toPlace)) {
                 currentStructure = toPlace;
                 break;
             }
@@ -338,7 +341,7 @@ public class PlaceBedAndSetSpawnTask extends Task {
             for (int dz = 0; dz < BED_CLEAR_SIZE.getZ(); ++dz) {
                 for (int dy = 0; dy < BED_CLEAR_SIZE.getY(); ++dy) {
                     BlockPos toClear = currentBedRegion.add(dx,dy,dz);
-                    if (WorldHelper.isSolidBlock(mod, toClear)) {
+                    if (WorldHelper.isSolidBlock(toClear)) {
                         currentBreak = toClear;
                         break outer;
                     }
@@ -347,7 +350,7 @@ public class PlaceBedAndSetSpawnTask extends Task {
         }
 
         if (currentStructure != null) {
-            if (WorldHelper.isSolidBlock(mod, currentStructure)) {
+            if (WorldHelper.isSolidBlock(currentStructure)) {
                 currentStructure = null;
             } else {
                 setDebugState("Placing structure for bed");
@@ -355,7 +358,7 @@ public class PlaceBedAndSetSpawnTask extends Task {
             }
         }
         if (currentBreak != null) {
-            if (!WorldHelper.isSolidBlock(mod, currentBreak)) {
+            if (!WorldHelper.isSolidBlock(currentBreak)) {
                 currentBreak = null;
             } else {
                 setDebugState("Clearing region for bed");
@@ -400,13 +403,12 @@ public class PlaceBedAndSetSpawnTask extends Task {
     /**
      * Override method called when the task is interrupted.
      *
-     * @param mod           The AltoClef mod instance.
      * @param interruptTask The task that interrupted this task.
      */
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
         // Pop the behaviour stack
-        mod.getBehaviour().pop();
+        AltoClef.getInstance().getBehaviour().pop();
 
         // Unsubscribe from respawn point set message
         EventBus.unsubscribe(respawnPointSetMessageCheck);
@@ -454,11 +456,10 @@ public class PlaceBedAndSetSpawnTask extends Task {
     /**
      * Checks if the spawnpoint/sleep condition is finished.
      *
-     * @param mod The AltoClef mod instance.
      * @return Whether the condition is finished.
      */
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         // Check if we are in the overworld
         if (WorldHelper.getCurrentDimension() != Dimension.OVERWORLD) {
             Debug.logInternal("Can't place spawnpoint/sleep in a bed unless we're in the overworld!");
@@ -466,7 +467,7 @@ public class PlaceBedAndSetSpawnTask extends Task {
         }
 
         // Check if player is sleeping
-        boolean isSleeping = mod.getPlayer().isSleeping();
+        boolean isSleeping = AltoClef.getInstance().getPlayer().isSleeping();
 
         // Check if timer has elapsed
         boolean timerElapsed = inBedTimer.elapsed();
@@ -616,17 +617,17 @@ public class PlaceBedAndSetSpawnTask extends Task {
      */
     private boolean isGoodAsBorder(AltoClef mod, BlockPos pos) {
         // Check if the block is solid
-        boolean isSolid = WorldHelper.isSolidBlock(mod, pos);
+        boolean isSolid = WorldHelper.isSolidBlock(pos);
         Debug.logInternal("isSolid: " + isSolid);
 
         if (isSolid) {
             // Check if the block can be broken
-            boolean canBreak = WorldHelper.canBreak(mod, pos);
+            boolean canBreak = WorldHelper.canBreak(pos);
             Debug.logInternal("canBreak: " + canBreak);
             return canBreak;
         } else {
             // Check if the block is air
-            boolean isAir = WorldHelper.isAir(mod, pos);
+            boolean isAir = WorldHelper.isAir(pos);
             Debug.logInternal("isAir: " + isAir);
             return isAir;
         }

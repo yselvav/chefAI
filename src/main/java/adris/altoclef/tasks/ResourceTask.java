@@ -1,6 +1,7 @@
 package adris.altoclef.tasks;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.BotBehaviour;
 import adris.altoclef.multiversion.blockpos.BlockPosVer;
 import adris.altoclef.tasks.container.PickupFromContainerTask;
 import adris.altoclef.tasks.movement.DefaultGoToDimensionTask;
@@ -66,28 +67,33 @@ public abstract class ResourceTask extends Task implements ITaskCanForce {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
-        return StorageHelper.itemTargetsMetInventoryNoCursor(mod, itemTargets);
+    public boolean isFinished() {
+        return StorageHelper.itemTargetsMetInventoryNoCursor();
     }
 
     @Override
-    public boolean shouldForce(AltoClef mod, Task interruptingCandidate) {
+    public boolean shouldForce(Task interruptingCandidate) {
         // We have an important item target in our cursor.
-        return StorageHelper.itemTargetsMetInventory(mod, itemTargets) && !isFinished(mod)
+        return StorageHelper.itemTargetsMetInventory(itemTargets) && !isFinished()
                 // This _should_ be redundant, but it'll be a guard just to make 100% sure.
                 && Arrays.stream(itemTargets).anyMatch(target -> target.matches(StorageHelper.getItemStackInCursorSlot().getItem()));
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
-        mod.getBehaviour().push();
+    protected void onStart() {
+        BotBehaviour botBehaviour = AltoClef.getInstance().getBehaviour();
+
+        botBehaviour.push();
         //removeThrowawayItems(_itemTargets);
-        mod.getBehaviour().addProtectedItems(ItemTarget.getMatches(itemTargets));
-        onResourceStart(mod);
+        botBehaviour.addProtectedItems(ItemTarget.getMatches(itemTargets));
+
+        onResourceStart(AltoClef.getInstance());
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         // If we have an item in an INACCESSIBLE inventory slot
         if (!(thisOrChildSatisfies(task -> task instanceof ITaskUsesCraftingGrid)) || ensureFreeCraftingGridTask.isActive()) {
             for (ItemTarget target : itemTargets) {
@@ -98,7 +104,7 @@ public abstract class ResourceTask extends Task implements ITaskCanForce {
             }
         }
         // We have enough items COUNTING the cursor slot, we just need to move an item from our cursor.
-        if (StorageHelper.itemTargetsMetInventory(mod, itemTargets) && Arrays.stream(itemTargets).anyMatch(target -> target.matches(StorageHelper.getItemStackInCursorSlot().getItem()))) {
+        if (StorageHelper.itemTargetsMetInventory(itemTargets) && Arrays.stream(itemTargets).anyMatch(target -> target.matches(StorageHelper.getItemStackInCursorSlot().getItem()))) {
             setDebugState("Moving from cursor");
             Optional<Slot> moveTo = mod.getItemStorage().getSlotThatCanFitInPlayerInventory(StorageHelper.getItemStackInCursorSlot(), false);
             if (moveTo.isPresent()) {
@@ -139,7 +145,7 @@ public abstract class ResourceTask extends Task implements ITaskCanForce {
 
                 double range = getPickupRange(mod);
                 Optional<ItemEntity> closest = mod.getEntityTracker().getClosestItemDrop(mod.getPlayer().getPos(), itemTargets);
-                if (range < 0 || (closest.isPresent() && closest.get().isInRange(mod.getPlayer(), range)) || (pickupTask.isActive() && !pickupTask.isFinished(mod))) {
+                if (range < 0 || (closest.isPresent() && closest.get().isInRange(mod.getPlayer(), range)) || (pickupTask.isActive() && !pickupTask.isFinished())) {
                     setDebugState("Picking up");
                     return pickupTask;
                 }
@@ -174,7 +180,7 @@ public abstract class ResourceTask extends Task implements ITaskCanForce {
         // We may just mine if a block is found.
         if (mineIfPresent != null) {
             ArrayList<Block> satisfiedReqs = new ArrayList<>(Arrays.asList(mineIfPresent));
-            satisfiedReqs.removeIf(block -> !StorageHelper.miningRequirementMet(mod, MiningRequirement.getMinimumRequirementForBlock(block)));
+            satisfiedReqs.removeIf(block -> !StorageHelper.miningRequirementMet(MiningRequirement.getMinimumRequirementForBlock(block)));
             if (!satisfiedReqs.isEmpty()) {
                 if (mod.getBlockScanner().anyFound(satisfiedReqs.toArray(Block[]::new))) {
                     Optional<BlockPos> closest = mod.getBlockScanner().getNearestBlock(mineIfPresent);
@@ -207,9 +213,9 @@ public abstract class ResourceTask extends Task implements ITaskCanForce {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
-        mod.getBehaviour().pop();
-        onResourceStop(mod, interruptTask);
+    protected void onStop(Task interruptTask) {
+        AltoClef.getInstance().getBehaviour().pop();
+        onResourceStop(AltoClef.getInstance(), interruptTask);
     }
 
     @Override

@@ -42,18 +42,23 @@ public class ReceiveCraftingOutputSlotTask extends Task implements ITaskUsesCraf
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
         ItemStack inOutput = StorageHelper.getItemStackInSlot(_slot);
         ItemStack cursor = StorageHelper.getItemStackInCursorSlot();
+
         boolean cursorSlotFree = cursor.isEmpty();
+
         if (!cursorSlotFree && !ItemHelper.canStackTogether(inOutput, cursor)) {
             return new EnsureFreeCursorSlotTask();
         }
+
+        AltoClef mod = AltoClef.getInstance();
+
         int craftCount = inOutput.getCount() * getCraftMultipleCount(mod);
         int weWantToAddToInventory = _toTake - mod.getItemStorage().getItemCountInventoryOnly(inOutput.getItem());
         boolean takeAll = weWantToAddToInventory >= craftCount;
@@ -68,7 +73,7 @@ public class ReceiveCraftingOutputSlotTask extends Task implements ITaskUsesCraf
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
     }
 
     @Override

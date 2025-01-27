@@ -40,7 +40,9 @@ public class EscapeFromLavaTask extends CustomBaritoneGoalTask {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
+        AltoClef mod = AltoClef.getInstance();
+
         mod.getBehaviour().push();
         mod.getClientBaritone().getExploreProcess().onLostControl();
         mod.getClientBaritone().getCustomGoalProcess().onLostControl();
@@ -49,14 +51,16 @@ public class EscapeFromLavaTask extends CustomBaritoneGoalTask {
         mod.getBehaviour().setBlockPlacePenalty(0);
         mod.getBehaviour().setBlockBreakAdditionalPenalty(0); // Normally 2
         // do NOT ever wander
-        _checker = new MovementProgressChecker((int) Float.POSITIVE_INFINITY);
+        checker = new MovementProgressChecker((int) Float.POSITIVE_INFINITY);
 
         // avoid trying to place block right under us if there is lava
         mod.getExtraBaritoneSettings().avoidBlockPlace(avoidPlacingRiskyBlock);
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
        // if (mod.getWorld().getBlockState(mod.getPlayer().getBlockPos().up()).getBlock().equals(Blocks.LAVA)) {
             mod.getInputControls().hold(Input.JUMP);
             mod.getInputControls().hold(Input.SPRINT);
@@ -92,7 +96,7 @@ public class EscapeFromLavaTask extends CustomBaritoneGoalTask {
                     !mod.getWorld().getBlockState(steppingPos.west().north()).getBlock().equals(Blocks.LAVA) ||
                     !mod.getWorld().getBlockState(steppingPos.west().south()).getBlock().equals(Blocks.LAVA)) {
 
-                return super.onTick(mod);
+                return super.onTick();
             }
 
             if (mod.getPlayer().isBlocking()) {
@@ -112,7 +116,7 @@ public class EscapeFromLavaTask extends CustomBaritoneGoalTask {
                         Direction facing = blockHitResult.getSide();
 
                         if (facing == Direction.UP) continue;
-                        LookHelper.lookAt(mod, new Rotation(yaw,pitch));
+                        LookHelper.lookAt(new Rotation(yaw,pitch));
 
                         if (mod.getItemStorage().hasItem(Items.NETHERRACK)) {
                             mod.getSlotHandler().forceEquipItem(Items.NETHERRACK);
@@ -131,7 +135,7 @@ public class EscapeFromLavaTask extends CustomBaritoneGoalTask {
 
         }
 
-        return super.onTick(mod);
+        return super.onTick();
     }
 
     // similar to FoodChain
@@ -212,7 +216,9 @@ public class EscapeFromLavaTask extends CustomBaritoneGoalTask {
 
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
+        AltoClef mod = AltoClef.getInstance();
+
         mod.getBehaviour().pop();
         mod.getInputControls().release(Input.JUMP);
         mod.getInputControls().release(Input.SPRINT);
@@ -235,8 +241,10 @@ public class EscapeFromLavaTask extends CustomBaritoneGoalTask {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
-        return !mod.getPlayer().isInLava() && !mod.getPlayer().isOnFire();
+    public boolean isFinished() {
+        ClientPlayerEntity player = AltoClef.getInstance().getPlayer();
+
+        return !player.isInLava() && !player.isOnFire();
     }
 
     @Override

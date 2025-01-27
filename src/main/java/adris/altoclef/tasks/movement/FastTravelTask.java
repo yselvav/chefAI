@@ -3,7 +3,6 @@ package adris.altoclef.tasks.movement;
 import adris.altoclef.AltoClef;
 import adris.altoclef.TaskCatalogue;
 import adris.altoclef.tasks.construction.compound.ConstructNetherPortalObsidianTask;
-import adris.altoclef.tasks.speedrun.beatgame.BeatMinecraftTask;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.Dimension;
 import adris.altoclef.util.ItemTarget;
@@ -12,7 +11,6 @@ import adris.altoclef.util.time.TimerGame;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.DeathScreen;
-import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.NotImplementedException;
@@ -60,7 +58,7 @@ public class FastTravelTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
         BlockPos netherTarget = new BlockPos(target.getX() / 8, target.getY(), target.getZ() / 8);
 
         _goToOverworldTask = new EnterNetherPortalTask(new ConstructNetherPortalObsidianTask(), Dimension.OVERWORLD,
@@ -68,7 +66,8 @@ public class FastTravelTask extends Task {
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
 
         BlockPos netherTarget = new BlockPos(target.getX() / 8, target.getY(), target.getZ() / 8);
 
@@ -121,7 +120,7 @@ public class FastTravelTask extends Task {
                 }
 
                 // If we're going to the overworld, keep going.
-                if (_goToOverworldTask.isActive() && !_goToOverworldTask.isFinished(mod)) {
+                if (_goToOverworldTask.isActive() && !_goToOverworldTask.isFinished()) {
                     setDebugState("Going back to overworld");
 
                     return _goToOverworldTask;
@@ -201,7 +200,7 @@ public class FastTravelTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 

@@ -5,6 +5,7 @@ import adris.altoclef.Debug;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.helpers.LookHelper;
 import adris.altoclef.util.time.TimerGame;
+import baritone.Baritone;
 import baritone.api.utils.input.Input;
 
 /**
@@ -24,30 +25,34 @@ public class SafeRandomShimmyTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
         _lookTimer.reset();
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
 
         if (_lookTimer.elapsed()) {
             Debug.logMessage("Random Orientation");
             _lookTimer.reset();
-            LookHelper.randomOrientation(mod);
+            LookHelper.randomOrientation();
         }
 
-        mod.getClientBaritone().getInputOverrideHandler().setInputForceState(Input.SNEAK, true);
-        mod.getClientBaritone().getInputOverrideHandler().setInputForceState(Input.MOVE_FORWARD, true);
-        mod.getClientBaritone().getInputOverrideHandler().setInputForceState(Input.CLICK_LEFT, true);
+        Baritone baritone = AltoClef.getInstance().getClientBaritone();
+
+        baritone.getInputOverrideHandler().setInputForceState(Input.SNEAK, true);
+        baritone.getInputOverrideHandler().setInputForceState(Input.MOVE_FORWARD, true);
+        baritone.getInputOverrideHandler().setInputForceState(Input.CLICK_LEFT, true);
         return null;
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
-        mod.getClientBaritone().getInputOverrideHandler().setInputForceState(Input.MOVE_FORWARD, false);
-        mod.getClientBaritone().getInputOverrideHandler().setInputForceState(Input.SNEAK, false);
-        mod.getClientBaritone().getInputOverrideHandler().setInputForceState(Input.CLICK_LEFT, false);
+    protected void onStop(Task interruptTask) {
+        Baritone baritone = AltoClef.getInstance().getClientBaritone();
+
+        baritone.getInputOverrideHandler().setInputForceState(Input.MOVE_FORWARD, false);
+        baritone.getInputOverrideHandler().setInputForceState(Input.SNEAK, false);
+        baritone.getInputOverrideHandler().setInputForceState(Input.CLICK_LEFT, false);
     }
 
     @Override

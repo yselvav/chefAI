@@ -9,6 +9,7 @@ import baritone.api.utils.RayTraceUtils;
 import baritone.api.utils.Rotation;
 import baritone.api.utils.RotationUtils;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -397,7 +398,7 @@ public interface LookHelper {
      */
     static boolean tryAvoidingInteractable(AltoClef mod) {
         if (isCollidingInteractable(mod)) {
-            randomOrientation(mod);
+            randomOrientation();
             return false;
         }
         return true;
@@ -472,7 +473,7 @@ public interface LookHelper {
             // Get the block position from the crosshair target
             Vec3i resultGetPosOrigin = new Vec3i((int) result.getPos().getX(), (int) result.getPos().getY(), (int) result.getPos().getZ());
             // Check if the block is an interactable block
-            return WorldHelper.isInteractableBlock(mod, new BlockPos(resultGetPosOrigin));
+            return WorldHelper.isInteractableBlock(new BlockPos(resultGetPosOrigin));
         }
         // Check if the crosshair target is an entity
         else if (result.getType() == HitResult.Type.ENTITY && result instanceof EntityHitResult) {
@@ -487,10 +488,8 @@ public interface LookHelper {
 
     /**
      * Sets a random orientation for the given mod.
-     *
-     * @param mod The mod to set the orientation for.
      */
-    static void randomOrientation(AltoClef mod) {
+    static void randomOrientation() {
         // Generate random rotation angles
         float randomRotationX = (float) (Math.random() * 360f);
         float randomRotationY = -90 + (float) (Math.random() * 180f);
@@ -499,7 +498,7 @@ public interface LookHelper {
         Rotation r = new Rotation(randomRotationX, randomRotationY);
 
         // Set the mod to look at the rotation
-        lookAt(mod, r);
+        lookAt(r);
     }
 
     /**
@@ -545,16 +544,17 @@ public interface LookHelper {
     /**
      * Updates the player's look direction and rotation.
      *
-     * @param mod      The instance of AltoClef.
      * @param rotation The desired rotation to look at.
      */
-    static void lookAt(AltoClef mod, Rotation rotation) {
+    static void lookAt(Rotation rotation) {
         // Update the target rotation in the LookBehavior
-        mod.getClientBaritone().getLookBehavior().updateTarget(rotation, true);
+        AltoClef.getInstance().getClientBaritone().getLookBehavior().updateTarget(rotation, true);
 
         // Set the player's yaw and pitch
-        mod.getPlayer().setYaw(rotation.getYaw());
-        mod.getPlayer().setPitch(rotation.getPitch());
+        ClientPlayerEntity player = AltoClef.getInstance().getPlayer();
+
+        player.setYaw(rotation.getYaw());
+        player.setPitch(rotation.getPitch());
     }
 
     /**

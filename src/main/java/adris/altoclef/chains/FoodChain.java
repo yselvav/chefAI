@@ -64,11 +64,13 @@ public class FoodChain extends SingleTaskChain {
         mod.getExtraBaritoneSettings().setInteractionPaused(true);
     }
 
-    private void stopEat(AltoClef mod) {
+    private void stopEat() {
         if (isTryingToEat) {
-            if (mod.getItemStorage().hasItem(Items.SHIELD) || mod.getItemStorage().hasItemInOffhand(Items.SHIELD)) {
+            AltoClef altoClef = AltoClef.getInstance();
+
+            if (altoClef.getItemStorage().hasItem(Items.SHIELD) || altoClef.getItemStorage().hasItemInOffhand(Items.SHIELD)) {
                 if (StorageHelper.getItemStackInSlot(PlayerSlot.OFFHAND_SLOT).getItem() != Items.SHIELD) {
-                    mod.getSlotHandler().forceEquipItemToOffhand(Items.SHIELD);
+                    altoClef.getSlotHandler().forceEquipItemToOffhand(Items.SHIELD);
                 } else {
                     isTryingToEat = false;
                     requestFillup = false;
@@ -77,8 +79,8 @@ public class FoodChain extends SingleTaskChain {
                 isTryingToEat = false;
                 requestFillup = false;
             }
-            mod.getInputControls().release(Input.CLICK_RIGHT);
-            mod.getExtraBaritoneSettings().setInteractionPaused(false);
+            altoClef.getInputControls().release(Input.CLICK_RIGHT);
+            altoClef.getExtraBaritoneSettings().setInteractionPaused(false);
         }
     }
 
@@ -87,9 +89,11 @@ public class FoodChain extends SingleTaskChain {
     }
 
     @Override
-    public float getPriority(AltoClef mod) {
-        if (WorldHelper.isInNetherPortal(mod)) {
-            stopEat(mod);
+    public float getPriority() {
+        AltoClef mod = AltoClef.getInstance();
+
+        if (WorldHelper.isInNetherPortal()) {
+            stopEat();
             return Float.NEGATIVE_INFINITY;
         }
         // do not interrupt defending from mobs by eating
@@ -98,24 +102,24 @@ public class FoodChain extends SingleTaskChain {
                 || mod.getPlayer().isBlocking()
                 || mod.getMobDefenseChain().isDoingAcrobatics()
         ) {
-            stopEat(mod);
+            stopEat();
             return Float.NEGATIVE_INFINITY;
         }
         dragonBreathTracker.updateBreath(mod);
-        for (BlockPos playerIn : WorldHelper.getBlocksTouchingPlayer(mod)) {
+        for (BlockPos playerIn : WorldHelper.getBlocksTouchingPlayer()) {
             if (dragonBreathTracker.isTouchingDragonBreath(playerIn)) {
-                stopEat(mod);
+                stopEat();
                 return Float.NEGATIVE_INFINITY;
             }
         }
         if (!mod.getModSettings().isAutoEat()) {
-            stopEat(mod);
+            stopEat();
             return Float.NEGATIVE_INFINITY;
         }
 
         // do NOT eat while in lava if we are escaping it (spaghetti code dependencies go brrrr)
         if (mod.getPlayer().isInLava()) {
-            stopEat(mod);
+            stopEat();
             return Float.NEGATIVE_INFINITY;
         }
 
@@ -129,13 +133,13 @@ public class FoodChain extends SingleTaskChain {
         // We're in danger, don't eat now!!
         if (!mod.getMLGBucketChain().doneMLG() || mod.getMLGBucketChain().isFalling(mod) ||
                 mod.getPlayer().isBlocking() || shouldStop) {
-            stopEat(mod);
+            stopEat();
             return Float.NEGATIVE_INFINITY;
         }
         Pair<Integer, Optional<Item>> calculation = calculateFood(mod);
-        int _cachedFoodScore = calculation.getLeft();
+        int cachedFoodScore = calculation.getLeft();
         cachedPerfectFood = calculation.getRight();
-        hasFood = _cachedFoodScore > 0;
+        hasFood = cachedFoodScore > 0;
         // If we requested a fillup but we're full, stop.
         if (requestFillup && mod.getPlayer().getHungerManager().getFoodLevel() >= 20) {
             requestFillup = false;
@@ -158,17 +162,17 @@ public class FoodChain extends SingleTaskChain {
             }
             startEat(mod, toUse);
         } else {
-            stopEat(mod);
+            stopEat();
         }
 
         Settings settings = mod.getModSettings();
 
-        if (needsFood || _cachedFoodScore < settings.getMinimumFoodAllowed()) {
-            needsFood = _cachedFoodScore < settings.getFoodUnitsToCollect();
+        if (needsFood || cachedFoodScore < settings.getMinimumFoodAllowed()) {
+            needsFood = cachedFoodScore < settings.getFoodUnitsToCollect();
 
             // Only collect if we don't have enough food.
             // If the user inputs invalid settings, the bot would get stuck here.
-            if (_cachedFoodScore < settings.getFoodUnitsToCollect()) {
+            if (cachedFoodScore < settings.getFoodUnitsToCollect()) {
                 setTask(new CollectFoodTask(settings.getFoodUnitsToCollect()));
                 return 55f;
             }
@@ -201,9 +205,9 @@ public class FoodChain extends SingleTaskChain {
     }
 
     @Override
-    protected void onStop(AltoClef mod) {
-        super.onStop(mod);
-        stopEat(mod);
+    protected void onStop() {
+        super.onStop();
+        stopEat();
     }
 
     public boolean needsToEat() {

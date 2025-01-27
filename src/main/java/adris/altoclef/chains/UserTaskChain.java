@@ -45,23 +45,23 @@ public class UserTaskChain extends SingleTaskChain {
     }
 
     @Override
-    protected void onTick(AltoClef mod) {
+    protected void onTick() {
 
         // Pause if we're not loaded into a world.
         if (!AltoClef.inGame()) return;
 
-        super.onTick(mod);
+        super.onTick();
     }
 
     public void cancel(AltoClef mod) {
         if (mainTask != null && mainTask.isActive()) {
-            stop(mod);
+            stop();
             onTaskFinish(mod);
         }
     }
 
     @Override
-    public float getPriority(AltoClef mod) {
+    public float getPriority() {
         return 50;
     }
 

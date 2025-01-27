@@ -118,9 +118,9 @@ public class MobDefenseChain extends SingleTaskChain {
     }
 
     @Override
-    public float getPriority(AltoClef mod) {
-        cachedLastPriority = getPriorityInner(mod);
-        prevHealth = mod.getPlayer().getHealth();
+    public float getPriority() {
+        cachedLastPriority = getPriorityInner();
+        prevHealth = AltoClef.getInstance().getPlayer().getHealth();
         return cachedLastPriority;
     }
 
@@ -147,7 +147,7 @@ public class MobDefenseChain extends SingleTaskChain {
 
     private boolean escapeDragonBreath(AltoClef mod) {
         dragonBreathTracker.updateBreath(mod);
-        for (BlockPos playerIn : WorldHelper.getBlocksTouchingPlayer(mod)) {
+        for (BlockPos playerIn : WorldHelper.getBlocksTouchingPlayer()) {
             if (dragonBreathTracker.isTouchingDragonBreath(playerIn)) {
                 return true;
             }
@@ -155,10 +155,11 @@ public class MobDefenseChain extends SingleTaskChain {
         return false;
     }
 
-    private float getPriorityInner(AltoClef mod) {
+    private float getPriorityInner() {
         if (!AltoClef.inGame()) {
             return Float.NEGATIVE_INFINITY;
         }
+        AltoClef mod = AltoClef.getInstance();
 
         if (!mod.getModSettings().isMobDefense()) {
             return Float.NEGATIVE_INFINITY;
@@ -261,7 +262,7 @@ public class MobDefenseChain extends SingleTaskChain {
         }
         // Dodge all mobs cause we boutta die son
         if (isInDanger(mod) && !escapeDragonBreath(mod) && !mod.getFoodChain().isShouldStop()) {
-            if (targetEntity == null || WorldHelper.isSurroundedByHostiles(mod)) {
+            if (targetEntity == null || WorldHelper.isSurroundedByHostiles()) {
                 runAwayTask = new RunAwayFromHostilesTask(DANGER_KEEP_DISTANCE, true);
                 setTask(runAwayTask);
                 return 70;
@@ -350,7 +351,7 @@ public class MobDefenseChain extends SingleTaskChain {
         }
         // By default, if we aren't "immediately" in danger but were running away, keep
         // running away until we're good.
-        if (runAwayTask != null && !runAwayTask.isFinished(mod)) {
+        if (runAwayTask != null && !runAwayTask.isFinished()) {
             setTask(runAwayTask);
             return cachedLastPriority;
         } else {
@@ -419,7 +420,7 @@ public class MobDefenseChain extends SingleTaskChain {
                 b.getInputOverrideHandler().setInputForceState(Input.CLICK_LEFT, true);
                 return;
             }
-            LookHelper.lookAt(mod, reach.get());
+            LookHelper.lookAt(reach.get());
         }
     }
 
@@ -577,7 +578,7 @@ public class MobDefenseChain extends SingleTaskChain {
                 (mod.getPlayer().hasStatusEffect(StatusEffects.POISON) && !witchNearby)) {
             return true;
         }
-        if (WorldHelper.isVulnerable(mod)) {
+        if (WorldHelper.isVulnerable()) {
             // If hostile mobs are nearby...
             try {
                 ClientPlayerEntity player = mod.getPlayer();

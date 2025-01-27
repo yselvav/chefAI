@@ -16,14 +16,14 @@ public class DodgeProjectilesTask extends CustomBaritoneGoalTask {
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
-        if (_cachedGoal != null) {
+    protected Task onTick() {
+        if (cachedGoal != null) {
             // EntityTracker runs ensureUpdated automatically which calls updateState which locks the mutex,
             // so don't lock here.
             // Multithreading can be a hassle in more ways than one it seems.
-            GoalDodgeProjectiles goal = (GoalDodgeProjectiles) _cachedGoal;
+            GoalDodgeProjectiles goal = (GoalDodgeProjectiles) cachedGoal;
         }
-        return super.onTick(mod);
+        return super.onTick();
     }
 
     @SuppressWarnings("RedundantIfStatement")

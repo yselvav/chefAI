@@ -1,11 +1,9 @@
 package adris.altoclef.commands.random;
 
 import adris.altoclef.AltoClef;
-import adris.altoclef.commandsystem.ArgBase;
 import adris.altoclef.commandsystem.ArgParser;
 import adris.altoclef.commandsystem.Command;
 import adris.altoclef.commandsystem.CommandException;
-import adris.altoclef.tasks.speedrun.OneCycleTask;
 import adris.altoclef.tasksystem.Task;
 
 public class DummyTaskCommand extends Command {
@@ -21,17 +19,17 @@ public class DummyTaskCommand extends Command {
     private class DummyTask extends Task {
 
         @Override
-        protected void onStart(AltoClef mod) {
+        protected void onStart() {
 
         }
 
         @Override
-        protected Task onTick(AltoClef mod) {
+        protected Task onTick() {
             return null;
         }
 
         @Override
-        protected void onStop(AltoClef mod, Task interruptTask) {
+        protected void onStop(Task interruptTask) {
 
         }
 

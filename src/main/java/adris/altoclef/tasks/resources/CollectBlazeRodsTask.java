@@ -46,7 +46,7 @@ public class CollectBlazeRodsTask extends ResourceTask {
         int MAX_HEIGHT = 11;
         for (BlockPos check = entity.getBlockPos(); entity.getBlockPos().getY() - check.getY() < MAX_HEIGHT; check = check.down()) {
             if (mod.getWorld().getBlockState(check).getBlock() == Blocks.LAVA) return true;
-            if (WorldHelper.isSolidBlock(mod, check)) return false;
+            if (WorldHelper.isSolidBlock(check)) return false;
         }
         return true;
     }
@@ -139,7 +139,7 @@ public class CollectBlazeRodsTask extends ResourceTask {
             return false;
             //return pos.isWithinDistance(mod.getPlayer().getPos(),3000);
         }
-        return WorldHelper.getSpawnerEntity(mod, pos) instanceof BlazeEntity;
+        return WorldHelper.getSpawnerEntity(pos) instanceof BlazeEntity;
     }
 
     @Override
@@ -154,7 +154,7 @@ public class CollectBlazeRodsTask extends ResourceTask {
 
     @Override
     protected String toDebugStringName() {
-        return "Collect blaze rods - "+AltoClef.INSTANCE.getItemStorage().getItemCount(Items.BLAZE_ROD)+"/"+_count;
+        return "Collect blaze rods - "+ AltoClef.getInstance().getItemStorage().getItemCount(Items.BLAZE_ROD)+"/"+_count;
     }
 
     @Override

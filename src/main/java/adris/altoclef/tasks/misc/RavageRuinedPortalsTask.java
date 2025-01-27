@@ -51,16 +51,16 @@ public class RavageRuinedPortalsTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
-        mod.getBehaviour().push();
+    protected void onStart() {
+        AltoClef.getInstance().getBehaviour().push();
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
-        if (lootTask != null && lootTask.isActive() && !lootTask.isFinished(mod)) {
+    protected Task onTick() {
+        if (lootTask != null && lootTask.isActive() && !lootTask.isFinished()) {
             return lootTask;
         }
-        Optional<BlockPos> closest = locateClosestUnopenedRuinedPortalChest(mod);
+        Optional<BlockPos> closest = locateClosestUnopenedRuinedPortalChest(AltoClef.getInstance());
         if (closest.isPresent()) {
             lootTask = new LootContainerTask(closest.get(), List.of(LOOT));
             return lootTask;
@@ -69,8 +69,8 @@ public class RavageRuinedPortalsTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task task) {
-        mod.getBehaviour().pop();
+    protected void onStop(Task task) {
+        AltoClef.getInstance().getBehaviour().pop();
     }
 
     @Override
@@ -79,7 +79,7 @@ public class RavageRuinedPortalsTask extends Task {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         return false;
     }
 
@@ -92,7 +92,7 @@ public class RavageRuinedPortalsTask extends Task {
         if (mod.getWorld().getBlockState(blockPos.up(1)).getBlock() == Blocks.WATER || blockPos.getY() < 50) {
             return false;
         }
-        for (BlockPos check : WorldHelper.scanRegion(mod, blockPos.add(-4,-2,-4), blockPos.add(4,2,4))) {
+        for (BlockPos check : WorldHelper.scanRegion(blockPos.add(-4,-2,-4), blockPos.add(4,2,4))) {
             if (mod.getWorld().getBlockState(check).getBlock() == Blocks.NETHERRACK) {
                 return true;
             }
@@ -105,6 +105,6 @@ public class RavageRuinedPortalsTask extends Task {
         if (WorldHelper.getCurrentDimension() != Dimension.OVERWORLD) {
             return Optional.empty();
         }
-        return mod.getBlockScanner().getNearestBlock(blockPos -> !notRuinedPortalChests.contains(blockPos) && WorldHelper.isUnopenedChest(mod, blockPos) && canBeLootablePortalChest(mod, blockPos), Blocks.CHEST);
+        return mod.getBlockScanner().getNearestBlock(blockPos -> !notRuinedPortalChests.contains(blockPos) && WorldHelper.isUnopenedChest(blockPos) && canBeLootablePortalChest(mod, blockPos), Blocks.CHEST);
     }
 }

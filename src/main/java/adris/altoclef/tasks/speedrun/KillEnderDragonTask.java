@@ -66,7 +66,9 @@ public class KillEnderDragonTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
+        AltoClef mod = AltoClef.getInstance();
+
         mod.getBehaviour().push();
         // Don't forcefield endermen.
         mod.getBehaviour().addForceFieldExclusion(entity -> entity instanceof EndermanEntity || entity instanceof EnderDragonEntity || entity instanceof EnderDragonPart);
@@ -74,7 +76,9 @@ public class KillEnderDragonTask extends Task {
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         if (exitPortalTop == null) {
             exitPortalTop = locateExitPortalTop(mod);
         }
@@ -85,7 +89,7 @@ public class KillEnderDragonTask extends Task {
         // - Food (List)
 
         List<Item> toPickUp = new ArrayList<>(Arrays.asList(Items.DIAMOND_SWORD, Items.DIAMOND_BOOTS, Items.DIAMOND_LEGGINGS, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_HELMET));
-        if (StorageHelper.calculateInventoryFoodScore(mod) < 10) {
+        if (StorageHelper.calculateInventoryFoodScore() < 10) {
             toPickUp.addAll(Arrays.asList(
                     Items.BREAD, Items.COOKED_BEEF, Items.COOKED_CHICKEN, Items.COOKED_MUTTON, Items.COOKED_RABBIT, Items.COOKED_PORKCHOP
             ));
@@ -100,7 +104,7 @@ public class KillEnderDragonTask extends Task {
         // If not equipped diamond armor and we have any, equip it.
         for (Item armor : ItemHelper.DIAMOND_ARMORS) {
             try {
-                if (mod.getItemStorage().hasItem(armor) && !StorageHelper.isArmorEquipped(mod, armor)) {
+                if (mod.getItemStorage().hasItem(armor) && !StorageHelper.isArmorEquipped(armor)) {
                     setDebugState("Equipping " + armor);
                     return new EquipArmorTask(armor);
                 }
@@ -131,8 +135,8 @@ public class KillEnderDragonTask extends Task {
         // If there are crystals, suicide blow em up.
         // If there are no crystals, punk the dragon if it's close.
         int MINIMUM_BUILDING_BLOCKS = 1;
-        if (mod.getEntityTracker().entityFound(EndCrystalEntity.class) && mod.getItemStorage().getItemCount(Items.DIRT, Items.COBBLESTONE, Items.NETHERRACK, Items.END_STONE) < MINIMUM_BUILDING_BLOCKS || (collectBuildMaterialsTask.isActive() && !collectBuildMaterialsTask.isFinished(mod))) {
-            if (StorageHelper.miningRequirementMetInventory(mod, MiningRequirement.WOOD)) {
+        if (mod.getEntityTracker().entityFound(EndCrystalEntity.class) && mod.getItemStorage().getItemCount(Items.DIRT, Items.COBBLESTONE, Items.NETHERRACK, Items.END_STONE) < MINIMUM_BUILDING_BLOCKS || (collectBuildMaterialsTask.isActive() && !collectBuildMaterialsTask.isFinished())) {
+            if (StorageHelper.miningRequirementMetInventory(MiningRequirement.WOOD)) {
                 mod.getBehaviour().addProtectedItems(Items.END_STONE);
                 setDebugState("Collecting building blocks to pillar to crystals");
                 return collectBuildMaterialsTask;
@@ -167,8 +171,8 @@ public class KillEnderDragonTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
-        mod.getBehaviour().pop();
+    protected void onStop(Task interruptTask) {
+        AltoClef.getInstance().getBehaviour().pop();
     }
 
     @Override
@@ -187,7 +191,7 @@ public class KillEnderDragonTask extends Task {
 
     private BlockPos locateExitPortalTop(AltoClef mod) {
         if (!mod.getChunkTracker().isChunkLoaded(new BlockPos(0, 64, 0))) return null;
-        int height = WorldHelper.getGroundHeight(mod, 0, 0, Blocks.BEDROCK);
+        int height = WorldHelper.getGroundHeight(0, 0, Blocks.BEDROCK);
         if (height != -1) return new BlockPos(0, height, 0);
         return null;
     }
@@ -257,12 +261,14 @@ public class KillEnderDragonTask extends Task {
 
 
         @Override
-        protected void onStart(AltoClef mod) {
-            mod.getClientBaritone().getCustomGoalProcess().onLostControl();
+        protected void onStart() {
+            AltoClef.getInstance().getClientBaritone().getCustomGoalProcess().onLostControl();
         }
 
         @Override
-        protected Task onTick(AltoClef mod) {
+        protected Task onTick() {
+            AltoClef mod = AltoClef.getInstance();
+
             if (!mod.getEntityTracker().entityFound(EnderDragonEntity.class)) {
                 setDebugState("No dragon found.");
                 return null;
@@ -361,7 +367,9 @@ public class KillEnderDragonTask extends Task {
         }
 
         @Override
-        protected void onStop(AltoClef mod, Task interruptTask) {
+        protected void onStop(Task interruptTask) {
+            AltoClef mod = AltoClef.getInstance();
+
             mod.getClientBaritone().getCustomGoalProcess().onLostControl();
             mod.getClientBaritone().getInputOverrideHandler().setInputForceState(Input.MOVE_FORWARD, false);
             //mod.getControllerExtras().mouseClickOverride(0, false);
@@ -393,7 +401,7 @@ public class KillEnderDragonTask extends Task {
                 double angle = Math.PI * 2 * Math.random();
                 int x = (int) (radius * Math.cos(angle)),
                         z = (int) (radius * Math.sin(angle));
-                int y = WorldHelper.getGroundHeight(mod, x, z);
+                int y = WorldHelper.getGroundHeight(x, z);
                 if (y == -1) continue;
                 BlockPos check = new BlockPos(x, y, z);
                 if (mod.getWorld().getBlockState(check).getBlock() == Blocks.END_STONE) {

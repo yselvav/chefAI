@@ -34,10 +34,10 @@ public class StoreInStashTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
         if (_storedItems == null) {
             _storedItems = new ContainerStoredTracker(slot -> {
-                Optional<BlockPos> currentContainer = mod.getItemStorage().getLastBlockPosInteraction();
+                Optional<BlockPos> currentContainer = AltoClef.getInstance().getItemStorage().getLastBlockPosInteraction();
                 return currentContainer.isPresent() && _stashRange.contains(currentContainer.get());
             });
         }
@@ -45,7 +45,9 @@ public class StoreInStashTask extends Task {
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         // Get more if we don't have & "get if not present" is true.
         if (_getIfNotPresent) {
             for (ItemTarget target : _toStore) {
@@ -80,13 +82,13 @@ public class StoreInStashTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
         _storedItems.stopTracking();
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
-        return _storedItems != null && _storedItems.getUnstoredItemTargetsYouCanStore(mod, _toStore).length == 0;
+    public boolean isFinished() {
+        return _storedItems != null && _storedItems.getUnstoredItemTargetsYouCanStore(AltoClef.getInstance(), _toStore).length == 0;
     }
 
     @Override

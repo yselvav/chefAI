@@ -1,11 +1,11 @@
 package adris.altoclef.tasks;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.control.InputControls;
 import adris.altoclef.tasks.construction.PlaceStructureBlockTask;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.helpers.LookHelper;
 import adris.altoclef.util.time.TimerGame;
-import adris.altoclef.mixins.EntityAccessor;
 import baritone.api.utils.input.Input;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -15,6 +15,9 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+//#if MC <= 12006
+//$$ import adris.altoclef.mixins.EntityAccessor;
+//#endif
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,16 +31,18 @@ public class SafeNetherPortalTask extends Task {
     private Direction.Axis axis = null;
 
     @Override
-    protected void onStart(AltoClef mod) {
-        mod.getClientBaritone().getInputOverrideHandler().clearAllKeys();
+    protected void onStart() {
+        AltoClef.getInstance().getClientBaritone().getInputOverrideHandler().clearAllKeys();
         wait.reset();
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
         if (!wait.elapsed()) {
             return null;
         }
+        AltoClef mod = AltoClef.getInstance();
+
         if (!keyReset) {
             keyReset = true;
             mod.getClientBaritone().getInputOverrideHandler().clearAllKeys();
@@ -127,11 +132,13 @@ public class SafeNetherPortalTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
-        mod.getInputControls().release(Input.MOVE_FORWARD);
-        mod.getInputControls().release(Input.SNEAK);
-        mod.getInputControls().release(Input.CLICK_LEFT);
-        mod.getClientBaritone().getInputOverrideHandler().clearAllKeys();
+    protected void onStop(Task interruptTask) {
+        InputControls controls = AltoClef.getInstance().getInputControls();
+
+        controls.release(Input.MOVE_FORWARD);
+        controls.release(Input.SNEAK);
+        controls.release(Input.CLICK_LEFT);
+        AltoClef.getInstance().getClientBaritone().getInputOverrideHandler().clearAllKeys();
     }
 
     @Override
@@ -145,7 +152,7 @@ public class SafeNetherPortalTask extends Task {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         return finished;
     }
 
@@ -160,12 +167,14 @@ public class SafeNetherPortalTask extends Task {
 
 
         @Override
-        protected void onStart(AltoClef mod) {
-            mod.getClientBaritone().getInputOverrideHandler().clearAllKeys();
+        protected void onStart() {
+            AltoClef.getInstance().getClientBaritone().getInputOverrideHandler().clearAllKeys();
         }
 
         @Override
-        protected Task onTick(AltoClef mod) {
+        protected Task onTick() {
+            AltoClef mod = AltoClef.getInstance();
+
             if (mod.getWorld().getBlockState(pos).isAir()) {
                 setDebugState("Placing block...");
                 return new PlaceStructureBlockTask(pos);
@@ -193,15 +202,17 @@ public class SafeNetherPortalTask extends Task {
         }
 
         @Override
-        protected void onStop(AltoClef mod, Task interruptTask) {
-            mod.getInputControls().release(Input.MOVE_FORWARD);
-            mod.getInputControls().release(Input.SNEAK);
-            mod.getInputControls().release(Input.CLICK_LEFT);
-            mod.getClientBaritone().getInputOverrideHandler().clearAllKeys();
+        protected void onStop(Task interruptTask) {
+            InputControls controls = AltoClef.getInstance().getInputControls();
+
+            controls.release(Input.MOVE_FORWARD);
+            controls.release(Input.SNEAK);
+            controls.release(Input.CLICK_LEFT);
+            AltoClef.getInstance().getClientBaritone().getInputOverrideHandler().clearAllKeys();
         }
 
         @Override
-        public boolean isFinished(AltoClef mod) {
+        public boolean isFinished() {
             return finished;
         }
 

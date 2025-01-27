@@ -1,6 +1,7 @@
 package adris.altoclef.tasks.slot;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.control.SlotHandler;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.slots.Slot;
 import net.minecraft.screen.slot.SlotActionType;
@@ -11,7 +12,7 @@ public class ClickSlotTask extends Task {
     private final int mouseButton;
     private final SlotActionType type;
 
-    private boolean _clicked = false;
+    private boolean clicked = false;
 
     public ClickSlotTask(Slot slot, int mouseButton, SlotActionType type) {
         this.slot = slot;
@@ -32,22 +33,24 @@ public class ClickSlotTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
-        _clicked = false;
+    protected void onStart() {
+        clicked = false;
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
-        if (mod.getSlotHandler().canDoSlotAction()) {
-            mod.getSlotHandler().clickSlot(slot, mouseButton, type);
-            mod.getSlotHandler().registerSlotAction();
-            _clicked = true;
+    protected Task onTick() {
+        SlotHandler slotHandler = AltoClef.getInstance().getSlotHandler();
+
+        if (slotHandler.canDoSlotAction()) {
+            slotHandler.clickSlot(slot, mouseButton, type);
+            slotHandler.registerSlotAction();
+            clicked = true;
         }
         return null;
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 
@@ -65,7 +68,7 @@ public class ClickSlotTask extends Task {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
-        return _clicked;
+    public boolean isFinished() {
+        return clicked;
     }
 }

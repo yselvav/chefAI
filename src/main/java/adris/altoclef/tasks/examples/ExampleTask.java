@@ -20,19 +20,22 @@ public class ExampleTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
+        AltoClef mod = AltoClef.getInstance();
+
         mod.getBehaviour().push();
         mod.getBehaviour().addProtectedItems(Items.COBBLESTONE);
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
 
         /*
          * Grab X stone pickaxes
          * Make sure we have a block
          * Then, place the block.
          */
+        AltoClef mod = AltoClef.getInstance();
 
         if (mod.getItemStorage().getItemCount(Items.STONE_PICKAXE) < numberOfStonePickaxesToGrab) {
             return TaskCatalogue.getItemTask(Items.STONE_PICKAXE, numberOfStonePickaxesToGrab);
@@ -53,20 +56,21 @@ public class ExampleTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
-        mod.getBehaviour().pop();
+    protected void onStop(Task interruptTask) {
+        AltoClef.getInstance().getBehaviour().pop();
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
+        AltoClef mod = AltoClef.getInstance();
+
         return mod.getItemStorage().getItemCount(Items.STONE_PICKAXE) >= numberOfStonePickaxesToGrab &&
                 mod.getWorld().getBlockState(whereToPlaceCobblestone).getBlock() == Blocks.COBBLESTONE;
     }
 
     @Override
     protected boolean isEqual(Task other) {
-        if (other instanceof ExampleTask) {
-            ExampleTask task = (ExampleTask) other;
+        if (other instanceof ExampleTask task) {
             return task.numberOfStonePickaxesToGrab == numberOfStonePickaxesToGrab
                     && task.whereToPlaceCobblestone.equals(whereToPlaceCobblestone);
         }

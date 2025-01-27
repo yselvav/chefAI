@@ -46,19 +46,21 @@ public class KillEnderDragonWithBedsTask extends Task {
 
     public static BlockPos locateExitPortalTop(AltoClef mod) {
         if (!mod.getChunkTracker().isChunkLoaded(new BlockPos(0, 64, 0))) return null;
-        int height = WorldHelper.getGroundHeight(mod, 0, 0, Blocks.BEDROCK);
+        int height = WorldHelper.getGroundHeight(0, 0, Blocks.BEDROCK);
         if (height != -1) return new BlockPos(0, height, 0);
         return null;
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
         // do not block our view
-        mod.getBehaviour().avoidBlockPlacing((pos) -> pos.getZ() == 0 && Math.abs(pos.getX()) < 5);
+        AltoClef.getInstance().getBehaviour().avoidBlockPlacing((pos) -> pos.getZ() == 0 && Math.abs(pos.getX()) < 5);
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         /*
             If dragon is perching:
                 If we're not in position (XZ):
@@ -140,7 +142,7 @@ public class KillEnderDragonWithBedsTask extends Task {
 
             whenNotPerchingTask.setPerchState(perching);
             // When the dragon is not perching...
-            if (whenNotPerchingTask.isActive() && !whenNotPerchingTask.isFinished(mod)) {
+            if (whenNotPerchingTask.isActive() && !whenNotPerchingTask.isFinished()) {
                 setDebugState("Dragon not perching, performing special behavior...");
                 return whenNotPerchingTask;
             }
@@ -196,7 +198,7 @@ public class KillEnderDragonWithBedsTask extends Task {
 
         LookHelper.lookAt(mod, obsidian, dir);
 
-        BlockPos bedHead = WorldHelper.getBedHead(mod, endPortalTop);
+        BlockPos bedHead = WorldHelper.getBedHead(endPortalTop);
         mod.getSlotHandler().forceEquipItem(ItemHelper.BED);
 
         if (bedHead == null) {
@@ -246,13 +248,13 @@ public class KillEnderDragonWithBedsTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
-        mod.getFoodChain().shouldStop(false);
+    protected void onStop(Task interruptTask) {
+        AltoClef.getInstance().getFoodChain().shouldStop(false);
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
-        return super.isFinished(mod);
+    public boolean isFinished() {
+        return super.isFinished();
     }
 
     @Override

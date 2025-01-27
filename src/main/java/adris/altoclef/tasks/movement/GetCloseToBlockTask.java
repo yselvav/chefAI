@@ -23,32 +23,32 @@ public class GetCloseToBlockTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
         _currentRange = Integer.MAX_VALUE;
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
         // Always bump the range down if we've met it.
         // We have a strictly decreasing range, which means we will eventualy get
         // as close as we can.
-        if (inRange(mod)) {
-            _currentRange = getCurrentDistance(mod) - 1;
+        if (inRange()) {
+            _currentRange = getCurrentDistance() - 1;
         }
         return new GetWithinRangeOfBlockTask(_toApproach, _currentRange);
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 
-    private int getCurrentDistance(AltoClef mod) {
-        return (int) Math.sqrt(mod.getPlayer().getBlockPos().getSquaredDistance(_toApproach));
+    private int getCurrentDistance() {
+        return (int) Math.sqrt(AltoClef.getInstance().getPlayer().getBlockPos().getSquaredDistance(_toApproach));
     }
 
-    private boolean inRange(AltoClef mod) {
-        return mod.getPlayer().getBlockPos().getSquaredDistance(_toApproach) <= _currentRange * _currentRange;
+    private boolean inRange() {
+        return AltoClef.getInstance().getPlayer().getBlockPos().getSquaredDistance(_toApproach) <= _currentRange * _currentRange;
     }
 
     @Override

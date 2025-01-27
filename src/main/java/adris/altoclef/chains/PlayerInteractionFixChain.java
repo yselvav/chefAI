@@ -40,23 +40,24 @@ public class PlayerInteractionFixChain extends TaskChain {
     }
 
     @Override
-    protected void onStop(AltoClef mod) {
+    protected void onStop() {
 
     }
 
     @Override
-    public void onInterrupt(AltoClef mod, TaskChain other) {
+    public void onInterrupt(TaskChain other) {
 
     }
 
     @Override
-    protected void onTick(AltoClef mod) {
+    protected void onTick() {
     }
 
     @Override
-    public float getPriority(AltoClef mod) {
-
+    public float getPriority() {
         if (!AltoClef.inGame()) return Float.NEGATIVE_INFINITY;
+
+        AltoClef mod = AltoClef.getInstance();
 
         if (mod.getUserTaskChain().isActive() && betterToolTimer.elapsed()) {
             // Equip the right tool for the job if we're not using one.
@@ -138,7 +139,7 @@ public class PlayerInteractionFixChain extends TaskChain {
             return Float.NEGATIVE_INFINITY;
         }
 
-        if (shouldCloseOpenScreen(mod)) {
+        if (shouldCloseOpenScreen()) {
             //Debug.logMessage("Closed screen since we changed our look.");
             ItemStack cursorStack = StorageHelper.getItemStackInCursorSlot();
             if (!cursorStack.isEmpty()) {
@@ -167,9 +168,10 @@ public class PlayerInteractionFixChain extends TaskChain {
         return Float.NEGATIVE_INFINITY;
     }
 
-    private boolean shouldCloseOpenScreen(AltoClef mod) {
-        if (!mod.getModSettings().shouldCloseScreenWhenLookingOrMining())
+    private boolean shouldCloseOpenScreen() {
+        if (!AltoClef.getInstance().getModSettings().shouldCloseScreenWhenLookingOrMining())
             return false;
+
         // Only check look if we've had the same screen open for a while
         Screen openScreen = MinecraftClient.getInstance().currentScreen;
         if (openScreen != lastScreen) {

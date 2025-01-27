@@ -42,7 +42,7 @@ public class MovementProgressChecker {
             // If we broke a block, we made progress.
             // We must also delay reseting the distance checker UNTIL we break a block.
             // Because otherwise we risk not failing if we keep retrtying to mine and don't succeed.
-            if (lastBreakingBlock != null && WorldHelper.isAir(mod, lastBreakingBlock)) {
+            if (lastBreakingBlock != null && WorldHelper.isAir(lastBreakingBlock)) {
                 distanceChecker.reset();
                 mineChecker.reset();
             }

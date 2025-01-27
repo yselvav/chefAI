@@ -1,6 +1,5 @@
 package adris.altoclef.tasks.resources;
 
-import adris.altoclef.AltoClef;
 import adris.altoclef.TaskCatalogue;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.MiningRequirement;
@@ -12,20 +11,20 @@ import net.minecraft.item.Items;
  */
 public class SatisfyMiningRequirementTask extends Task {
 
-    private final MiningRequirement _requirement;
+    private final MiningRequirement requirement;
 
     public SatisfyMiningRequirementTask(MiningRequirement requirement) {
-        _requirement = requirement;
+        this.requirement = requirement;
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
-        switch (_requirement) {
+    protected Task onTick() {
+        switch (requirement) {
             case HAND:
                 // Will never happen if you program this right
                 break;
@@ -42,25 +41,25 @@ public class SatisfyMiningRequirementTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 
     @Override
     protected boolean isEqual(Task other) {
         if (other instanceof SatisfyMiningRequirementTask task) {
-            return task._requirement == _requirement;
+            return task.requirement == requirement;
         }
         return false;
     }
 
     @Override
     protected String toDebugString() {
-        return "Satisfy Mining Req: " + _requirement;
+        return "Satisfy Mining Req: " + requirement;
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
-        return StorageHelper.miningRequirementMetInventory(mod, _requirement);
+    public boolean isFinished() {
+        return StorageHelper.miningRequirementMetInventory(requirement);
     }
 }

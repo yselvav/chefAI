@@ -84,12 +84,12 @@ public class DoToClosestBlockTask extends AbstractDoToClosestObjectTask<BlockPos
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 

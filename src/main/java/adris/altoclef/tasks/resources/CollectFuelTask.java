@@ -18,12 +18,12 @@ public class CollectFuelTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
         // Nothing
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
 
         switch (WorldHelper.getCurrentDimension()) {
             case OVERWORLD -> {
@@ -45,7 +45,7 @@ public class CollectFuelTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
         // Nothing
     }
 
@@ -58,8 +58,8 @@ public class CollectFuelTask extends Task {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
-        return mod.getItemStorage().getItemCountInventoryOnly(Items.COAL) >= targetFuel;
+    public boolean isFinished() {
+        return AltoClef.getInstance().getItemStorage().getItemCountInventoryOnly(Items.COAL) >= targetFuel;
     }
 
     @Override

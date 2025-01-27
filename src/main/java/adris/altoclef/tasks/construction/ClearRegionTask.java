@@ -3,9 +3,9 @@ package adris.altoclef.tasks.construction;
 import adris.altoclef.AltoClef;
 import adris.altoclef.tasksystem.ITaskRequiresGrounded;
 import adris.altoclef.tasksystem.Task;
+import baritone.Baritone;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
-import adris.altoclef.multiversion.blockpos.BlockPosHelper;
 
 
 public class ClearRegionTask extends Task implements ITaskRequiresGrounded {
@@ -24,25 +24,27 @@ public class ClearRegionTask extends Task implements ITaskRequiresGrounded {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
-        if (!mod.getClientBaritone().getBuilderProcess().isActive()) {
-            mod.getClientBaritone().getBuilderProcess().clearArea(_from, _to);
+    protected Task onTick() {
+        Baritone baritone = AltoClef.getInstance().getClientBaritone();
+
+        if (!baritone.getBuilderProcess().isActive()) {
+            baritone.getBuilderProcess().clearArea(_from, _to);
         }
         return null;
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
-        mod.getClientBaritone().getBuilderProcess().onLostControl();
+    protected void onStop(Task interruptTask) {
+        AltoClef.getInstance().getClientBaritone().getBuilderProcess().onLostControl();
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         int x = _from.getX() - _to.getX();
         int y = _from.getY() - _to.getY();
         int z = _from.getZ() - _to.getZ();

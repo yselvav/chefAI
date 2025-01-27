@@ -95,9 +95,10 @@ public class ConstructNetherPortalBucketTask extends Task {
     private boolean firstSearch = false;
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
         currentDestroyTarget = null;
 
+        AltoClef mod = AltoClef.getInstance();
         mod.getBehaviour().push();
 
         // Avoid breaking portal frame if we're obsidian.
@@ -123,7 +124,9 @@ public class ConstructNetherPortalBucketTask extends Task {
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         if (portalOrigin != null) {
             if (mod.getWorld().getBlockState(portalOrigin.up()).getBlock() == Blocks.NETHER_PORTAL) {
                 setDebugState("Done constructing nether portal.");
@@ -134,7 +137,7 @@ public class ConstructNetherPortalBucketTask extends Task {
         if (mod.getClientBaritone().getPathingBehavior().isPathing()) {
             progressChecker.reset();
         }
-        if (wanderTask.isActive() && !wanderTask.isFinished(mod)) {
+        if (wanderTask.isActive() && !wanderTask.isFinished()) {
             setDebugState("Trying again.");
             progressChecker.reset();
             return wanderTask;
@@ -165,7 +168,7 @@ public class ConstructNetherPortalBucketTask extends Task {
         }
 
         if (currentDestroyTarget != null) {
-            if (!WorldHelper.isSolidBlock(mod, currentDestroyTarget)) {
+            if (!WorldHelper.isSolidBlock(currentDestroyTarget)) {
                 currentDestroyTarget = null;
             } else {
                 return new DestroyBlockTask(currentDestroyTarget);
@@ -245,7 +248,7 @@ public class ConstructNetherPortalBucketTask extends Task {
             if (frameBlock == Blocks.OBSIDIAN) {
                 // Already satisfied, clear water above if need be.
                 BlockPos waterCheck = framePos.up();
-                if (mod.getWorld().getBlockState(waterCheck).getBlock() == Blocks.WATER && WorldHelper.isSourceBlock(mod, waterCheck, true)) {
+                if (mod.getWorld().getBlockState(waterCheck).getBlock() == Blocks.WATER && WorldHelper.isSourceBlock(waterCheck, true)) {
                     setDebugState("Clearing water from cast");
                     return new ClearLiquidTask(waterCheck);
                 }
@@ -284,8 +287,8 @@ public class ConstructNetherPortalBucketTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
-        mod.getBehaviour().pop();
+    protected void onStop(Task interruptTask) {
+        AltoClef.getInstance().getBehaviour().pop();
     }
 
     @Override
@@ -386,7 +389,7 @@ public class ConstructNetherPortalBucketTask extends Task {
                                 break moveAlongLine;
                             }
                             // Also check for at least 1 solid block for us to place on...
-                            if (dy <= 1 && !solidFound && WorldHelper.isSolidBlock(mod, toCheck)) {
+                            if (dy <= 1 && !solidFound && WorldHelper.isSolidBlock(toCheck)) {
                                 solidFound = true;
                             }
                         }

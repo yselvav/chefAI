@@ -31,11 +31,9 @@ public class CraftGenericWithRecipeBooksTask extends Task implements ITaskUsesCr
 
     /**
      * This method is called when the mod starts.
-     *
-     * @param mod The AltoClef mod instance.
      */
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
     }
 
@@ -43,11 +41,12 @@ public class CraftGenericWithRecipeBooksTask extends Task implements ITaskUsesCr
      * This method handles the logic for the onTick event.
      * It checks various conditions and performs actions accordingly.
      *
-     * @param mod The instance of the mod.
      * @return The next task to execute.
      */
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         // Check if the big crafting UI or player inventory UI is open
         boolean isBigCraftingOpen = StorageHelper.isBigCraftingOpen();
         boolean isPlayerInventoryOpen = StorageHelper.isPlayerInventoryOpen();
@@ -152,11 +151,10 @@ public class CraftGenericWithRecipeBooksTask extends Task implements ITaskUsesCr
     /**
      * This method is called when the task is interrupted.
      *
-     * @param mod           The AltoClef mod.
      * @param interruptTask The task that interrupted the current task.
      */
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 

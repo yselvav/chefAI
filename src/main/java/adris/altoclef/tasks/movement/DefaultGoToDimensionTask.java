@@ -28,39 +28,39 @@ public class DefaultGoToDimensionTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
         if (WorldHelper.getCurrentDimension() == _target) return null;
 
         switch (_target) {
             case OVERWORLD:
                 switch (WorldHelper.getCurrentDimension()) {
                     case NETHER:
-                        return goToOverworldFromNetherTask(mod);
+                        return goToOverworldFromNetherTask();
                     case END:
-                        return goToOverworldFromEndTask(mod);
+                        return goToOverworldFromEndTask();
                 }
                 break;
             case NETHER:
                 switch (WorldHelper.getCurrentDimension()) {
                     case OVERWORLD:
-                        return goToNetherFromOverworldTask(mod);
+                        return goToNetherFromOverworldTask();
                     case END:
                         // First go to the overworld
-                        return goToOverworldFromEndTask(mod);
+                        return goToOverworldFromEndTask();
                 }
                 break;
             case END:
                 switch (WorldHelper.getCurrentDimension()) {
                     case NETHER:
                         // First go to the overworld
-                        return goToOverworldFromNetherTask(mod);
+                        return goToOverworldFromNetherTask();
                     case OVERWORLD:
-                        return goToEndTask(mod);
+                        return goToEndTask();
                 }
                 break;
         }
@@ -70,7 +70,7 @@ public class DefaultGoToDimensionTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 
@@ -88,11 +88,13 @@ public class DefaultGoToDimensionTask extends Task {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         return WorldHelper.getCurrentDimension() == _target;
     }
 
-    private Task goToOverworldFromNetherTask(AltoClef mod) {
+    private Task goToOverworldFromNetherTask() {
+        AltoClef mod = AltoClef.getInstance();
+
         if (netherPortalIsClose(mod)) {
             setDebugState("Going to nether portal");
             return new EnterNetherPortalTask(Dimension.NETHER);
@@ -108,12 +110,14 @@ public class DefaultGoToDimensionTask extends Task {
         return new ConstructNetherPortalObsidianTask();
     }
 
-    private Task goToOverworldFromEndTask(AltoClef mod) {
+    private Task goToOverworldFromEndTask() {
         setDebugState("TODO: Go to center portal (at 0,0). If it doesn't exist, kill ender dragon lol");
         return null;
     }
 
-    private Task goToNetherFromOverworldTask(AltoClef mod) {
+    private Task goToNetherFromOverworldTask() {
+        AltoClef mod = AltoClef.getInstance();
+
         if (netherPortalIsClose(mod)) {
             setDebugState("Going to nether portal");
             return new EnterNetherPortalTask(Dimension.NETHER);
@@ -124,7 +128,7 @@ public class DefaultGoToDimensionTask extends Task {
         };
     }
 
-    private Task goToEndTask(AltoClef mod) {
+    private Task goToEndTask() {
         // Keep in mind that getting to the end requires going to the nether first.
         setDebugState("TODO: Get to End, Same as BeatMinecraft");
         return null;

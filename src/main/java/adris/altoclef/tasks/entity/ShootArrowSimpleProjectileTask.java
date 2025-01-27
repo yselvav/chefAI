@@ -30,7 +30,7 @@ public class ShootArrowSimpleProjectileTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
         shooting = false;
     }
 
@@ -75,7 +75,9 @@ public class ShootArrowSimpleProjectileTask extends Task {
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         setDebugState("Shooting projectile");
         List<Item> requiredArrows = Arrays.asList(Items.ARROW, Items.SPECTRAL_ARROW, Items.TIPPED_ARROW);
 
@@ -86,7 +88,7 @@ public class ShootArrowSimpleProjectileTask extends Task {
         }
 
         Rotation lookTarget = calculateThrowLook(mod, target);
-        LookHelper.lookAt(mod, lookTarget);
+        LookHelper.lookAt(lookTarget);
 
         // check if we are holding a bow
         boolean charged = mod.getPlayer().getItemUseTime() > 20 && mod.getPlayer().getActiveItem().getItem() == Items.BOW;
@@ -120,12 +122,12 @@ public class ShootArrowSimpleProjectileTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
-        mod.getInputControls().release(Input.CLICK_RIGHT);
+    protected void onStop(Task interruptTask) {
+        AltoClef.getInstance().getInputControls().release(Input.CLICK_RIGHT);
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         return shot;
     }
 

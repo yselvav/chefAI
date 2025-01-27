@@ -85,7 +85,7 @@ public class AltoClef implements ModInitializer {
     private Task storedTask;
 
     //TODO refactor this later
-    public static AltoClef INSTANCE;
+    private static AltoClef instance;
 
     // Are we in game (playing in a server/world)
     public static boolean inGame() {
@@ -105,7 +105,7 @@ public class AltoClef implements ModInitializer {
         // However, some things (like resources) may still be uninitialized.
         // As such, nothing will be loaded here but basic initialization.
         EventBus.subscribe(TitleScreenEntryEvent.class, evt -> onInitializeLoad());
-        INSTANCE = this;
+        instance = this;
     }
 
     public void onInitializeLoad() {
@@ -157,7 +157,7 @@ public class AltoClef implements ModInitializer {
         adris.altoclef.Settings.load(newSettings -> {
             settings = newSettings;
             // Baritone's `acceptableThrowawayItems` should match our own.
-            List<Item> baritoneCanPlace = Arrays.stream(settings.getThrowawayItems(this, true))
+            List<Item> baritoneCanPlace = Arrays.stream(settings.getThrowawayItems(true))
                     .filter(item -> item != Items.SOUL_SAND && item != Items.MAGMA_BLOCK && item != Items.SAND && item
                             != Items.GRAVEL).toList();
             getClientBaritoneSettings().acceptableThrowawayItems.value.addAll(baritoneCanPlace);
@@ -207,7 +207,7 @@ public class AltoClef implements ModInitializer {
         if (InputHelper.isKeyPressed(GLFW.GLFW_KEY_LEFT_CONTROL) && InputHelper.isKeyPressed(GLFW.GLFW_KEY_K)) {
             userTaskChain.cancel(this);
             if (taskRunner.getCurrentTaskChain() != null) {
-                taskRunner.getCurrentTaskChain().stop(this);
+                taskRunner.getCurrentTaskChain().stop();
             }
         }
 
@@ -291,6 +291,14 @@ public class AltoClef implements ModInitializer {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    // TODO refactor codebase to use this instead of passing an argument around
+    /**
+     * @return the instance of this class or null if it has not been initialized yet
+     */
+    public static AltoClef getInstance() {
+        return instance;
     }
 
     /**

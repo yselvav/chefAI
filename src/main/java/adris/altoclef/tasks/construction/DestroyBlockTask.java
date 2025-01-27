@@ -32,7 +32,7 @@ import java.util.Optional;
 public class DestroyBlockTask extends Task implements ITaskRequiresGrounded {
     private final MovementProgressChecker stuckCheck = new MovementProgressChecker();
     private final MovementProgressChecker _moveChecker = new MovementProgressChecker();
-    private final BlockPos _pos;
+    private final BlockPos pos;
     Block[] annoyingBlocks = new Block[]{
             Blocks.VINE,
             Blocks.NETHER_SPROUTS,
@@ -49,11 +49,11 @@ public class DestroyBlockTask extends Task implements ITaskRequiresGrounded {
             Blocks.SHORT_GRASS,
             Blocks.SWEET_BERRY_BUSH
     };
-    private Task _unstuckTask = null;
+    private Task unstuckTask = null;
     private boolean isMining;
 
     public DestroyBlockTask(BlockPos pos) {
-        _pos = pos;
+        this.pos = pos;
     }
 
     /**
@@ -187,11 +187,11 @@ public class DestroyBlockTask extends Task implements ITaskRequiresGrounded {
      * If the cursor stack is not empty, it tries to move it to a suitable slot in the player inventory.
      * If the item can be thrown away, it drops it in an undefined slot or the garbage slot.
      * If the cursor stack is empty, it closes the screen.
-     *
-     * @param mod The AltoClef mod instance.
      */
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
+        AltoClef mod = AltoClef.getInstance();
+
         // Cancel any ongoing pathing behavior.
         mod.getClientBaritone().getPathingBehavior().forceCancel();
 
@@ -242,21 +242,22 @@ public class DestroyBlockTask extends Task implements ITaskRequiresGrounded {
     /**
      * This method is called periodically to perform various tasks.
      *
-     * @param mod The instance of the mod.
      * @return The next task to be executed.
      */
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         // Check if there is white wool at the specified position
-        if (mod.getWorld().getBlockState(_pos).getBlock() == Blocks.WHITE_WOOL) {
+        if (mod.getWorld().getBlockState(pos).getBlock() == Blocks.WHITE_WOOL) {
             // Iterate over all entities in the world
             Iterable<Entity> entities = mod.getWorld().getEntities();
             for (Entity entity : entities) {
                 // Check if the entity is a PillagerEntity and is within a distance of 144 blocks from the position
-                if (entity instanceof PillagerEntity && _pos.isWithinDistance(entity.getPos(), 144)) {
+                if (entity instanceof PillagerEntity && pos.isWithinDistance(entity.getPos(), 144)) {
                     Debug.logMessage("Blacklisting pillager wool.");
                     // Request the block at the position to be marked as unreachable
-                    mod.getBlockScanner().requestBlockUnreachable(_pos, 0);
+                    mod.getBlockScanner().requestBlockUnreachable(pos, 0);
                 }
             }
         }
@@ -267,7 +268,7 @@ public class DestroyBlockTask extends Task implements ITaskRequiresGrounded {
         }
 
         // Check if the player is in a Nether portal
-        if (WorldHelper.isInNetherPortal(mod)) {
+        if (WorldHelper.isInNetherPortal()) {
             if (!mod.getClientBaritone().getPathingBehavior().isPathing()) {
                 setDebugState("Getting out from nether portal");
                 // Hold the sneak and move forward inputs to exit the Nether portal
@@ -286,21 +287,21 @@ public class DestroyBlockTask extends Task implements ITaskRequiresGrounded {
         }
 
         // Check if there is an active unstuck task and the player is stuck in a block
-        if (_unstuckTask != null && _unstuckTask.isActive() && !_unstuckTask.isFinished(mod) && stuckInBlock(mod) != null) {
+        if (unstuckTask != null && unstuckTask.isActive() && !unstuckTask.isFinished() && stuckInBlock(mod) != null) {
             setDebugState("Getting unstuck from block.");
             stuckCheck.reset();
             // Release control of Baritone's custom goal process and explore process
             mod.getClientBaritone().getCustomGoalProcess().onLostControl();
             mod.getClientBaritone().getExploreProcess().onLostControl();
-            return _unstuckTask;
+            return unstuckTask;
         }
 
         // Check if the move checker or the stuck check failed
         if (!_moveChecker.check(mod) || !stuckCheck.check(mod)) {
             BlockPos blockStuck = stuckInBlock(mod);
             if (blockStuck != null) {
-                _unstuckTask = getFenceUnstuckTask();
-                return _unstuckTask;
+                unstuckTask = getFenceUnstuckTask();
+                return unstuckTask;
             }
             stuckCheck.reset();
         }
@@ -309,20 +310,20 @@ public class DestroyBlockTask extends Task implements ITaskRequiresGrounded {
         if (!_moveChecker.check(mod)) {
             _moveChecker.reset();
             // Request the block at the position to be marked as unreachable
-            mod.getBlockScanner().requestBlockUnreachable(_pos);
+            mod.getBlockScanner().requestBlockUnreachable(pos);
         }
 
         // Check if the block above the position is not solid, the player is above the position,
         // and the player is within a distance of 0.89 blocks from the position
-        if (!WorldHelper.isSolidBlock(mod, _pos.up()) && mod.getPlayer().getPos().y > _pos.getY() && _pos.isWithinDistance(mod.getPlayer().isOnGround() ? mod.getPlayer().getPos() : mod.getPlayer().getPos().add(0, -1, 0), 0.89)) {
-            if (WorldHelper.dangerousToBreakIfRightAbove(mod, _pos)) {
+        if (!WorldHelper.isSolidBlock(pos.up()) && mod.getPlayer().getPos().y > pos.getY() && pos.isWithinDistance(mod.getPlayer().isOnGround() ? mod.getPlayer().getPos() : mod.getPlayer().getPos().add(0, -1, 0), 0.89)) {
+            if (WorldHelper.dangerousToBreakIfRightAbove(pos)) {
                 setDebugState("It's dangerous to break as we're right above it, moving away and trying again.");
-                return new RunAwayFromPositionTask(3, _pos.getY(), _pos);
+                return new RunAwayFromPositionTask(3, pos.getY(), pos);
             }
         }
 
-        Optional<Rotation> reach = LookHelper.getReach(_pos);
-        if (reach.isPresent() && (mod.getPlayer().isTouchingWater() || mod.getPlayer().isOnGround()) && !mod.getFoodChain().needsToEat() && !WorldHelper.isInNetherPortal(mod) && mod.getClientBaritone().getPathingBehavior().isSafeToCancel()) {
+        Optional<Rotation> reach = LookHelper.getReach(pos);
+        if (reach.isPresent() && (mod.getPlayer().isTouchingWater() || mod.getPlayer().isOnGround()) && !mod.getFoodChain().needsToEat() && !WorldHelper.isInNetherPortal() && mod.getClientBaritone().getPathingBehavior().isSafeToCancel()) {
             setDebugState("Block in range, mining...");
             stuckCheck.reset();
             isMining = true;
@@ -332,7 +333,7 @@ public class DestroyBlockTask extends Task implements ITaskRequiresGrounded {
             mod.getClientBaritone().getCustomGoalProcess().onLostControl();
             mod.getClientBaritone().getBuilderProcess().onLostControl();
             if (!LookHelper.isLookingAt(mod, reach.get())) {
-                LookHelper.lookAt(mod, reach.get());
+                LookHelper.lookAt(reach.get());
             }
             // Tool equip is handled in `PlayerInteractionFixChain`. Oof.
             mod.getClientBaritone().getInputOverrideHandler().setInputForceState(Input.CLICK_LEFT, true);
@@ -341,12 +342,12 @@ public class DestroyBlockTask extends Task implements ITaskRequiresGrounded {
             if (isMining && mod.getPlayer().isTouchingWater()) {
                 setDebugState("We are in water... holding break button");
                 isMining = false;
-                mod.getBlockScanner().requestBlockUnreachable(_pos);
+                mod.getBlockScanner().requestBlockUnreachable(pos);
                 mod.getInputControls().hold(Input.CLICK_LEFT);
             } else {
                 isMining = false;
             }
-            boolean isCloseToMoveBack = _pos.isWithinDistance(mod.getPlayer().getPos(), 2);
+            boolean isCloseToMoveBack = pos.isWithinDistance(mod.getPlayer().getPos(), 2);
             if (isCloseToMoveBack) {
                 if (!mod.getClientBaritone().getPathingBehavior().isPathing() && !mod.getPlayer().isTouchingWater() &&
                         !mod.getFoodChain().needsToEat()) {
@@ -359,8 +360,8 @@ public class DestroyBlockTask extends Task implements ITaskRequiresGrounded {
             }
             if (!mod.getClientBaritone().getCustomGoalProcess().isActive()) {
                 mod.getClientBaritone().getBuilderProcess().onLostControl();
-                mod.getClientBaritone().getCustomGoalProcess().setGoalAndPath(mod.getWorld().getBlockState(_pos.up()).getBlock() ==
-                        Blocks.SNOW ? new GoalBlock(_pos) : new GoalNear(_pos, 1));
+                mod.getClientBaritone().getCustomGoalProcess().setGoalAndPath(mod.getWorld().getBlockState(pos.up()).getBlock() ==
+                        Blocks.SNOW ? new GoalBlock(pos) : new GoalNear(pos, 1));
             }
         }
         return null;
@@ -370,11 +371,12 @@ public class DestroyBlockTask extends Task implements ITaskRequiresGrounded {
      * This method is called when the task is interrupted or stopped.
      * It cancels Baritone pathing and releases certain input controls.
      *
-     * @param mod           The AltoClef mod instance.
      * @param interruptTask The task that interrupted the current task.
      */
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
+        AltoClef mod = AltoClef.getInstance();
+
         // Cancel Baritone pathing
         mod.getClientBaritone().getPathingBehavior().forceCancel();
 
@@ -404,14 +406,13 @@ public class DestroyBlockTask extends Task implements ITaskRequiresGrounded {
     /**
      * Checks if the block at the given position is air.
      *
-     * @param mod The AltoClef mod instance
      * @return true if the block is air, false otherwise
      */
     @Override
-    public boolean isFinished(AltoClef mod) {
-        BlockState blockState = mod.getWorld().getBlockState(_pos);
+    public boolean isFinished() {
+        BlockState blockState = AltoClef.getInstance().getWorld().getBlockState(pos);
         boolean isAir = blockState.isAir();
-        Debug.logInternal("Block at position " + _pos + " is air: " + isAir);
+        Debug.logInternal("Block at position " + pos + " is air: " + isAir);
         return isAir;
     }
 
@@ -429,7 +430,7 @@ public class DestroyBlockTask extends Task implements ITaskRequiresGrounded {
         if (other instanceof DestroyBlockTask destroyBlockTask) {
 
             // Check if the positions of the tasks are equal
-            if (destroyBlockTask._pos.equals(_pos)) {
+            if (destroyBlockTask.pos.equals(pos)) {
                 isSame = true;
             }
         }
@@ -448,6 +449,6 @@ public class DestroyBlockTask extends Task implements ITaskRequiresGrounded {
      */
     @Override
     protected String toDebugString() {
-        return "Destroy block at " + _pos.toShortString();
+        return "Destroy block at " + pos.toShortString();
     }
 }

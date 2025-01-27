@@ -15,8 +15,10 @@ public class ExampleTask2 extends Task {
     private BlockPos target = null;
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
         // Extra credit: Bot will NOT damage trees.
+        AltoClef mod = AltoClef.getInstance();
+
         mod.getBehaviour().push();
         mod.getBehaviour().avoidBlockBreaking(blockPos -> {
             BlockState s = mod.getWorld().getBlockState(blockPos);
@@ -25,7 +27,8 @@ public class ExampleTask2 extends Task {
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
 
         /*
          * Find a tree
@@ -57,8 +60,8 @@ public class ExampleTask2 extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
-        mod.getBehaviour().pop();
+    protected void onStop(Task interruptTask) {
+        AltoClef.getInstance().getBehaviour().pop();
     }
 
     @Override
@@ -67,11 +70,11 @@ public class ExampleTask2 extends Task {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         if (target != null) {
-            return mod.getPlayer().getBlockPos().equals(target);
+            return AltoClef.getInstance().getPlayer().getBlockPos().equals(target);
         }
-        return super.isFinished(mod);
+        return super.isFinished();
     }
 
     @Override

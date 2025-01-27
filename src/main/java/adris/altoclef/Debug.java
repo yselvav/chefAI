@@ -21,7 +21,7 @@ public class Debug {
     }
 
     private static String getLogPrefix() {
-        AltoClef altoClef = AltoClef.INSTANCE;
+        AltoClef altoClef = AltoClef.getInstance();
         if (altoClef != null) {
             return altoClef.getModSettings().getChatLogPrefix();
         }
@@ -53,7 +53,7 @@ public class Debug {
             System.out.println("ALTO CLEF: WARNING: " + message);
         }
 
-        AltoClef altoClef = AltoClef.INSTANCE;
+        AltoClef altoClef = AltoClef.getInstance();
         if (altoClef != null && !altoClef.getModSettings().shouldHideAllWarningLogs()) {
             if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().player != null) {
                 String msg = "\u00A72\u00A7l\u00A7o" + getLogPrefix() + "\u00A7c" + message + "\u00A7r";
@@ -101,9 +101,9 @@ public class Debug {
     }
 
     private static boolean canLog(int level) {
-        if (AltoClef.INSTANCE == null || AltoClef.INSTANCE.getModSettings() == null) return true;
+        if (AltoClef.getInstance() == null || AltoClef.getInstance().getModSettings() == null) return true;
 
-        String enabledLogLevel = AltoClef.INSTANCE.getModSettings().getLogLevel();
+        String enabledLogLevel = AltoClef.getInstance().getModSettings().getLogLevel();
 
         return switch (enabledLogLevel) {
             case "NONE" -> false;

@@ -204,13 +204,11 @@ class DoCraftInTableTask extends DoStuffInContainerTask {
      * Override method called when the mod starts.
      * Refactored to handle item management and screen closing.
      * Resets the collect task.
-     *
-     * @param mod The AltoClef mod instance.
      */
     @Override
-    protected void onStart(AltoClef mod) {
-        super.onStart(mod);
-
+    protected void onStart() {
+        super.onStart();
+        AltoClef mod = AltoClef.getInstance();
         // Save the current behaviour and craft count
         mod.getBehaviour().push();
         _craftCount = 0;
@@ -250,13 +248,13 @@ class DoCraftInTableTask extends DoStuffInContainerTask {
      * This method is called when the task is interrupted or stopped.
      * It performs the necessary actions to handle the interruption or stopping of the task.
      *
-     * @param mod           The instance of the AltoClef mod.
      * @param interruptTask The task that caused the interruption, or null if the task was stopped manually.
      */
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
         // Get the item stack in the cursor slot
         ItemStack cursorStack = StorageHelper.getItemStackInCursorSlot();
+        AltoClef mod = AltoClef.getInstance();
 
         // If the cursor stack is empty, close the screen
         if (cursorStack.isEmpty()) {
@@ -284,7 +282,7 @@ class DoCraftInTableTask extends DoStuffInContainerTask {
         }
 
         // Call the onStop method of the super class
-        super.onStop(mod, interruptTask);
+        super.onStop(interruptTask);
 
         // Pop the behaviour from the stack
         mod.getBehaviour().pop();
@@ -293,11 +291,12 @@ class DoCraftInTableTask extends DoStuffInContainerTask {
     /**
      * This method is called periodically to perform crafting-related tasks.
      *
-     * @param mod The AltoClef mod instance.
      * @return The next task to execute.
      */
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         // Avoid breaking crafting tables
         List<BlockPos> craftingTablePositions = mod.getBlockScanner().getKnownLocations(Blocks.CRAFTING_TABLE);
         for (BlockPos craftingTablePos : craftingTablePositions) {
@@ -317,7 +316,7 @@ class DoCraftInTableTask extends DoStuffInContainerTask {
         }
 
         // Check if we need to collect items and the collect task is not finished
-        if (_collect && !_collectTask.isFinished(mod) && !StorageHelper.hasRecipeMaterialsOrTarget(mod, _targets)) {
+        if (_collect && !_collectTask.isFinished() && !StorageHelper.hasRecipeMaterialsOrTarget(mod, _targets)) {
             return _collectTask;
         }
 
@@ -339,7 +338,7 @@ class DoCraftInTableTask extends DoStuffInContainerTask {
         }
 
         // Call the parent method
-        return super.onTick(mod);
+        return super.onTick();
     }
 
     /**
@@ -418,11 +417,10 @@ class DoCraftInTableTask extends DoStuffInContainerTask {
     /**
      * Checks if the specified mod is finished.
      *
-     * @param mod The mod to check.
      * @return True if the mod is finished, false otherwise.
      */
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         // Check if the craft count is greater than or equal to the number of targets
         return _craftCount >= _targets.length;
     }

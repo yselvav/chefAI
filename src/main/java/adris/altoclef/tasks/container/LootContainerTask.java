@@ -38,7 +38,9 @@ public class LootContainerTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
+        AltoClef mod = AltoClef.getInstance();
+
         mod.getBehaviour().push();
         for (Item item : targets) {
             if (!mod.getBehaviour().isProtected(item)) {
@@ -48,11 +50,13 @@ public class LootContainerTask extends Task {
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
         if (!ContainerType.screenHandlerMatches(ContainerType.CHEST)) {
             setDebugState("Interact with container");
             return new InteractWithBlockTask(chest);
         }
+        AltoClef mod = AltoClef.getInstance();
+
         ItemStack cursor = StorageHelper.getItemStackInCursorSlot();
         if (!cursor.isEmpty()) {
             Optional<Slot> toFit = mod.getItemStorage().getSlotThatCanFitInPlayerInventory(cursor, false);
@@ -76,7 +80,9 @@ public class LootContainerTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task task) {
+    protected void onStop(Task task) {
+        AltoClef mod = AltoClef.getInstance();
+
         ItemStack cursorStack = StorageHelper.getItemStackInCursorSlot();
         if (!cursorStack.isEmpty()) {
             Optional<Slot> moveTo = mod.getItemStorage().getSlotThatCanFitInPlayerInventory(cursorStack, false);
@@ -110,9 +116,9 @@ public class LootContainerTask extends Task {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         return weDoneHere || (ContainerType.screenHandlerMatchesAny() &&
-                getAMatchingSlot(mod).isEmpty());
+                getAMatchingSlot(AltoClef.getInstance()).isEmpty());
     }
 
     @Override

@@ -2,6 +2,7 @@ package adris.altoclef.tasks.movement;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
+import adris.altoclef.control.InputControls;
 import adris.altoclef.multiversion.versionedfields.Blocks;
 import adris.altoclef.tasksystem.ITaskRequiresGrounded;
 import adris.altoclef.tasksystem.Task;
@@ -16,11 +17,11 @@ import net.minecraft.util.math.BlockPos;
  * Turns a baritone goal into a task.
  */
 public abstract class CustomBaritoneGoalTask extends Task implements ITaskRequiresGrounded {
-    private final Task _wanderTask = new TimeoutWanderTask(5, true);
+    private final Task wanderTask = new TimeoutWanderTask(5, true);
     private final MovementProgressChecker stuckCheck = new MovementProgressChecker();
-    private final boolean _wander;
-    protected MovementProgressChecker _checker = new MovementProgressChecker();
-    protected Goal _cachedGoal = null;
+    private final boolean wander;
+    protected MovementProgressChecker checker = new MovementProgressChecker();
+    protected Goal cachedGoal = null;
     Block[] annoyingBlocks = new Block[]{
             Blocks.VINE,
             Blocks.NETHER_SPROUTS,
@@ -37,12 +38,12 @@ public abstract class CustomBaritoneGoalTask extends Task implements ITaskRequir
             Blocks.SHORT_GRASS,
             Blocks.SWEET_BERRY_BUSH
     };
-    private Task _unstuckTask = null;
+    private Task unstuckTask = null;
 
     // This happens all the time in mineshafts and swamps/jungles
 
     public CustomBaritoneGoalTask(boolean wander) {
-        _wander = wander;
+        this.wander = wander;
     }
 
     public CustomBaritoneGoalTask() {
@@ -97,91 +98,94 @@ public abstract class CustomBaritoneGoalTask extends Task implements ITaskRequir
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
-        mod.getClientBaritone().getPathingBehavior().forceCancel();
-        _checker.reset();
+    protected void onStart() {
+        AltoClef.getInstance().getClientBaritone().getPathingBehavior().forceCancel();
+        checker.reset();
         stuckCheck.reset();
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+        InputControls controls = mod.getInputControls();
+        
         if (mod.getClientBaritone().getPathingBehavior().isPathing()) {
-            _checker.reset();
+            checker.reset();
         }
-        if (WorldHelper.isInNetherPortal(mod)) {
+        if (WorldHelper.isInNetherPortal()) {
             if (!mod.getClientBaritone().getPathingBehavior().isPathing()) {
                 setDebugState("Getting out from nether portal");
-                mod.getInputControls().hold(Input.SNEAK);
-                mod.getInputControls().hold(Input.MOVE_FORWARD);
+                controls.hold(Input.SNEAK);
+                controls.hold(Input.MOVE_FORWARD);
                 return null;
             } else {
-                mod.getInputControls().release(Input.SNEAK);
-                mod.getInputControls().release(Input.MOVE_BACK);
-                mod.getInputControls().release(Input.MOVE_FORWARD);
+                controls.release(Input.SNEAK);
+                controls.release(Input.MOVE_BACK);
+                controls.release(Input.MOVE_FORWARD);
             }
         } else {
             if (mod.getClientBaritone().getPathingBehavior().isPathing()) {
-                mod.getInputControls().release(Input.SNEAK);
-                mod.getInputControls().release(Input.MOVE_BACK);
-                mod.getInputControls().release(Input.MOVE_FORWARD);
+                controls.release(Input.SNEAK);
+                controls.release(Input.MOVE_BACK);
+                controls.release(Input.MOVE_FORWARD);
             }
         }
-        if (_unstuckTask != null && _unstuckTask.isActive() && !_unstuckTask.isFinished(mod) && stuckInBlock(mod) != null) {
+        if (unstuckTask != null && unstuckTask.isActive() && !unstuckTask.isFinished() && stuckInBlock(mod) != null) {
             setDebugState("Getting unstuck from block.");
             stuckCheck.reset();
             // Stop other tasks, we are JUST shimmying
             mod.getClientBaritone().getCustomGoalProcess().onLostControl();
             mod.getClientBaritone().getExploreProcess().onLostControl();
-            return _unstuckTask;
+            return unstuckTask;
         }
-        if (!_checker.check(mod) || !stuckCheck.check(mod)) {
+        if (!checker.check(mod) || !stuckCheck.check(mod)) {
             BlockPos blockStuck = stuckInBlock(mod);
             if (blockStuck != null) {
-                _unstuckTask = getFenceUnstuckTask();
-                return _unstuckTask;
+                unstuckTask = getFenceUnstuckTask();
+                return unstuckTask;
             }
             stuckCheck.reset();
         }
-        if (_cachedGoal == null) {
-            _cachedGoal = newGoal(mod);
+        if (cachedGoal == null) {
+            cachedGoal = newGoal(mod);
         }
 
-        if (_wander) {
-            if (isFinished(mod)) {
+        if (wander) {
+            if (isFinished()) {
                 // Don't wander if we've reached our goal.
-                _checker.reset();
+                checker.reset();
             } else {
-                if (_wanderTask.isActive() && !_wanderTask.isFinished(mod)) {
+                if (wanderTask.isActive() && !wanderTask.isFinished()) {
                     setDebugState("Wandering...");
-                    _checker.reset();
-                    return _wanderTask;
+                    checker.reset();
+                    return wanderTask;
                 }
-                if (!_checker.check(mod)) {
+                if (!checker.check(mod)) {
                     Debug.logMessage("Failed to make progress on goal, wandering.");
                     onWander(mod);
-                    return _wanderTask;
+                    return wanderTask;
                 }
             }
         }
         if (!mod.getClientBaritone().getCustomGoalProcess().isActive()
                 && mod.getClientBaritone().getPathingBehavior().isSafeToCancel()) {
-            mod.getClientBaritone().getCustomGoalProcess().setGoalAndPath(_cachedGoal);
+            mod.getClientBaritone().getCustomGoalProcess().setGoalAndPath(cachedGoal);
         }
         setDebugState("Completing goal.");
         return null;
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
-        if (_cachedGoal == null) {
-            _cachedGoal = newGoal(mod);
+    public boolean isFinished() {
+        if (cachedGoal == null) {
+            cachedGoal = newGoal(AltoClef.getInstance());
         }
-        return _cachedGoal != null && _cachedGoal.isInGoal(mod.getPlayer().getBlockPos());
+        return cachedGoal != null && cachedGoal.isInGoal(AltoClef.getInstance().getPlayer().getBlockPos());
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
-        mod.getClientBaritone().getPathingBehavior().forceCancel();
+    protected void onStop(Task interruptTask) {
+        AltoClef.getInstance().getClientBaritone().getPathingBehavior().forceCancel();
     }
 
     protected abstract Goal newGoal(AltoClef mod);

@@ -44,26 +44,26 @@ public class RavageDesertTemplesTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
-        mod.getBehaviour().push();
+    protected void onStart() {
+        AltoClef.getInstance().getBehaviour().push();
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
-        if (pickaxeTask != null && !pickaxeTask.isFinished(mod)) {
+    protected Task onTick() {
+        if (pickaxeTask != null && !pickaxeTask.isFinished()) {
             setDebugState("Need to get pickaxes first");
             return pickaxeTask;
         }
-        if (lootTask != null && !lootTask.isFinished(mod)) {
+        if (lootTask != null && !lootTask.isFinished()) {
             setDebugState("Looting found temple");
             return lootTask;
         }
-        if (StorageHelper.miningRequirementMetInventory(mod, MiningRequirement.WOOD)) {
+        if (StorageHelper.miningRequirementMetInventory(MiningRequirement.WOOD)) {
             setDebugState("Need to get pickaxes first");
             pickaxeTask = new CataloguedResourceTask(new ItemTarget(Items.WOODEN_PICKAXE, 2));
             return pickaxeTask;
         }
-        currentTemple = WorldHelper.getADesertTemple(mod);
+        currentTemple = WorldHelper.getADesertTemple();
         if (currentTemple != null) {
             lootTask = new LootDesertTempleTask(currentTemple, List.of(LOOT));
             setDebugState("Looting found temple");
@@ -73,8 +73,8 @@ public class RavageDesertTemplesTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task task) {
-        mod.getBehaviour().pop();
+    protected void onStop(Task task) {
+        AltoClef.getInstance().getBehaviour().pop();
     }
 
     @Override
@@ -83,7 +83,7 @@ public class RavageDesertTemplesTask extends Task {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         return false;
     }
 

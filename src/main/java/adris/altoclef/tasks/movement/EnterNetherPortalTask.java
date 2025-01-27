@@ -47,16 +47,17 @@ public class EnterNetherPortalTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
         leftPortal = false;
         portalTimeout.reset();
         wanderTask.resetWander();
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
 
-        if (wanderTask.isActive() && !wanderTask.isFinished(mod)) {
+        if (wanderTask.isActive() && !wanderTask.isFinished()) {
             setDebugState("Exiting portal for a bit.");
             portalTimeout.reset();
             leftPortal = true;
@@ -94,7 +95,7 @@ public class EnterNetherPortalTask extends Task {
                 return goodPortal.test(blockPos);
             }
             BlockPos below = blockPos.down();
-            boolean canStand = WorldHelper.isSolidBlock(mod, below) && !mod.getBlockScanner().isBlockAtPosition(below, Blocks.NETHER_PORTAL);
+            boolean canStand = WorldHelper.isSolidBlock(below) && !mod.getBlockScanner().isBlockAtPosition(below, Blocks.NETHER_PORTAL);
             return canStand && goodPortal.test(blockPos);
         };
 
@@ -118,12 +119,12 @@ public class EnterNetherPortalTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         return WorldHelper.getCurrentDimension() == targetDimension;
     }
 

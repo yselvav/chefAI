@@ -52,9 +52,9 @@ public abstract class AbstractDoToClosestObjectTask<T> extends Task {
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
-
+    protected Task onTick() {
         wasWandering = false;
+        AltoClef mod = AltoClef.getInstance();
 
         // Reset our pursuit if our pursuing object no longer is pursuable.
         if (currentlyPursuing != null && !isValid(mod, currentlyPursuing)) {

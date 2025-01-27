@@ -27,7 +27,9 @@ public class OneCycleTask extends Task {
 
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         mod.getFoodChain().shouldStop(true);
         mod.getSlotHandler().forceEquipItemToOffhand(Items.AIR);
 
@@ -70,7 +72,7 @@ public class OneCycleTask extends Task {
             LookHelper.lookAt(mod,obsidian,dir);
 
 
-            BlockPos bedHead = WorldHelper.getBedHead(mod, endPortalTop);
+            BlockPos bedHead = WorldHelper.getBedHead(endPortalTop);
 
             BlockPos bedTargetPosition = endPortalTop.up();
             mod.getSlotHandler().forceEquipItem(ItemHelper.BED);
@@ -148,17 +150,17 @@ public class OneCycleTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
-        return mod.getEntityTracker().getTrackedEntities(EnderDragonEntity.class).isEmpty();
+    public boolean isFinished() {
+        return AltoClef.getInstance().getEntityTracker().getTrackedEntities(EnderDragonEntity.class).isEmpty();
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
     }
 

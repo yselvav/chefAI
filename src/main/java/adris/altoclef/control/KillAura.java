@@ -96,7 +96,7 @@ public class KillAura {
                 ItemStack shieldSlot = StorageHelper.getItemStackInSlot(PlayerSlot.OFFHAND_SLOT);
                 if (shieldSlot.getItem() != Items.SHIELD) {
                     mod.getSlotHandler().forceEquipItemToOffhand(Items.SHIELD);
-                } else if (!WorldHelper.isSurroundedByHostiles(mod)) {
+                } else if (!WorldHelper.isSurroundedByHostiles()) {
                     startShielding(mod);
                 }
             }

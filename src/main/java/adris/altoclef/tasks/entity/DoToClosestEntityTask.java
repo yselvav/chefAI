@@ -75,11 +75,11 @@ public class DoToClosestEntityTask extends AbstractDoToClosestObjectTask<Entity>
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
     }
 
     @Override

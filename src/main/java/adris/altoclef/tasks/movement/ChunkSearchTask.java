@@ -56,15 +56,15 @@ abstract class ChunkSearchTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
         //Debug.logMessage("(deleteme) start. Finished: " + _finished);
         if (_first) {
             _finished = false;
             _first = false;
-            ChunkPos startPos = mod.getWorld().getChunk(_startPoint).getPos();
+            ChunkPos startPos = AltoClef.getInstance().getWorld().getChunk(_startPoint).getPos();
             synchronized (_searchMutex) {
-                searchChunkOrQueueSearch(mod, startPos);
+                searchChunkOrQueueSearch(AltoClef.getInstance(), startPos);
             }
         }
 
@@ -80,7 +80,7 @@ abstract class ChunkSearchTask extends Task {
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
 
         // WTF This is a horrible idea.
         // Backup in case if chunk search fails?
@@ -92,7 +92,7 @@ abstract class ChunkSearchTask extends Task {
                 for (ChunkPos justLoaded : _justLoaded) {
                     if (_searchLater.contains(justLoaded)) {
                         // Search this one. If we succeed, we no longer need to search.
-                        if (trySearchChunk(mod, justLoaded)) {
+                        if (trySearchChunk(AltoClef.getInstance(), justLoaded)) {
                             _searchLater.remove(justLoaded);
                         }
                     }
@@ -102,7 +102,7 @@ abstract class ChunkSearchTask extends Task {
         }
 
         // Now that we have an updated map, go to the nearest
-        ChunkPos closest = getBestChunk(mod, _searchLater);
+        ChunkPos closest = getBestChunk(AltoClef.getInstance(), _searchLater);
 
         if (closest == null) {
             _finished = true;
@@ -135,12 +135,12 @@ abstract class ChunkSearchTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
         EventBus.unsubscribe(_onChunkLoad);
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         return _searchLater.size() == 0;
     }
 

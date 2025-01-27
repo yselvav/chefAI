@@ -9,24 +9,24 @@ import adris.altoclef.tasksystem.Task;
  */
 public class IdleTask extends Task {
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
         // Do nothing except maybe test code
-        Playground.IDLE_TEST_TICK_FUNCTION(mod);
+        Playground.IDLE_TEST_TICK_FUNCTION(AltoClef.getInstance());
         return null;
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         // Never finish
         return false;
     }

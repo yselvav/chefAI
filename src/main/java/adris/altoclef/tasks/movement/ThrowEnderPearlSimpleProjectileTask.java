@@ -45,13 +45,15 @@ public class ThrowEnderPearlSimpleProjectileTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
         _thrownTimer.forceElapse();
         _thrown = false;
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         // TODO: Unlikely/minor nitpick, but there could be other people throwing ender pearls, which would delay the bot.
         if (mod.getEntityTracker().entityFound(EnderPearlEntity.class)) {
             _thrownTimer.reset();
@@ -59,7 +61,7 @@ public class ThrowEnderPearlSimpleProjectileTask extends Task {
         if (_thrownTimer.elapsed()) {
             if (mod.getSlotHandler().forceEquipItem(Items.ENDER_PEARL)) {
                 Rotation lookTarget = calculateThrowLook(mod, _target);
-                LookHelper.lookAt(mod, lookTarget);
+                LookHelper.lookAt(lookTarget);
                 if (LookHelper.isLookingAt(mod, lookTarget)) {
                     mod.getInputControls().tryPress(Input.CLICK_RIGHT);
                     _thrown = true;
@@ -71,13 +73,13 @@ public class ThrowEnderPearlSimpleProjectileTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
-        return _thrown && _thrownTimer.elapsed() || (!_thrown && !mod.getItemStorage().hasItem(Items.ENDER_PEARL));
+    public boolean isFinished() {
+        return _thrown && _thrownTimer.elapsed() || (!_thrown && !AltoClef.getInstance().getItemStorage().hasItem(Items.ENDER_PEARL));
     }
 
     @Override

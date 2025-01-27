@@ -42,14 +42,15 @@ public class StoreInAnyContainerTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
         _storedItems.startTracking();
         _dungeonChests.clear();
         _nonDungeonChests.clear();
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
 
         // Get more if we don't have & "get if not present" is true.
         if (_getIfNotPresent) {
@@ -67,8 +68,8 @@ public class StoreInAnyContainerTask extends Task {
         Predicate<BlockPos> validContainer = containerPos -> {
 
             // If it's a chest and the block above can't be broken, we can't open this one.
-            boolean isChest = WorldHelper.isChest(mod, containerPos);
-            if (isChest && WorldHelper.isSolidBlock(mod, containerPos.up()) && !WorldHelper.canBreak(mod, containerPos.up()))
+            boolean isChest = WorldHelper.isChest(containerPos);
+            if (isChest && WorldHelper.isSolidBlock(containerPos.up()) && !WorldHelper.canBreak(containerPos.up()))
                 return false;
 
             //if (!_acceptableContainer.test(containerPos))
@@ -130,7 +131,7 @@ public class StoreInAnyContainerTask extends Task {
                 return new PlaceBlockNearbyTask(canPlace -> {
                     // For chests, above must be air OR breakable.
                     if (WorldHelper.isChest(couldPlace)) {
-                        return WorldHelper.isAir(mod, canPlace.up()) || WorldHelper.canBreak(mod, canPlace.up());
+                        return WorldHelper.isAir(canPlace.up()) || WorldHelper.canBreak(canPlace.up());
                     }
                     return true;
                 }, couldPlace);
@@ -141,13 +142,13 @@ public class StoreInAnyContainerTask extends Task {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         // We've stored all items
-        return _storedItems.getUnstoredItemTargetsYouCanStore(mod, _toStore).length == 0;
+        return _storedItems.getUnstoredItemTargetsYouCanStore(AltoClef.getInstance(), _toStore).length == 0;
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
         _storedItems.stopTracking();
     }
 

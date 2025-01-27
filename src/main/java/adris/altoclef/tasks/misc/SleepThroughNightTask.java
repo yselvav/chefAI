@@ -6,17 +6,17 @@ import adris.altoclef.tasksystem.Task;
 public class SleepThroughNightTask extends Task {
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
         return new PlaceBedAndSetSpawnTask().stayInBed();
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 
@@ -31,9 +31,9 @@ public class SleepThroughNightTask extends Task {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         // We're in daytime
-        int time = (int) (mod.getWorld().getTimeOfDay() % 24000);
+        int time = (int) (AltoClef.getInstance().getWorld().getTimeOfDay() % 24000);
         return 0 <= time && time < 13000;
     }
 }

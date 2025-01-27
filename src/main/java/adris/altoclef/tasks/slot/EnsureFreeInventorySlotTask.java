@@ -12,12 +12,14 @@ import java.util.Optional;
 
 public class EnsureFreeInventorySlotTask extends Task {
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         ItemStack cursorStack = StorageHelper.getItemStackInCursorSlot();
         Optional<Slot> garbage = StorageHelper.getGarbageSlot(mod);
         if (cursorStack.isEmpty()) {
@@ -27,7 +29,7 @@ public class EnsureFreeInventorySlotTask extends Task {
             }
         }
         if (!cursorStack.isEmpty()) {
-            LookHelper.randomOrientation(mod);
+            LookHelper.randomOrientation();
             mod.getSlotHandler().clickSlot(Slot.UNDEFINED, 0, SlotActionType.PICKUP);
             return null;
         }
@@ -36,7 +38,7 @@ public class EnsureFreeInventorySlotTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 

@@ -78,7 +78,7 @@ public class UpgradeInSmithingTableTask extends ResourceTask {
         }
 
         // Edge case: We are wearing the armor we want to upgrade. If so, remove it.
-        if (StorageHelper.isArmorEquipped(mod, _tool.getMatches())) {
+        if (StorageHelper.isArmorEquipped(_tool.getMatches())) {
             // Exit out of any screen so we can move our armor
             if (!(mod.getPlayer().currentScreenHandler instanceof PlayerScreenHandler)) {
                 ItemStack cursorStack = StorageHelper.getItemStackInCursorSlot();

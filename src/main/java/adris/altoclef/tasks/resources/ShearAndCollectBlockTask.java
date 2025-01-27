@@ -1,6 +1,7 @@
 package adris.altoclef.tasks.resources;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.BotBehaviour;
 import adris.altoclef.TaskCatalogue;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.ItemTarget;
@@ -25,18 +26,20 @@ public class ShearAndCollectBlockTask extends MineAndCollectTask {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
-        mod.getBehaviour().push();
-        mod.getBehaviour().forceUseTool((blockState, itemStack) ->
+    protected void onStart() {
+        BotBehaviour botBehaviour = AltoClef.getInstance().getBehaviour();
+
+        botBehaviour.push();
+        botBehaviour.forceUseTool((blockState, itemStack) ->
                 itemStack.getItem() == Items.SHEARS && ItemHelper.areShearsEffective(blockState.getBlock())
         );
-        super.onStart(mod);
+        super.onStart();
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
-        mod.getBehaviour().pop();
-        super.onStop(mod, interruptTask);
+    protected void onStop(Task interruptTask) {
+        AltoClef.getInstance().getBehaviour().pop();
+        super.onStop(interruptTask);
     }
 
     @Override

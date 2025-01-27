@@ -106,8 +106,8 @@ public class SmeltInBlastFurnaceTask extends ResourceTask {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
-        return super.isFinished(mod) || _doTask.isFinished(mod);
+    public boolean isFinished() {
+        return super.isFinished() || _doTask.isFinished();
     }
 
     @Override
@@ -159,8 +159,9 @@ public class SmeltInBlastFurnaceTask extends ResourceTask {
         }
 
         @Override
-        protected void onStart(AltoClef mod) {
-            super.onStart(mod);
+        protected void onStart() {
+            super.onStart();
+            AltoClef mod = AltoClef.getInstance();
 
             mod.getBehaviour().addProtectedItems(ItemHelper.PLANKS);
             mod.getBehaviour().addProtectedItems(Items.COAL);
@@ -169,7 +170,9 @@ public class SmeltInBlastFurnaceTask extends ResourceTask {
         }
 
         @Override
-        protected Task onTick(AltoClef mod) {
+        protected Task onTick() {
+            AltoClef mod = AltoClef.getInstance();
+
             tryUpdateOpenBlastFurnace(mod);
             // Include both regular + optional items
             ItemTarget materialTarget = _allMaterials;
@@ -209,7 +212,7 @@ public class SmeltInBlastFurnaceTask extends ResourceTask {
             }
 
             // We have fuel and materials. Get to our container and smelt!
-            return super.onTick(mod);
+            return super.onTick();
         }
 
         // Override this if our materials must be acquired in a special way.
@@ -348,7 +351,7 @@ public class SmeltInBlastFurnaceTask extends ResourceTask {
                         / 8.0) + ((double) mod.getItemStorage().getItemCount(Items.RAW_IRON) / 5.0));
                 return Math.max(cost, 10.0);
             }
-            return StorageHelper.miningRequirementMetInventory(mod, MiningRequirement.WOOD) ? 50.0 : 100.0;
+            return StorageHelper.miningRequirementMetInventory(MiningRequirement.WOOD) ? 50.0 : 100.0;
         }
 
         @Override

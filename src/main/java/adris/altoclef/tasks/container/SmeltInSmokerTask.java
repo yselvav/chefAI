@@ -1,6 +1,7 @@
 package adris.altoclef.tasks.container;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.BotBehaviour;
 import adris.altoclef.TaskCatalogue;
 import adris.altoclef.tasks.ResourceTask;
 import adris.altoclef.tasks.resources.CollectFuelTask;
@@ -101,8 +102,8 @@ public class SmeltInSmokerTask extends ResourceTask {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
-        return super.isFinished(mod) || doTask.isFinished(mod);
+    public boolean isFinished() {
+        return super.isFinished() || doTask.isFinished();
     }
 
     @Override
@@ -155,17 +156,20 @@ public class SmeltInSmokerTask extends ResourceTask {
         }
 
         @Override
-        protected void onStart(AltoClef mod) {
-            super.onStart(mod);
+        protected void onStart() {
+            super.onStart();
+            BotBehaviour botBehaviour = AltoClef.getInstance().getBehaviour();
 
-            mod.getBehaviour().addProtectedItems(ItemHelper.PLANKS);
-            mod.getBehaviour().addProtectedItems(Items.COAL);
-            mod.getBehaviour().addProtectedItems(_allMaterials.getMatches());
-            mod.getBehaviour().addProtectedItems(_target.getMaterial().getMatches());
+            botBehaviour.addProtectedItems(ItemHelper.PLANKS);
+            botBehaviour.addProtectedItems(Items.COAL);
+            botBehaviour.addProtectedItems(_allMaterials.getMatches());
+            botBehaviour.addProtectedItems(_target.getMaterial().getMatches());
         }
 
         @Override
-        protected Task onTick(AltoClef mod) {
+        protected Task onTick() {
+            AltoClef mod = AltoClef.getInstance();
+
             tryUpdateOpenSmoker(mod);
             // Include both regular + optional items
             ItemTarget materialTarget = _allMaterials;
@@ -205,7 +209,7 @@ public class SmeltInSmokerTask extends ResourceTask {
             }
 
             // We have fuel and materials. Get to our container and smelt!
-            return super.onTick(mod);
+            return super.onTick();
         }
 
         // Override this if our materials must be acquired in a special way.
@@ -344,7 +348,7 @@ public class SmeltInSmokerTask extends ResourceTask {
                         / 8.0) + ((double) mod.getItemStorage().getItemCount(ItemHelper.LOG) / 4.0));
                 return Math.max(cost, 10.0);
             }
-            return StorageHelper.miningRequirementMetInventory(mod, MiningRequirement.WOOD) ? 50.0 : 100.0;
+            return StorageHelper.miningRequirementMetInventory(MiningRequirement.WOOD) ? 50.0 : 100.0;
         }
 
         @Override

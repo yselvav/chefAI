@@ -10,12 +10,12 @@ import net.minecraft.screen.slot.SlotActionType;
 
 public class EnsureFreePlayerCraftingGridTask extends Task {
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
         setDebugState("Clearing the 2x2 crafting grid");
         for (Slot slot : PlayerSlot.CRAFT_INPUT_SLOTS) {
             ItemStack items = StorageHelper.getItemStackInSlot(slot);
@@ -24,7 +24,7 @@ public class EnsureFreePlayerCraftingGridTask extends Task {
                 return new EnsureFreeCursorSlotTask();
             }
             if (!items.isEmpty()) {
-                mod.getSlotHandler().clickSlot(slot, 0, SlotActionType.PICKUP);
+                AltoClef.getInstance().getSlotHandler().clickSlot(slot, 0, SlotActionType.PICKUP);
                 return null;
             }
         }
@@ -32,7 +32,7 @@ public class EnsureFreePlayerCraftingGridTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 

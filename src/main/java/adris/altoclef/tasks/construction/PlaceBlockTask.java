@@ -69,15 +69,17 @@ public class PlaceBlockTask extends Task implements ITaskRequiresGrounded {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
         progressChecker.reset();
         // If we get interrupted by another task, this might cause problems...
         //_wanderTask.resetWander();
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
-        if (WorldHelper.isInNetherPortal(mod)) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
+        if (WorldHelper.isInNetherPortal()) {
             if (!mod.getClientBaritone().getPathingBehavior().isPathing()) {
                 setDebugState("Getting out from nether portal");
                 mod.getInputControls().hold(Input.SNEAK);
@@ -96,14 +98,14 @@ public class PlaceBlockTask extends Task implements ITaskRequiresGrounded {
             }
         }
         // Perform timeout wander
-        if (wanderTask.isActive() && !wanderTask.isFinished(mod)) {
+        if (wanderTask.isActive() && !wanderTask.isFinished()) {
             setDebugState("Wandering.");
             progressChecker.reset();
             return wanderTask;
         }
 
         if (autoCollectStructureBlocks) {
-            if (materialTask != null && materialTask.isActive() && !materialTask.isFinished(mod)) {
+            if (materialTask != null && materialTask.isActive() && !materialTask.isFinished()) {
                 setDebugState("No structure items, collecting cobblestone + dirt as default.");
                 if (getMaterialCount(mod) < PREFERRED_MATERIALS) {
                     return materialTask;
@@ -151,8 +153,8 @@ public class PlaceBlockTask extends Task implements ITaskRequiresGrounded {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
-        mod.getClientBaritone().getBuilderProcess().onLostControl();
+    protected void onStop(Task interruptTask) {
+        AltoClef.getInstance().getClientBaritone().getBuilderProcess().onLostControl();
     }
 
     //TODO: Place structure where a leaf block was???? Might need to delete the block first if it's not empty/air/water.
@@ -166,12 +168,12 @@ public class PlaceBlockTask extends Task implements ITaskRequiresGrounded {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         assert MinecraftClient.getInstance().world != null;
         if (useThrowaways) {
-            return WorldHelper.isSolidBlock(mod, target);
+            return WorldHelper.isSolidBlock(target);
         }
-        BlockState state = mod.getWorld().getBlockState(target);
+        BlockState state = AltoClef.getInstance().getWorld().getBlockState(target);
         return ArrayUtils.contains(toPlace, state.getBlock());
     }
 

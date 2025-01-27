@@ -43,8 +43,10 @@ public class WorldSurvivalChain extends SingleTaskChain {
     }
 
     @Override
-    public float getPriority(AltoClef mod) {
+    public float getPriority() {
         if (!AltoClef.inGame()) return Float.NEGATIVE_INFINITY;
+
+        AltoClef mod = AltoClef.getInstance();
 
         // Drowning
         handleDrowning(mod);
@@ -67,7 +69,7 @@ public class WorldSurvivalChain extends SingleTaskChain {
                 // Extinguish ourselves
                 if (mod.getItemStorage().hasItem(Items.WATER_BUCKET)) {
                     BlockPos targetWaterPos = mod.getPlayer().getBlockPos();
-                    if (WorldHelper.isSolidBlock(mod, targetWaterPos.down()) && WorldHelper.canPlace(mod, targetWaterPos)) {
+                    if (WorldHelper.isSolidBlock(targetWaterPos.down()) && WorldHelper.canPlace(targetWaterPos)) {
                         Optional<Rotation> reach = LookHelper.getReach(targetWaterPos.down(), Direction.UP);
                         if (reach.isPresent()) {
                             mod.getClientBaritone().getLookBehavior().updateTarget(reach.get(), true);
@@ -94,7 +96,7 @@ public class WorldSurvivalChain extends SingleTaskChain {
         }
 
         // Portal stuck
-        if (isStuckInNetherPortal(mod)) {
+        if (isStuckInNetherPortal()) {
             // We can't break or place while inside a portal (not really)
             mod.getExtraBaritoneSettings().setInteractionPaused(true);
         } else {
@@ -144,7 +146,7 @@ public class WorldSurvivalChain extends SingleTaskChain {
 
     private boolean isInFire(AltoClef mod) {
         if (mod.getPlayer().isOnFire() && !mod.getPlayer().hasStatusEffect(StatusEffects.FIRE_RESISTANCE)) {
-            for (BlockPos pos : WorldHelper.getBlocksTouchingPlayer(mod)) {
+            for (BlockPos pos : WorldHelper.getBlocksTouchingPlayer()) {
                 Block b = mod.getWorld().getBlockState(pos).getBlock();
                 if (b instanceof AbstractFireBlock) {
                     return true;
@@ -154,8 +156,9 @@ public class WorldSurvivalChain extends SingleTaskChain {
         return false;
     }
 
-    private boolean isStuckInNetherPortal(AltoClef mod) {
-        return WorldHelper.isInNetherPortal(mod) && !mod.getUserTaskChain().getCurrentTask().thisOrChildSatisfies(task -> task instanceof EnterNetherPortalTask);
+    private boolean isStuckInNetherPortal() {
+        return WorldHelper.isInNetherPortal()
+                && !AltoClef.getInstance().getUserTaskChain().getCurrentTask().thisOrChildSatisfies(task -> task instanceof EnterNetherPortalTask);
     }
 
     @Override
@@ -170,7 +173,7 @@ public class WorldSurvivalChain extends SingleTaskChain {
     }
 
     @Override
-    protected void onStop(AltoClef mod) {
-        super.onStop(mod);
+    protected void onStop() {
+        super.onStop();
     }
 }

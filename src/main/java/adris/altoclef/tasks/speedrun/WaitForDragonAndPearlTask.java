@@ -72,11 +72,13 @@ public class WaitForDragonAndPearlTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         Optional<Entity> enderMen = mod.getEntityTracker().getClosestEntity(EndermanEntity.class);
         if (enderMen.isPresent() && (enderMen.get() instanceof EndermanEntity endermanEntity) &&
                 endermanEntity.getTarget()==mod.getPlayer()) {
@@ -84,12 +86,12 @@ public class WaitForDragonAndPearlTask extends Task {
             Predicate<Entity> angry = entity -> endermanEntity.getTarget()==mod.getPlayer();
             return new KillEntitiesTask(angry, enderMen.get().getClass());
         }
-        if (throwPearlTask != null && throwPearlTask.isActive() && !throwPearlTask.isFinished(mod)) {
+        if (throwPearlTask != null && throwPearlTask.isActive() && !throwPearlTask.isFinished()) {
             setDebugState("Throwing pearl!");
             return throwPearlTask;
         }
 
-        if (pillarUpFurther != null && pillarUpFurther.isActive() && !pillarUpFurther.isFinished(mod) && (mod.getEntityTracker().getClosestEntity(AreaEffectCloudEntity.class).isPresent())) {
+        if (pillarUpFurther != null && pillarUpFurther.isActive() && !pillarUpFurther.isFinished() && (mod.getEntityTracker().getClosestEntity(AreaEffectCloudEntity.class).isPresent())) {
 
             Optional<Entity> cloud = mod.getEntityTracker().getClosestEntity(AreaEffectCloudEntity.class);
 
@@ -114,7 +116,7 @@ public class WaitForDragonAndPearlTask extends Task {
         int minHeight = targetToPearl.getY() + HEIGHT - 3;
 
         int deltaY = minHeight - mod.getPlayer().getBlockPos().getY();
-        if (StorageHelper.getBuildingMaterialCount(mod) < Math.min(deltaY - 10, HEIGHT - 5) || buildingMaterialsTask.isActive() && !buildingMaterialsTask.isFinished(mod)) {
+        if (StorageHelper.getBuildingMaterialCount() < Math.min(deltaY - 10, HEIGHT - 5) || buildingMaterialsTask.isActive() && !buildingMaterialsTask.isFinished()) {
             setDebugState("Collecting building materials...");
             return buildingMaterialsTask;
         }
@@ -133,7 +135,7 @@ public class WaitForDragonAndPearlTask extends Task {
                 }
                 return null;
             }
-            if (heightPillarTask != null && heightPillarTask.isActive() && !heightPillarTask.isFinished(mod)) {
+            if (heightPillarTask != null && heightPillarTask.isActive() && !heightPillarTask.isFinished()) {
                 setDebugState("Pillaring up!");
                 inCenter = true;
                 if (mod.getEntityTracker().entityFound(EndCrystalEntity.class)) {
@@ -247,7 +249,7 @@ public class WaitForDragonAndPearlTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 
@@ -257,10 +259,10 @@ public class WaitForDragonAndPearlTask extends Task {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         return dragonIsPerching
-                && ((throwPearlTask == null || (throwPearlTask.isActive() && throwPearlTask.isFinished(mod)))
-                || WorldHelper.inRangeXZ(mod.getPlayer(), targetToPearl, CLOSE_ENOUGH_DISTANCE));
+                && ((throwPearlTask == null || (throwPearlTask.isActive() && throwPearlTask.isFinished()))
+                || WorldHelper.inRangeXZ(AltoClef.getInstance().getPlayer(), targetToPearl, CLOSE_ENOUGH_DISTANCE));
     }
 
     @Override

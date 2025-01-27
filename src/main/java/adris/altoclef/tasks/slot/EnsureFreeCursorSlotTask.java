@@ -13,16 +13,15 @@ import java.util.Optional;
 public class EnsureFreeCursorSlotTask extends Task {
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
         // YEET
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
-
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
 
         ItemStack cursor = StorageHelper.getItemStackInCursorSlot();
-
 
         if (!cursor.isEmpty()) {
             Optional<Slot> moveTo = mod.getItemStorage().getSlotThatCanFitInPlayerInventory(cursor, false);
@@ -50,7 +49,7 @@ public class EnsureFreeCursorSlotTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 

@@ -21,14 +21,15 @@ public abstract class AbstractDoToStorageContainerTask extends Task {
     private ContainerType currentContainerType = null;
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
         Optional<BlockPos> containerTarget = getContainerTarget();
 
+        AltoClef mod = AltoClef.getInstance();
         // No container found
         if (containerTarget.isEmpty()) {
             setDebugState("Wandering");
@@ -52,7 +53,7 @@ public abstract class AbstractDoToStorageContainerTask extends Task {
             Block type = mod.getWorld().getBlockState(targetPos).getBlock();
             currentContainerType = ContainerType.getFromBlock(type);
         }
-        if (WorldHelper.isChest(mod, targetPos) && WorldHelper.isSolidBlock(mod, targetPos.up()) && WorldHelper.canBreak(mod, targetPos.up())) {
+        if (WorldHelper.isChest(targetPos) && WorldHelper.isSolidBlock(targetPos.up()) && WorldHelper.canBreak(targetPos.up())) {
             setDebugState("Clearing block above chest");
             return new DestroyBlockTask(targetPos.up());
         }
@@ -61,7 +62,7 @@ public abstract class AbstractDoToStorageContainerTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 

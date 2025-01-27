@@ -86,7 +86,7 @@ public class CollectCropTask extends ResourceTask {
 
         // Collect seeds if we need to.
         if (hasEmptyCrops(mod) && mod.getModSettings().shouldReplantCrops() && !mod.getItemStorage().hasItem(_cropSeed)) {
-            if (_collectSeedTask.isActive() && !_collectSeedTask.isFinished(mod)) {
+            if (_collectSeedTask.isActive() && !_collectSeedTask.isFinished()) {
                 setDebugState("Picking up dropped seeds");
                 return _collectSeedTask;
             }
@@ -145,12 +145,12 @@ public class CollectCropTask extends ResourceTask {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         // Don't stop while we're replanting crops.
-        if (shouldReplantNow(mod)) {
+        if (shouldReplantNow(AltoClef.getInstance())) {
             return false;
         }
-        return super.isFinished(mod);
+        return super.isFinished();
     }
 
     private boolean shouldReplantNow(AltoClef mod) {
@@ -165,7 +165,7 @@ public class CollectCropTask extends ResourceTask {
     }
 
     private boolean isEmptyCrop(AltoClef mod, BlockPos pos) {
-        return WorldHelper.isAir(mod, pos);
+        return WorldHelper.isAir(pos);
     }
 
     @Override
@@ -184,7 +184,7 @@ public class CollectCropTask extends ResourceTask {
 
     private boolean isMature(AltoClef mod, BlockPos blockPos) {
         // Chunk needs to be loaded for wheat maturity to be checked.
-        if (!mod.getChunkTracker().isChunkLoaded(blockPos) || !WorldHelper.canReach(mod, blockPos)) {
+        if (!mod.getChunkTracker().isChunkLoaded(blockPos) || !WorldHelper.canReach(blockPos)) {
             return _wasFullyGrown.contains(blockPos);
         }
         // Prune if we're not mature/fully grown wheat.

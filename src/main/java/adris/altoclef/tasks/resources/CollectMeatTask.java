@@ -71,15 +71,17 @@ public class CollectMeatTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         CollectFoodTask.blackListChickenJockeys(mod);
         // If we were previously smelting, keep on smelting.
-        if (smeltTask != null && smeltTask.isActive() && !smeltTask.isFinished(mod)) {
+        if (smeltTask != null && smeltTask.isActive() && !smeltTask.isFinished()) {
             setDebugState("Cooking...");
             return smeltTask;
         } else {
@@ -90,7 +92,7 @@ public class CollectMeatTask extends Task {
             checkNewOptionsTimer.reset();
             currentResourceTask = null;
         }
-        if (currentResourceTask != null && currentResourceTask.isActive() && !currentResourceTask.isFinished(mod) && !currentResourceTask.thisOrChildAreTimedOut()) {
+        if (currentResourceTask != null && currentResourceTask.isActive() && !currentResourceTask.isFinished() && !currentResourceTask.thisOrChildAreTimedOut()) {
             return currentResourceTask;
         }
         // Calculate potential
@@ -183,13 +185,13 @@ public class CollectMeatTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
-        return StorageHelper.calculateInventoryFoodScore(mod) >= unitsNeeded && smeltTask == null;
+    public boolean isFinished() {
+        return StorageHelper.calculateInventoryFoodScore() >= unitsNeeded && smeltTask == null;
     }
 
     @Override

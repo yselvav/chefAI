@@ -31,19 +31,19 @@ public class TaskRunner {
         float maxPriority = Float.NEGATIVE_INFINITY;
         for (TaskChain chain : chains) {
             if (!chain.isActive()) continue;
-            float priority = chain.getPriority(mod);
+            float priority = chain.getPriority();
             if (priority > maxPriority) {
                 maxPriority = priority;
                 maxChain = chain;
             }
         }
         if (cachedCurrentTaskChain != null && maxChain != cachedCurrentTaskChain) {
-            cachedCurrentTaskChain.onInterrupt(mod, maxChain);
+            cachedCurrentTaskChain.onInterrupt(maxChain);
         }
         cachedCurrentTaskChain = maxChain;
         if (maxChain != null) {
             statusReport = "Chain: "+maxChain.getName() + ", priority: "+maxPriority;
-            maxChain.tick(mod);
+            maxChain.tick();
         } else {
             statusReport = " (no chain running) ";
         }
@@ -66,7 +66,7 @@ public class TaskRunner {
             mod.getBehaviour().pop();
         }
         for (TaskChain chain : chains) {
-            chain.stop(mod);
+            chain.stop();
         }
         active = false;
 

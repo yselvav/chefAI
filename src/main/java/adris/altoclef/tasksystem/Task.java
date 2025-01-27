@@ -1,6 +1,5 @@
 package adris.altoclef.tasksystem;
 
-import adris.altoclef.AltoClef;
 import adris.altoclef.Debug;
 import adris.altoclef.tasks.movement.TimeoutWanderTask;
 
@@ -19,18 +18,18 @@ public abstract class Task {
 
     private boolean active = false;
 
-    public void tick(AltoClef mod, TaskChain parentChain) {
+    public void tick(TaskChain parentChain) {
         parentChain.addTaskToChain(this);
         if (first) {
             Debug.logInternal("Task START: " + this);
             active = true;
-            onStart(mod);
+            onStart();
             first = false;
             stopped = false;
         }
         if (stopped) return;
 
-        Task newSub = onTick(mod);
+        Task newSub = onTick();
         // Debug state print
         if (!oldDebugState.equals(debugState)) {
             Debug.logInternal(toString());
@@ -39,11 +38,11 @@ public abstract class Task {
         // We have a sub task
         if (newSub != null) {
             if (!newSub.isEqual(sub)) {
-                if (canBeInterrupted(mod, sub, newSub)) {
+                if (canBeInterrupted(sub, newSub)) {
                     // Our sub task is new
                     if (sub != null) {
                         // Our previous sub must be interrupted.
-                        sub.stop(mod, newSub);
+                        sub.stop(newSub);
                     }
 
                     sub = newSub;
@@ -51,12 +50,12 @@ public abstract class Task {
             }
 
             // Run our child
-            sub.tick(mod, parentChain);
+            sub.tick(parentChain);
         } else {
             // We are null
-            if (sub != null && canBeInterrupted(mod, sub, null)) {
+            if (sub != null && canBeInterrupted(sub, null)) {
                 // Our previous sub must be interrupted.
-                sub.stop(mod);
+                sub.stop();
                 sub = null;
             }
         }
@@ -68,22 +67,22 @@ public abstract class Task {
         stopped = false;
     }
 
-    public void stop(AltoClef mod) {
-        stop(mod, null);
+    public void stop() {
+        stop(null);
     }
 
     /**
      * Stops the task. Next time it's run it will run `onStart`
      */
-    public void stop(AltoClef mod, Task interruptTask) {
+    public void stop(Task interruptTask) {
         if (!active) return;
         Debug.logInternal("Task STOP: " + this + ", interrupted by " + interruptTask);
         if (!first) {
-            onStop(mod, interruptTask);
+            onStop(interruptTask);
         }
 
         if (sub != null && !sub.stopped()) {
-            sub.stop(mod, interruptTask);
+            sub.stop(interruptTask);
         }
 
         first = true;
@@ -98,14 +97,14 @@ public abstract class Task {
      * <p>
      * Doesn't stop it all-together (meaning `isActive` still returns true)
      */
-    public void interrupt(AltoClef mod, Task interruptTask) {
+    public void interrupt(Task interruptTask) {
         if (!active) return;
         if (!first) {
-            onStop(mod, interruptTask);
+            onStop(interruptTask);
         }
 
         if (sub != null && !sub.stopped()) {
-            sub.interrupt(mod, interruptTask);
+            sub.interrupt(interruptTask);
         }
 
         first = true;
@@ -119,7 +118,7 @@ public abstract class Task {
     }
 
     // Virtual
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         return false;
     }
 
@@ -131,12 +130,12 @@ public abstract class Task {
         return stopped;
     }
 
-    protected abstract void onStart(AltoClef mod);
+    protected abstract void onStart();
 
-    protected abstract Task onTick(AltoClef mod);
+    protected abstract Task onTick();
 
     // interruptTask = null if the task stopped cleanly
-    protected abstract void onStop(AltoClef mod, Task interruptTask);
+    protected abstract void onStop(Task interruptTask);
 
     protected abstract boolean isEqual(Task other);
 
@@ -172,12 +171,12 @@ public abstract class Task {
      * Sometimes a task just can NOT be bothered to be interrupted right now.
      * For instance, if we're in mid air and MUST complete the parkour movement.
      */
-    private boolean canBeInterrupted(AltoClef mod, Task subTask, Task toInterruptWith) {
+    private boolean canBeInterrupted(Task subTask, Task toInterruptWith) {
         if (subTask == null) return true;
         // Our task can declare that is FORCES itself to be active NOW.
         return (subTask.thisOrChildSatisfies(task -> {
             if (task instanceof ITaskCanForce canForce) {
-                return !canForce.shouldForce(mod, toInterruptWith);
+                return !canForce.shouldForce(toInterruptWith);
             }
             return true;
         }));

@@ -1,6 +1,7 @@
 package adris.altoclef.tasks.movement;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.Debug;
 import adris.altoclef.tasksystem.ITaskRequiresGrounded;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.Dimension;
@@ -37,19 +38,19 @@ public class GetToBlockTask extends CustomBaritoneGoalTask implements ITaskRequi
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
         if (_dimension != null && WorldHelper.getCurrentDimension() != _dimension) {
             return new DefaultGoToDimensionTask(_dimension);
         }
 
-        if (isFinished(mod)) {
+        if (isFinished()) {
             finishedTicks++;
         } else {
             finishedTicks = 0;
         }
         if (finishedTicks > 10*20) {
             wanderTimer.reset();
-            mod.logWarning("GetToBlock was finished for 10 seconds yet is still being called, wandering");
+            Debug.logWarning("GetToBlock was finished for 10 seconds yet is still being called, wandering");
             finishedTicks = 0;
             return new TimeoutWanderTask();
         }
@@ -57,24 +58,24 @@ public class GetToBlockTask extends CustomBaritoneGoalTask implements ITaskRequi
             return new TimeoutWanderTask();
         }
 
-        return super.onTick(mod);
+        return super.onTick();
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
-        super.onStart(mod);
+    protected void onStart() {
+        super.onStart();
         if (_preferStairs) {
-            mod.getBehaviour().push();
-            mod.getBehaviour().setPreferredStairs(true);
+            AltoClef.getInstance().getBehaviour().push();
+            AltoClef.getInstance().getBehaviour().setPreferredStairs(true);
         }
     }
 
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
-        super.onStop(mod, interruptTask);
+    protected void onStop(Task interruptTask) {
+        super.onStop(interruptTask);
         if (_preferStairs) {
-            mod.getBehaviour().pop();
+            AltoClef.getInstance().getBehaviour().pop();
         }
     }
 
@@ -87,8 +88,8 @@ public class GetToBlockTask extends CustomBaritoneGoalTask implements ITaskRequi
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
-        return super.isFinished(mod) && (_dimension == null || _dimension == WorldHelper.getCurrentDimension());
+    public boolean isFinished() {
+        return super.isFinished() && (_dimension == null || _dimension == WorldHelper.getCurrentDimension());
     }
 
     @Override

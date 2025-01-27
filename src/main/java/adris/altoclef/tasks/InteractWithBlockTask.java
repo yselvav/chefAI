@@ -222,8 +222,9 @@ public class InteractWithBlockTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
-        mod.getClientBaritone().getPathingBehavior().forceCancel();
+    protected void onStart() {
+        AltoClef.getInstance().getClientBaritone().getPathingBehavior().forceCancel();
+
         moveChecker.reset();
         stuckCheck.reset();
         wanderTask.resetWander();
@@ -231,11 +232,13 @@ public class InteractWithBlockTask extends Task {
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         if (mod.getClientBaritone().getPathingBehavior().isPathing()) {
             moveChecker.reset();
         }
-        if (WorldHelper.isInNetherPortal(mod)) {
+        if (WorldHelper.isInNetherPortal()) {
             if (!mod.getClientBaritone().getPathingBehavior().isPathing()) {
                 setDebugState("Getting out from nether portal");
                 mod.getInputControls().hold(Input.SNEAK);
@@ -253,7 +256,7 @@ public class InteractWithBlockTask extends Task {
                 mod.getInputControls().release(Input.MOVE_FORWARD);
             }
         }
-        if (unstuckTask != null && unstuckTask.isActive() && !unstuckTask.isFinished(mod) && stuckInBlock(mod) != null) {
+        if (unstuckTask != null && unstuckTask.isActive() && !unstuckTask.isFinished() && stuckInBlock(mod) != null) {
             setDebugState("Getting unstuck from block.");
             stuckCheck.reset();
             // Stop other tasks, we are JUST shimmying
@@ -280,7 +283,7 @@ public class InteractWithBlockTask extends Task {
         }
 
         // Wander and check
-        if (wanderTask.isActive() && !wanderTask.isFinished(mod)) {
+        if (wanderTask.isActive() && !wanderTask.isFinished()) {
             moveChecker.reset();
             clickTimer.reset();
             return wanderTask;
@@ -342,13 +345,15 @@ public class InteractWithBlockTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
+        AltoClef mod = AltoClef.getInstance();
+
         mod.getClientBaritone().getPathingBehavior().forceCancel();
         mod.getInputControls().release(Input.SNEAK);
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         return false;
         //return _trying && !proc(mod).isActive();
     }
@@ -426,7 +431,7 @@ public class InteractWithBlockTask extends Task {
                 }
                 //mod.getClientBaritone().getInputOverrideHandler().setInputForceState(_interactInput, true);
             } else {
-                LookHelper.lookAt(mod, reachable.get());
+                LookHelper.lookAt(reachable.get());
             }
             return ClickResponse.WAIT_FOR_CLICK;
         }

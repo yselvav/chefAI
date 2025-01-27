@@ -1,7 +1,6 @@
 package adris.altoclef.tasks.movement;
 
 import adris.altoclef.AltoClef;
-import adris.altoclef.Debug;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.helpers.LookHelper;
 import adris.altoclef.util.helpers.StorageHelper;
@@ -20,15 +19,17 @@ public class GetOutOfWaterTask extends CustomBaritoneGoalTask{
     private final TimerGame shimmyTaskTimer = new TimerGame(5);
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         // get on the surface first
         if (mod.getPlayer().getAir() < mod.getPlayer().getMaxAir() || mod.getPlayer().isSubmergedInWater()) {
-            return super.onTick(mod);
+            return super.onTick();
         }
 
         boolean hasBlockBelow = false;
@@ -55,11 +56,11 @@ public class GetOutOfWaterTask extends CustomBaritoneGoalTask{
             mod.getInputControls().tryPress(Input.CLICK_RIGHT);
         }
 
-        return super.onTick(mod);
+        return super.onTick();
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 
@@ -79,8 +80,8 @@ public class GetOutOfWaterTask extends CustomBaritoneGoalTask{
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
-        return !mod.getPlayer().isTouchingWater() && mod.getPlayer().isOnGround();
+    public boolean isFinished() {
+        return !AltoClef.getInstance().getPlayer().isTouchingWater() && AltoClef.getInstance().getPlayer().isOnGround();
     }
 
     private static class EscapeFromWaterGoal implements Goal {

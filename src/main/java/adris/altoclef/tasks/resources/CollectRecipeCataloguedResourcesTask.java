@@ -27,13 +27,14 @@ public class CollectRecipeCataloguedResourcesTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
         _finished = false;
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
         // TODO: Cache this once instead of doing it every frame.
+        AltoClef mod = AltoClef.getInstance();
 
         // Stuff to get, both catalogued + individual items.
         HashMap<String, Integer> catalogueCount = new HashMap<>();
@@ -105,7 +106,7 @@ public class CollectRecipeCataloguedResourcesTask extends Task {
 
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 
@@ -123,9 +124,9 @@ public class CollectRecipeCataloguedResourcesTask extends Task {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         if (_finished) {
-            if (!StorageHelper.hasRecipeMaterialsOrTarget(mod, this._targets)) {
+            if (!StorageHelper.hasRecipeMaterialsOrTarget(AltoClef.getInstance(), this._targets)) {
                 _finished = false;
                 Debug.logMessage("Invalid collect recipe \"finished\" state, resetting.");
             }

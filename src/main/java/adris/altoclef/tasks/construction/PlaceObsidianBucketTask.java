@@ -1,6 +1,7 @@
 package adris.altoclef.tasks.construction;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.BotBehaviour;
 import adris.altoclef.Debug;
 import adris.altoclef.TaskCatalogue;
 import adris.altoclef.commands.BlockScanner;
@@ -49,15 +50,17 @@ public class PlaceObsidianBucketTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
+        BotBehaviour botBehaviour = AltoClef.getInstance().getBehaviour();
+
         // Push the behaviour onto the behaviour stack
-        mod.getBehaviour().push();
+        botBehaviour.push();
 
         // Avoid breaking blocks within the specified conditions
-        mod.getBehaviour().avoidBlockBreaking(this::isBlockInCastFrame);
+        botBehaviour.avoidBlockBreaking(this::isBlockInCastFrame);
 
         // Avoid placing blocks within the specified conditions
-        mod.getBehaviour().avoidBlockPlacing(this::isBlockInCastWaterOrLava);
+        botBehaviour.avoidBlockPlacing(this::isBlockInCastWaterOrLava);
 
         // Reset the progress checker
         _progressChecker.reset();
@@ -98,11 +101,12 @@ public class PlaceObsidianBucketTask extends Task {
      * This method is called periodically to perform a specific task.
      * It handles the logic for casting a spell using lava and water buckets.
      *
-     * @param mod The mod instance
      * @return The next task to be executed
      */
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         // Reset progress if pathing
         if (mod.getClientBaritone().getPathingBehavior().isPathing()) {
             _progressChecker.reset();
@@ -138,7 +142,7 @@ public class PlaceObsidianBucketTask extends Task {
 
         // Build cast frame if not already built
         if (_currentCastTarget != null) {
-            if (WorldHelper.isSolidBlock(mod, _currentCastTarget)) {
+            if (WorldHelper.isSolidBlock(_currentCastTarget)) {
                 _currentCastTarget = null;
             } else {
                 return new PlaceBlockTask(_currentCastTarget,
@@ -149,7 +153,7 @@ public class PlaceObsidianBucketTask extends Task {
 
         // Destroy block if needed
         if (_currentDestroyTarget != null) {
-            if (!WorldHelper.isSolidBlock(mod, _currentDestroyTarget)) {
+            if (!WorldHelper.isSolidBlock(_currentDestroyTarget)) {
                 _currentDestroyTarget = null;
             } else {
                 return new DestroyBlockTask(_currentDestroyTarget);
@@ -157,13 +161,13 @@ public class PlaceObsidianBucketTask extends Task {
         }
 
         // Build the cast frame if not already built
-        if (_currentCastTarget != null && WorldHelper.isSolidBlock(mod, _currentCastTarget)) {
+        if (_currentCastTarget != null && WorldHelper.isSolidBlock(_currentCastTarget)) {
             // Current cast frame already built.
             _currentCastTarget = null;
         }
         for (Vec3i castPosRelative : CAST_FRAME) {
             BlockPos castPos = _pos.add(castPosRelative);
-            if (!WorldHelper.isSolidBlock(mod, castPos)) {
+            if (!WorldHelper.isSolidBlock(castPos)) {
                 _currentCastTarget = castPos;
                 Debug.logInternal("Building cast frame...");
                 return null;
@@ -179,18 +183,18 @@ public class PlaceObsidianBucketTask extends Task {
                 Debug.logInternal("Positioning player before placing lava...");
                 return new GetToBlockTask(targetPos, false);
             }
-            if (WorldHelper.isSolidBlock(mod, _pos)) {
+            if (WorldHelper.isSolidBlock(_pos)) {
                 Debug.logInternal("Clearing space around lava...");
                 _currentDestroyTarget = _pos;
                 return null;
             }
             // Clear the upper two as well, to make placing more reliable.
-            if (WorldHelper.isSolidBlock(mod, _pos.up())) {
+            if (WorldHelper.isSolidBlock(_pos.up())) {
                 Debug.logInternal("Clearing space around lava...");
                 _currentDestroyTarget = _pos.up();
                 return null;
             }
-            if (WorldHelper.isSolidBlock(mod, _pos.up(2))) {
+            if (WorldHelper.isSolidBlock(_pos.up(2))) {
                 Debug.logInternal("Clearing space around lava...");
                 _currentDestroyTarget = _pos.up(2);
                 return null;
@@ -208,11 +212,11 @@ public class PlaceObsidianBucketTask extends Task {
                 Debug.logInternal("Positioning player before placing water...");
                 return new GetToBlockTask(targetPos, false);
             }
-            if (WorldHelper.isSolidBlock(mod, waterCheck)) {
+            if (WorldHelper.isSolidBlock(waterCheck)) {
                 _currentDestroyTarget = waterCheck;
                 return null;
             }
-            if (WorldHelper.isSolidBlock(mod, waterCheck.up())) {
+            if (WorldHelper.isSolidBlock(waterCheck.up())) {
                 _currentDestroyTarget = waterCheck.up();
                 return null;
             }
@@ -224,15 +228,14 @@ public class PlaceObsidianBucketTask extends Task {
     /**
      * This method is called when the task is interrupted.
      *
-     * @param mod           The instance of the AltoClef class.
      * @param interruptTask The task that caused the interruption.
      */
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
         // Check if the mod's behaviour is not null
-        if (mod.getBehaviour() != null) {
+        if (AltoClef.getInstance().getBehaviour() != null) {
             // Pop the behaviour from the stack
-            mod.getBehaviour().pop();
+            AltoClef.getInstance().getBehaviour().pop();
             // Log a message indicating that the behaviour was popped
             Debug.logInternal("Behaviour popped.");
         }
@@ -243,13 +246,12 @@ public class PlaceObsidianBucketTask extends Task {
      * The task is considered finished if the block at the specified position is obsidian
      * and there is no water block above it.
      *
-     * @param mod The AltoClef mod instance.
      * @return True if the task is finished, False otherwise.
      */
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         // Get the BlockTracker instance from the mod
-        BlockScanner blockTracker = mod.getBlockScanner();
+        BlockScanner blockTracker = AltoClef.getInstance().getBlockScanner();
 
         // Get the position of the block to check
         BlockPos pos = _pos;

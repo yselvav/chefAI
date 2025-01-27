@@ -51,7 +51,7 @@ public class ToolSetMixin {
 
     @Redirect(method = "getBestSlot(Lnet/minecraft/block/Block;ZZ)I",at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getDamage()I"))
     public int redirected(ItemStack stack,Block block) {
-        if (StorageHelper.shouldSaveStack(AltoClef.INSTANCE,block,stack)) {
+        if (StorageHelper.shouldSaveStack(AltoClef.getInstance(),block,stack)) {
             return 100_000;
         }
 
@@ -60,7 +60,7 @@ public class ToolSetMixin {
 
     @Redirect(method = "getBestSlot(Lnet/minecraft/block/Block;ZZ)I",at = @At(value = "FIELD", target = "Lbaritone/api/Settings;itemSaver:Lbaritone/api/Settings$Setting;"), remap = false)
     public Settings.Setting<Boolean> redirected(Settings instance,Block block ,@Local ItemStack stack) {
-        if (StorageHelper.shouldSaveStack(AltoClef.INSTANCE,block,stack)) {
+        if (StorageHelper.shouldSaveStack(AltoClef.getInstance(),block,stack)) {
             return trueSetting;
         }
         return instance.itemSaver;

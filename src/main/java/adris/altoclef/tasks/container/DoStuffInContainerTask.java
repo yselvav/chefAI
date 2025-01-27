@@ -53,7 +53,8 @@ public abstract class DoStuffInContainerTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
+        AltoClef mod = AltoClef.getInstance();
         mod.getBehaviour().push();
         if (openTableTask == null) {
             openTableTask = new DoToClosestBlockTask(InteractWithBlockTask::new, containerBlocks);
@@ -64,10 +65,10 @@ public abstract class DoStuffInContainerTask extends Task {
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
-
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
         // If we're placing, keep on placing.
-        if (mod.getItemStorage().hasItem(ItemHelper.blocksToItems(containerBlocks)) && placeTask.isActive() && !placeTask.isFinished(mod)) {
+        if (mod.getItemStorage().hasItem(ItemHelper.blocksToItems(containerBlocks)) && placeTask.isActive() && !placeTask.isFinished()) {
             setDebugState("Placing container");
             return placeTask;
         }
@@ -89,7 +90,7 @@ public abstract class DoStuffInContainerTask extends Task {
             nearest = Optional.of(override);
         } else {
             // Track nearest container
-            nearest = mod.getBlockScanner().getNearestBlock(currentPos, blockPos -> WorldHelper.canReach(mod, blockPos), containerBlocks);
+            nearest = mod.getBlockScanner().getNearestBlock(currentPos, blockPos -> WorldHelper.canReach(blockPos), containerBlocks);
         }
         if (nearest.isEmpty()) {
             // If all else fails, try using our placed task
@@ -169,8 +170,8 @@ public abstract class DoStuffInContainerTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
-        mod.getBehaviour().pop();
+    protected void onStop(Task interruptTask) {
+        AltoClef.getInstance().getBehaviour().pop();
     }
 
     @Override

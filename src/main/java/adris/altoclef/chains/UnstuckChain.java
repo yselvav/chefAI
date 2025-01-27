@@ -1,6 +1,7 @@
 package adris.altoclef.chains;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.Debug;
 import adris.altoclef.multiversion.entity.PlayerVer;
 import adris.altoclef.multiversion.versionedfields.Blocks;
 import adris.altoclef.tasks.construction.DestroyBlockTask;
@@ -14,6 +15,8 @@ import baritone.api.utils.input.Input;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.EndPortalFrameBlock;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -35,22 +38,25 @@ public class UnstuckChain extends SingleTaskChain {
     }
 
 
-    private void checkStuckInWater(AltoClef mod) {
+    private void checkStuckInWater() {
         if (posHistory.size() < 100) return;
 
+        ClientWorld world = AltoClef.getInstance().getWorld();
+        ClientPlayerEntity player = AltoClef.getInstance().getPlayer();
+
         // is not in water
-        if (!mod.getWorld().getBlockState(mod.getPlayer().getSteppingPos()).getBlock().equals(Blocks.WATER)
-                && !mod.getWorld().getBlockState(mod.getPlayer().getSteppingPos().down()).getBlock().equals(Blocks.WATER))
+        if (!world.getBlockState(player.getSteppingPos()).getBlock().equals(Blocks.WATER)
+                && !world.getBlockState(player.getSteppingPos().down()).getBlock().equals(Blocks.WATER))
             return;
 
         // everything should be fine
-        if (mod.getPlayer().isOnGround()) {
+        if (player.isOnGround()) {
             posHistory.clear();
             return;
         }
 
         // do NOT do anything if underwater
-        if (mod.getPlayer().getAir() < mod.getPlayer().getMaxAir()) {
+        if (player.getAir() < player.getMaxAir()) {
             return;
         }
 
@@ -66,8 +72,11 @@ public class UnstuckChain extends SingleTaskChain {
         setTask(new GetOutOfWaterTask());
     }
 
-    private void checkStuckInPowderedSnow(AltoClef mod) {
+    private void checkStuckInPowderedSnow() {
+        AltoClef mod = AltoClef.getInstance();
+
         PlayerEntity player = mod.getPlayer();
+        ClientWorld world = mod.getWorld();
 
         if (PlayerVer.inPowderedSnow(player)) {
             isProbablyStuck = true;
@@ -79,9 +88,9 @@ public class UnstuckChain extends SingleTaskChain {
             }
 
             BlockPos headPos = WorldHelper.toBlockPos(player.getEyePos()).down();
-            if (mod.getWorld().getBlockState(headPos).getBlock() == Blocks.POWDER_SNOW) {
+            if (world.getBlockState(headPos).getBlock() == Blocks.POWDER_SNOW) {
                 destroyPos = headPos;
-            } else if (mod.getWorld().getBlockState(player.getBlockPos()).getBlock() == Blocks.POWDER_SNOW) {
+            } else if (world.getBlockState(player.getBlockPos()).getBlock() == Blocks.POWDER_SNOW) {
                 destroyPos = player.getBlockPos();
             }
 
@@ -105,21 +114,23 @@ public class UnstuckChain extends SingleTaskChain {
         }
     }
 
-    private void checkEatingGlitch(AltoClef mod) {
+    private void checkEatingGlitch() {
+        FoodChain foodChain = AltoClef.getInstance().getFoodChain();
+
         if (interruptedEating) {
-            mod.getFoodChain().shouldStop(false);
+            foodChain.shouldStop(false);
             interruptedEating = false;
         }
 
-        if (mod.getFoodChain().isTryingToEat()) {
+        if (foodChain.isTryingToEat()) {
             eatingTicks++;
         } else {
             eatingTicks = 0;
         }
 
         if (eatingTicks > 7*20) {
-            mod.log("the bot is probably stuck trying to eat... resetting action");
-            mod.getFoodChain().shouldStop(true);
+            Debug.logMessage("the bot is probably stuck trying to eat... resetting action");
+            foodChain.shouldStop(true);
 
             eatingTicks = 0;
             interruptedEating = true;
@@ -128,12 +139,14 @@ public class UnstuckChain extends SingleTaskChain {
     }
 
     @Override
-    public float getPriority(AltoClef mod) {
+    public float getPriority() {
         if (mainTask instanceof GetOutOfWaterTask && mainTask.isActive()) {
             return 55;
         }
 
         isProbablyStuck = false;
+
+        AltoClef mod = AltoClef.getInstance();
 
         if (!AltoClef.inGame() || MinecraftClient.getInstance().isPaused() || !mod.getUserTaskChain().isActive())
             return Float.NEGATIVE_INFINITY;
@@ -148,9 +161,9 @@ public class UnstuckChain extends SingleTaskChain {
             posHistory.removeLast();
         }
 
-        checkStuckInWater(mod);
-        checkStuckInPowderedSnow(mod);
-        checkEatingGlitch(mod);
+        checkStuckInWater();
+        checkStuckInPowderedSnow();
+        checkEatingGlitch();
         checkStuckOnEndPortalFrame(mod);
 
 

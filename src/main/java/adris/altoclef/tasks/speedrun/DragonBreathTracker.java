@@ -1,6 +1,7 @@
 package adris.altoclef.tasks.speedrun;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.BotBehaviour;
 import adris.altoclef.tasks.movement.CustomBaritoneGoalTask;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.helpers.WorldHelper;
@@ -18,7 +19,7 @@ public class DragonBreathTracker {
     public void updateBreath(AltoClef mod) {
         breathBlocks.clear();
         for (AreaEffectCloudEntity cloud : mod.getEntityTracker().getTrackedEntities(AreaEffectCloudEntity.class)) {
-            for (BlockPos bad : WorldHelper.getBlocksTouchingBox(mod, cloud.getBoundingBox())) {
+            for (BlockPos bad : WorldHelper.getBlocksTouchingBox(cloud.getBoundingBox())) {
                 breathBlocks.add(bad);
             }
         }
@@ -35,18 +36,20 @@ public class DragonBreathTracker {
     private class RunAwayFromDragonsBreathTask extends CustomBaritoneGoalTask {
 
         @Override
-        protected void onStart(AltoClef mod) {
-            super.onStart(mod);
-            mod.getBehaviour().push();
-            mod.getBehaviour().setBlockPlacePenalty(Double.POSITIVE_INFINITY);
+        protected void onStart() {
+            super.onStart();
+            BotBehaviour botBehaviour = AltoClef.getInstance().getBehaviour();
+
+            botBehaviour.push();
+            botBehaviour.setBlockPlacePenalty(Double.POSITIVE_INFINITY);
             // do NOT ever wander
-            _checker = new MovementProgressChecker((int) Float.POSITIVE_INFINITY);
+            checker = new MovementProgressChecker((int) Float.POSITIVE_INFINITY);
         }
 
         @Override
-        protected void onStop(AltoClef mod, Task interruptTask) {
-            super.onStop(mod, interruptTask);
-            mod.getBehaviour().pop();
+        protected void onStop(Task interruptTask) {
+            super.onStop(interruptTask);
+            AltoClef.getInstance().getBehaviour().pop();
         }
 
         @Override

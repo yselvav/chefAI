@@ -121,7 +121,9 @@ public class CollectFoodTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
+        AltoClef mod = AltoClef.getInstance();
+
         mod.getBehaviour().push();
         // Protect ALL food
         mod.getBehaviour().addProtectedItems(ITEMS_TO_PICK_UP);
@@ -137,7 +139,9 @@ public class CollectFoodTask extends Task {
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         blackListChickenJockeys(mod);
 
         List<BlockPos> haysPos = mod.getBlockScanner().getKnownLocations(Blocks.HAY_BLOCK);
@@ -149,7 +153,7 @@ public class CollectFoodTask extends Task {
             }
         }
         // If we were previously smelting, keep on smelting.
-        if (smeltTask != null && smeltTask.isActive() && !smeltTask.isFinished(mod)) {
+        if (smeltTask != null && smeltTask.isActive() && !smeltTask.isFinished()) {
             // TODO: If we don't have cooking materials, cancel.
             setDebugState("Cooking...");
             return smeltTask;
@@ -161,7 +165,7 @@ public class CollectFoodTask extends Task {
             currentResourceTask = null;
         }
 
-        if (currentResourceTask != null && currentResourceTask.isActive() && !currentResourceTask.isFinished(mod) && !currentResourceTask.thisOrChildAreTimedOut()) {
+        if (currentResourceTask != null && currentResourceTask.isActive() && !currentResourceTask.isFinished() && !currentResourceTask.thisOrChildAreTimedOut()) {
             return currentResourceTask;
         }
 
@@ -246,7 +250,7 @@ public class CollectFoodTask extends Task {
                         }
                     }
                     // Unbreakable.
-                    return WorldHelper.canBreak(mod, blockPos);
+                    return WorldHelper.canBreak(blockPos);
                     // We're not wheat so do NOT reject.
                 }), 96);
                 if (t != null) {
@@ -317,13 +321,13 @@ public class CollectFoodTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
-        mod.getBehaviour().pop();
+    protected void onStop(Task interruptTask) {
+        AltoClef.getInstance().getBehaviour().pop();
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
-        return StorageHelper.calculateInventoryFoodScore(mod) >= unitsNeeded;
+    public boolean isFinished() {
+        return StorageHelper.calculateInventoryFoodScore() >= unitsNeeded;
     }
 
     @Override
@@ -345,7 +349,7 @@ public class CollectFoodTask extends Task {
      */
     private Task pickupBlockTaskOrNull(AltoClef mod, Block blockToCheck, Item itemToGrab, Predicate<BlockPos> accept, double maxRange) {
         Predicate<BlockPos> acceptPlus = (blockPos) -> {
-            if (!WorldHelper.canBreak(mod, blockPos)) return false;
+            if (!WorldHelper.canBreak(blockPos)) return false;
             return accept.test(blockPos);
         };
         Optional<BlockPos> nearestBlock = mod.getBlockScanner().getNearestBlock(mod.getPlayer().getPos(), acceptPlus, blockToCheck);

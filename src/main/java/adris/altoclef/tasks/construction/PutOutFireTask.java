@@ -21,23 +21,23 @@ public class PutOutFireTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
         return new InteractWithBlockTask(ItemTarget.EMPTY, null, _firePosition, Input.CLICK_LEFT, false, false);
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
-        BlockState s = mod.getWorld().getBlockState(_firePosition);
+    public boolean isFinished() {
+        BlockState s = AltoClef.getInstance().getWorld().getBlockState(_firePosition);
         return (s.getBlock() != Blocks.FIRE && s.getBlock() != Blocks.SOUL_FIRE);
     }
 

@@ -90,7 +90,7 @@ public class MineAndCollectTask extends ResourceTask {
 
     @Override
     protected Task onResourceTick(AltoClef mod) {
-        if (!StorageHelper.miningRequirementMet(mod, _requirement)) {
+        if (!StorageHelper.miningRequirementMet(_requirement)) {
             return new SatisfyMiningRequirementTask(_requirement);
         }
 
@@ -156,10 +156,10 @@ public class MineAndCollectTask extends ResourceTask {
 
         private final Block[] _blocks;
         private final ItemTarget[] _targets;
-        private final Set<BlockPos> _blacklist = new HashSet<>();
-        private final MovementProgressChecker _progressChecker = new MovementProgressChecker();
+        private final Set<BlockPos> blacklist = new HashSet<>();
+        private final MovementProgressChecker progressChecker = new MovementProgressChecker();
         private final Task _pickupTask;
-        private BlockPos _miningPos;
+        private BlockPos miningPos;
 
         public MineOrCollectTask(Block[] blocks, ItemTarget[] targets) {
             _blocks = blocks;
@@ -215,7 +215,7 @@ public class MineAndCollectTask extends ResourceTask {
             Optional<BlockPos> closestBlock = mod.getBlockScanner().getNearestBlock(pos, check -> {
 
                 if (mod.getBlockScanner().isUnreachable(check)) return false;
-                return WorldHelper.canBreak(mod, check);
+                return WorldHelper.canBreak(check);
             }, blocks);
 
             return new Pair<>(
@@ -230,32 +230,34 @@ public class MineAndCollectTask extends ResourceTask {
         }
 
         @Override
-        protected Task onTick(AltoClef mod) {
+        protected Task onTick() {
+            AltoClef mod = AltoClef.getInstance();
+
             if (mod.getClientBaritone().getPathingBehavior().isPathing()) {
-                _progressChecker.reset();
+                progressChecker.reset();
             }
-            if (_miningPos != null && !_progressChecker.check(mod)) {
+            if (miningPos != null && !progressChecker.check(mod)) {
                 mod.getClientBaritone().getPathingBehavior().forceCancel();
                 Debug.logMessage("Failed to mine block. Suggesting it may be unreachable.");
-                mod.getBlockScanner().requestBlockUnreachable(_miningPos, 2);
-                _blacklist.add(_miningPos);
-                _miningPos = null;
-                _progressChecker.reset();
+                mod.getBlockScanner().requestBlockUnreachable(miningPos, 2);
+                blacklist.add(miningPos);
+                miningPos = null;
+                progressChecker.reset();
             }
-            return super.onTick(mod);
+            return super.onTick();
         }
 
         @Override
         protected Task getGoalTask(Object obj) {
             if (obj instanceof BlockPos newPos) {
-                if (_miningPos == null || !_miningPos.equals(newPos)) {
-                    _progressChecker.reset();
+                if (miningPos == null || !miningPos.equals(newPos)) {
+                    progressChecker.reset();
                 }
-                _miningPos = newPos;
-                return new DestroyBlockTask(_miningPos);
+                miningPos = newPos;
+                return new DestroyBlockTask(miningPos);
             }
             if (obj instanceof ItemEntity) {
-                _miningPos = null;
+                miningPos = null;
                 return _pickupTask;
             }
             throw new UnsupportedOperationException("Shouldn't try to get the goal from object " + obj + " of type " + (obj != null ? obj.getClass().toString() : "(null object)"));
@@ -264,7 +266,7 @@ public class MineAndCollectTask extends ResourceTask {
         @Override
         protected boolean isValid(AltoClef mod, Object obj) {
             if (obj instanceof BlockPos b) {
-                return mod.getBlockScanner().isBlockAtPosition(b, _blocks) && WorldHelper.canBreak(mod, b);
+                return mod.getBlockScanner().isBlockAtPosition(b, _blocks) && WorldHelper.canBreak(b);
             }
             if (obj instanceof ItemEntity drop) {
                 Item item = drop.getStack().getItem();
@@ -279,13 +281,13 @@ public class MineAndCollectTask extends ResourceTask {
         }
 
         @Override
-        protected void onStart(AltoClef mod) {
-            _progressChecker.reset();
-            _miningPos = null;
+        protected void onStart() {
+            progressChecker.reset();
+            miningPos = null;
         }
 
         @Override
-        protected void onStop(AltoClef mod, Task interruptTask) {
+        protected void onStop(Task interruptTask) {
 
         }
 
@@ -303,11 +305,11 @@ public class MineAndCollectTask extends ResourceTask {
         }
 
         public boolean isMining() {
-            return _miningPos != null;
+            return miningPos != null;
         }
 
         public BlockPos miningPos() {
-            return _miningPos;
+            return miningPos;
         }
     }
 

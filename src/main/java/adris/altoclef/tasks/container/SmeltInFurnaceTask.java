@@ -1,6 +1,7 @@
 package adris.altoclef.tasks.container;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.BotBehaviour;
 import adris.altoclef.Debug;
 import adris.altoclef.TaskCatalogue;
 import adris.altoclef.tasks.ResourceTask;
@@ -105,8 +106,8 @@ public class SmeltInFurnaceTask extends ResourceTask {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
-        return super.isFinished(mod) || _doTask.isFinished(mod);
+    public boolean isFinished() {
+        return super.isFinished() || _doTask.isFinished();
     }
 
     @Override
@@ -158,17 +159,20 @@ public class SmeltInFurnaceTask extends ResourceTask {
         }
 
         @Override
-        protected void onStart(AltoClef mod) {
-            super.onStart(mod);
+        protected void onStart() {
+            super.onStart();
+            BotBehaviour botBehaviour = AltoClef.getInstance().getBehaviour();
 
-            mod.getBehaviour().addProtectedItems(ItemHelper.PLANKS);
-            mod.getBehaviour().addProtectedItems(Items.COAL);
-            mod.getBehaviour().addProtectedItems(allMaterials.getMatches());
-            mod.getBehaviour().addProtectedItems(target.getMaterial().getMatches());
+            botBehaviour.addProtectedItems(ItemHelper.PLANKS);
+            botBehaviour.addProtectedItems(Items.COAL);
+            botBehaviour.addProtectedItems(allMaterials.getMatches());
+            botBehaviour.addProtectedItems(target.getMaterial().getMatches());
         }
 
         @Override
-        protected Task onTick(AltoClef mod) {
+        protected Task onTick() {
+            AltoClef mod = AltoClef.getInstance();
+
             tryUpdateOpenFurnace(mod);
             // Include both regular + optional items
             ItemTarget materialTarget = allMaterials;
@@ -208,7 +212,7 @@ public class SmeltInFurnaceTask extends ResourceTask {
             }
 
             // We have fuel and materials. Get to our container and smelt!
-            return super.onTick(mod);
+            return super.onTick();
         }
 
         // Override this if our materials must be acquired in a special way.
@@ -345,7 +349,7 @@ public class SmeltInFurnaceTask extends ResourceTask {
                 double cost = 100.0 - 90.0 * (double) mod.getItemStorage().getItemCount(new Item[]{Items.COBBLESTONE}) / 8.0;
                 return Math.max(cost, 10.0);
             }
-            return StorageHelper.miningRequirementMetInventory(mod, MiningRequirement.WOOD) ? 50.0 : 100.0;
+            return StorageHelper.miningRequirementMetInventory(MiningRequirement.WOOD) ? 50.0 : 100.0;
         }
 
         @Override

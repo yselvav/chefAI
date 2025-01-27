@@ -60,7 +60,7 @@ public class TradeWithPiglinsTask extends ResourceTask {
     @Override
     protected Task onResourceTick(AltoClef mod) {
         // Collect gold if we don't have it.
-        if (goldTask != null && goldTask.isActive() && !goldTask.isFinished(mod)) {
+        if (goldTask != null && goldTask.isActive() && !goldTask.isFinished()) {
             setDebugState("Collecting gold");
             return goldTask;
         }
@@ -110,8 +110,9 @@ public class TradeWithPiglinsTask extends ResourceTask {
         }
 
         @Override
-        protected void onStart(AltoClef mod) {
-            super.onStart(mod);
+        protected void onStart() {
+            super.onStart();
+            AltoClef mod = AltoClef.getInstance();
 
             mod.getBehaviour().push();
 
@@ -129,9 +130,9 @@ public class TradeWithPiglinsTask extends ResourceTask {
         }
 
         @Override
-        protected void onStop(AltoClef mod, Task interruptTask) {
-            super.onStop(mod, interruptTask);
-            mod.getBehaviour().pop();
+        protected void onStop(Task interruptTask) {
+            super.onStop(interruptTask);
+            AltoClef.getInstance().getBehaviour().pop();
         }
 
         @Override

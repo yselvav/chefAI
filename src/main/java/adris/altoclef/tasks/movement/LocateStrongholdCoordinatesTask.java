@@ -15,7 +15,6 @@ import net.minecraft.entity.EyeOfEnderEntity;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
@@ -59,7 +58,7 @@ public class LocateStrongholdCoordinatesTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
     }
 
@@ -68,7 +67,9 @@ public class LocateStrongholdCoordinatesTask extends Task {
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         if (WorldHelper.getCurrentDimension() != Dimension.OVERWORLD) {
             setDebugState("Going to overworld");
             return new DefaultGoToDimensionTask(Dimension.OVERWORLD);
@@ -194,7 +195,7 @@ public class LocateStrongholdCoordinatesTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
     }
 
     public Optional<BlockPos> getStrongholdCoordinates() {
@@ -215,7 +216,7 @@ public class LocateStrongholdCoordinatesTask extends Task {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         return _strongholdEstimatePos != null;
     }
 

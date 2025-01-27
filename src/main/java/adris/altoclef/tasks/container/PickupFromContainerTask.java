@@ -87,18 +87,18 @@ public class PickupFromContainerTask extends AbstractDoToStorageContainerTask {
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
         // Free inventory while we're doing it.
-        if (_freeInventoryTask.isActive() && !_freeInventoryTask.isFinished(mod) && !mod.getItemStorage().hasEmptyInventorySlot()) {
+        if (_freeInventoryTask.isActive() && !_freeInventoryTask.isFinished() && !AltoClef.getInstance().getItemStorage().hasEmptyInventorySlot()) {
             setDebugState("Freeing inventory.");
             return _freeInventoryTask;
         }
-        return super.onTick(mod);
+        return super.onTick();
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
-        return Arrays.stream(_targets).allMatch(target -> mod.getItemStorage().getItemCountInventoryOnly(target.getMatches()) >= target.getTargetCount());
+    public boolean isFinished() {
+        return Arrays.stream(_targets).allMatch(target -> AltoClef.getInstance().getItemStorage().getItemCountInventoryOnly(target.getMatches()) >= target.getTargetCount());
     }
 
     @Override

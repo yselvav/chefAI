@@ -15,18 +15,18 @@ public class GetBuildingMaterialsTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
-        Item[] throwaways = mod.getModSettings().getThrowawayItems(mod, true);
+    protected Task onTick() {
+        Item[] throwaways = AltoClef.getInstance().getModSettings().getThrowawayItems(true);
         return new MineAndCollectTask(new ItemTarget[]{new ItemTarget(throwaways, _count)}, MiningRequirement.WOOD);
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 
@@ -39,8 +39,8 @@ public class GetBuildingMaterialsTask extends Task {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
-        return StorageHelper.getBuildingMaterialCount(mod) >= _count;
+    public boolean isFinished() {
+        return StorageHelper.getBuildingMaterialCount() >= _count;
     }
 
     @Override

@@ -22,12 +22,13 @@ public class MoveInaccessibleItemToInventoryTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
 
         // Ensure inventory is closed.
         if (!StorageHelper.isPlayerInventoryOpen()) {
@@ -91,7 +92,7 @@ public class MoveInaccessibleItemToInventoryTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 

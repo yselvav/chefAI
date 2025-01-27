@@ -77,8 +77,8 @@ public class CollectBucketLiquidTask extends ResourceTask {
 
 
     @Override
-    protected Task onTick(AltoClef mod) {
-        Task result = super.onTick(mod);
+    protected Task onTick() {
+        Task result = super.onTick();
         // Reset our "first time" timeout/wander flag.
         if (!thisOrChildAreTimedOut()) {
             wasWandering = false;
@@ -94,7 +94,7 @@ public class CollectBucketLiquidTask extends ResourceTask {
         // If we're standing inside a liquid, go pick it up.
         if (tryImmediatePickupTimer.elapsed() && !mod.getItemStorage().hasItem(Items.WATER_BUCKET)) {
             Block standingInside = mod.getWorld().getBlockState(mod.getPlayer().getBlockPos()).getBlock();
-            if (standingInside == toCollect && WorldHelper.isSourceBlock(mod, mod.getPlayer().getBlockPos(), false)) {
+            if (standingInside == toCollect && WorldHelper.isSourceBlock(mod.getPlayer().getBlockPos(), false)) {
                 setDebugState("Trying to collect (we are in it)");
                 mod.getInputControls().forceLook(0, 90);
                 //mod.getClientBaritone().getLookBehavior().updateTarget(new Rotation(0, 90), true);
@@ -126,8 +126,8 @@ public class CollectBucketLiquidTask extends ResourceTask {
 
         Predicate<BlockPos> isSafeSourceLiquid = blockPos -> {
             if (blacklist.contains(blockPos)) return false;
-            if (!WorldHelper.canReach(mod, blockPos)) return false;
-            if (!WorldHelper.canReach(mod, blockPos.up())) return false; // We may try reaching the block above.
+            if (!WorldHelper.canReach(blockPos)) return false;
+            if (!WorldHelper.canReach(blockPos.up())) return false; // We may try reaching the block above.
             assert MinecraftClient.getInstance().world != null;
 
             Block above = mod.getWorld().getBlockState(blockPos.up()).getBlock();
@@ -145,7 +145,7 @@ public class CollectBucketLiquidTask extends ResourceTask {
                 }
             }
 
-            return WorldHelper.isSourceBlock(mod, blockPos, false);
+            return WorldHelper.isSourceBlock(blockPos, false);
         };
 
         // Find nearest water and right click it

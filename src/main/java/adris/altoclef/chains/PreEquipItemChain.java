@@ -25,8 +25,8 @@ public class PreEquipItemChain extends SingleTaskChain {
     }
 
     @Override
-    public float getPriority(AltoClef mod) {
-        update(mod);
+    public float getPriority() {
+        update(AltoClef.getInstance());
 
         // we don't care about overtaking... just pre-equip items in the background
         return -1;

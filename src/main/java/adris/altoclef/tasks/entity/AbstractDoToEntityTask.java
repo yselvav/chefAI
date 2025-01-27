@@ -48,7 +48,9 @@ public abstract class AbstractDoToEntityTask extends Task implements ITaskRequir
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
+        AltoClef mod = AltoClef.getInstance();
+
         progress.reset();
         ItemStack cursorStack = StorageHelper.getItemStackInCursorSlot();
         if (!cursorStack.isEmpty()) {
@@ -67,7 +69,9 @@ public abstract class AbstractDoToEntityTask extends Task implements ITaskRequir
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         if (mod.getClientBaritone().getPathingBehavior().isPathing()) {
             progress.reset();
         }
@@ -160,7 +164,9 @@ public abstract class AbstractDoToEntityTask extends Task implements ITaskRequir
     protected abstract Task onEntityInteract(AltoClef mod, Entity entity);
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
+        AltoClef mod = AltoClef.getInstance();
+
         mod.getMobDefenseChain().setTargetEntity(null);
         mod.getMobDefenseChain().resetForceField();
     }

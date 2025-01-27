@@ -34,13 +34,13 @@ public class EquipArmorTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
-        ItemTarget[] armorsNotEquipped = Arrays.stream(toEquip).filter(target -> !StorageHelper.itemTargetsMetInventory(mod, target) && !StorageHelper.isArmorEquipped(mod, target.getMatches())).toArray(ItemTarget[]::new);
+    protected Task onTick() {
+        ItemTarget[] armorsNotEquipped = Arrays.stream(toEquip).filter(target -> !StorageHelper.itemTargetsMetInventory(target) && !StorageHelper.isArmorEquipped(target.getMatches())).toArray(ItemTarget[]::new);
         boolean armorMet = armorsNotEquipped.length == 0;
         if (!armorMet) {
             setDebugState("Obtaining armor");
@@ -48,6 +48,7 @@ public class EquipArmorTask extends Task {
         }
 
         setDebugState("Equipping armor");
+        AltoClef mod = AltoClef.getInstance();
 
         // Now equip
         for (ItemTarget targetArmor : toEquip) {
@@ -57,7 +58,7 @@ public class EquipArmorTask extends Task {
                 if (shield == null) {
                     Debug.logWarning("Item " + targetArmor + " is not armor! Will not equip.");
                 } else {
-                    if (!StorageHelper.isArmorEquipped(mod, shield)) {
+                    if (!StorageHelper.isArmorEquipped(shield)) {
                         if (!(mod.getPlayer().currentScreenHandler instanceof PlayerScreenHandler)) {
                             ItemStack cursorStack = StorageHelper.getItemStackInCursorSlot();
                             if (!cursorStack.isEmpty()) {
@@ -93,7 +94,7 @@ public class EquipArmorTask extends Task {
                 if (item == null) {
                     Debug.logWarning("Item " + targetArmor + " is not armor! Will not equip.");
                 } else {
-                    if (!StorageHelper.isArmorEquipped(mod, item)) {
+                    if (!StorageHelper.isArmorEquipped(item)) {
                         if (!(mod.getPlayer().currentScreenHandler instanceof PlayerScreenHandler)) {
                             ItemStack cursorStack = StorageHelper.getItemStackInCursorSlot();
                             if (!cursorStack.isEmpty()) {
@@ -131,12 +132,12 @@ public class EquipArmorTask extends Task {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
-        return armorEquipped(mod);
+    public boolean isFinished() {
+        return armorEquipped();
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 
@@ -160,8 +161,8 @@ public class EquipArmorTask extends Task {
         );
     }
 
-    public boolean armorEquipped(AltoClef mod) {
-        return armorTestAll(item -> StorageHelper.isArmorEquipped(mod, item));
+    public boolean armorEquipped() {
+        return armorTestAll(item -> StorageHelper.isArmorEquipped(item));
     }
 
 }

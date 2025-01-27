@@ -109,7 +109,7 @@ public class CollectFoodPriorityCalculator extends ItemPriorityCalculator {
                     }
                 }
                 // Unbreakable.
-                return WorldHelper.canBreak(mod, blockPos);
+                return WorldHelper.canBreak(blockPos);
                 // We're not wheat so do NOT reject.
             }), 96);
             if (t != Double.NEGATIVE_INFINITY) {
@@ -155,7 +155,7 @@ public class CollectFoodPriorityCalculator extends ItemPriorityCalculator {
 
     private double pickupBlockTaskOrNull(AltoClef mod, Block blockToCheck, Item itemToGrab, Predicate<BlockPos> accept, double maxRange) {
         Predicate<BlockPos> acceptPlus = (blockPos) -> {
-            if (!WorldHelper.canBreak(mod, blockPos)) return false;
+            if (!WorldHelper.canBreak(blockPos)) return false;
             return accept.test(blockPos);
         };
         Optional<BlockPos> nearestBlock = mod.getBlockScanner().getNearestBlock(mod.getPlayer().getPos(), acceptPlus, blockToCheck);

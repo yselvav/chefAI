@@ -99,7 +99,7 @@ public class CollectHoneycombTask extends ResourceTask {
     }
 
     private boolean isCampfireUnderNest(AltoClef mod, BlockPos pos) {
-        for (BlockPos underPos : WorldHelper.scanRegion(mod, pos.down(6), pos.down())) {
+        for (BlockPos underPos : WorldHelper.scanRegion(pos.down(6), pos.down())) {
             if (mod.getWorld().getBlockState(underPos).getBlock() == Blocks.CAMPFIRE)
                 return true;
         }

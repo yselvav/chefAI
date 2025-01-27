@@ -14,6 +14,7 @@ import adris.altoclef.util.slots.Slot;
 import adris.altoclef.util.time.TimerGame;
 import baritone.api.utils.input.Input;
 import net.minecraft.block.*;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.ItemStack;
@@ -24,15 +25,16 @@ import net.minecraft.util.math.Vec3d;
 import java.util.List;
 import java.util.Optional;
 
+// TODO improve wandering
 /**
  * Call this when the place you're currently at is bad for some reason and you just wanna get away.
  */
 public class TimeoutWanderTask extends Task implements ITaskRequiresGrounded {
     private final MovementProgressChecker stuckCheck = new MovementProgressChecker();
-    private final float _distanceToWander;
-    private final MovementProgressChecker _progressChecker = new MovementProgressChecker();
-    private final boolean _increaseRange;
-    private final TimerGame _timer = new TimerGame(60);
+    private final float distanceToWander;
+    private final MovementProgressChecker progressChecker = new MovementProgressChecker();
+    private final boolean increaseRange;
+    private final TimerGame timer = new TimerGame(60);
     Block[] annoyingBlocks = new Block[]{
             Blocks.VINE,
             Blocks.NETHER_SPROUTS,
@@ -49,16 +51,16 @@ public class TimeoutWanderTask extends Task implements ITaskRequiresGrounded {
             Blocks.SHORT_GRASS,
             Blocks.SWEET_BERRY_BUSH
     };
-    private Vec3d _origin;
+    private Vec3d origin;
     //private DistanceProgressChecker _distanceProgressChecker = new DistanceProgressChecker(10, 0.1f);
     private boolean _forceExplore;
     private Task _unstuckTask = null;
-    private int _failCounter;
+    private int failCounter;
     private double _wanderDistanceExtension;
 
     public TimeoutWanderTask(float distanceToWander, boolean increaseRange) {
-        _distanceToWander = distanceToWander;
-        _increaseRange = increaseRange;
+        this.distanceToWander = distanceToWander;
+        this.increaseRange = increaseRange;
         _forceExplore = false;
     }
 
@@ -128,13 +130,15 @@ public class TimeoutWanderTask extends Task implements ITaskRequiresGrounded {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
-        _timer.reset();
+    protected void onStart() {
+        AltoClef mod = AltoClef.getInstance();
+
+        timer.reset();
         mod.getClientBaritone().getPathingBehavior().forceCancel();
-        _origin = mod.getPlayer().getPos();
-        _progressChecker.reset();
+        origin = mod.getPlayer().getPos();
+        progressChecker.reset();
         stuckCheck.reset();
-        _failCounter = 0;
+        failCounter = 0;
         ItemStack cursorStack = StorageHelper.getItemStackInCursorSlot();
         if (!cursorStack.isEmpty()) {
             Optional<Slot> moveTo = mod.getItemStorage().getSlotThatCanFitInPlayerInventory(cursorStack, false);
@@ -152,11 +156,14 @@ public class TimeoutWanderTask extends Task implements ITaskRequiresGrounded {
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
+
         if (mod.getClientBaritone().getPathingBehavior().isPathing()) {
-            _progressChecker.reset();
+            progressChecker.reset();
         }
-        if (WorldHelper.isInNetherPortal(mod)) {
+        if (WorldHelper.isInNetherPortal()) {
             if (!mod.getClientBaritone().getPathingBehavior().isPathing()) {
                 setDebugState("Getting out from nether portal");
                 mod.getInputControls().hold(Input.SNEAK);
@@ -174,7 +181,7 @@ public class TimeoutWanderTask extends Task implements ITaskRequiresGrounded {
                 mod.getInputControls().release(Input.MOVE_FORWARD);
             }
         }
-        if (_unstuckTask != null && _unstuckTask.isActive() && !_unstuckTask.isFinished(mod) && stuckInBlock(mod) != null) {
+        if (_unstuckTask != null && _unstuckTask.isActive() && !_unstuckTask.isFinished() && stuckInBlock(mod) != null) {
             setDebugState("Getting unstuck from block.");
             stuckCheck.reset();
             // Stop other tasks, we are JUST shimmying
@@ -182,7 +189,7 @@ public class TimeoutWanderTask extends Task implements ITaskRequiresGrounded {
             mod.getClientBaritone().getExploreProcess().onLostControl();
             return _unstuckTask;
         }
-        if (!_progressChecker.check(mod) || !stuckCheck.check(mod)) {
+        if (!progressChecker.check(mod) || !stuckCheck.check(mod)) {
             List<Entity> closeEntities = mod.getEntityTracker().getCloseEntities();
             for (Entity CloseEntities : closeEntities) {
                 if (CloseEntities instanceof MobEntity &&
@@ -193,7 +200,7 @@ public class TimeoutWanderTask extends Task implements ITaskRequiresGrounded {
             }
             BlockPos blockStuck = stuckInBlock(mod);
             if (blockStuck != null) {
-                _failCounter++;
+                failCounter++;
                 _unstuckTask = getFenceUnstuckTask();
                 return _unstuckTask;
             }
@@ -202,25 +209,25 @@ public class TimeoutWanderTask extends Task implements ITaskRequiresGrounded {
         setDebugState("Exploring.");
         switch (WorldHelper.getCurrentDimension()) {
             case END -> {
-                if (_timer.getDuration() >= 30) {
-                    _timer.reset();
+                if (timer.getDuration() >= 30) {
+                    timer.reset();
                 }
             }
             case OVERWORLD, NETHER -> {
-                if (_timer.getDuration() >= 30) {
+                if (timer.getDuration() >= 30) {
                 }
-                if (_timer.elapsed()) {
-                    _timer.reset();
+                if (timer.elapsed()) {
+                    timer.reset();
                 }
             }
         }
         if (!mod.getClientBaritone().getExploreProcess().isActive()) {
-            mod.getClientBaritone().getExploreProcess().explore((int) _origin.getX(), (int) _origin.getZ());
+            mod.getClientBaritone().getExploreProcess().explore((int) origin.getX(), (int) origin.getZ());
         }
-        if (!_progressChecker.check(mod)) {
-            _progressChecker.reset();
+        if (!progressChecker.check(mod)) {
+            progressChecker.reset();
             if (!_forceExplore) {
-                _failCounter++;
+                failCounter++;
                 Debug.logMessage("Failed exploring.");
             }
         }
@@ -228,32 +235,34 @@ public class TimeoutWanderTask extends Task implements ITaskRequiresGrounded {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
-        mod.getClientBaritone().getPathingBehavior().forceCancel();
-        if (isFinished(mod)) {
-            if (_increaseRange) {
-                _wanderDistanceExtension += _distanceToWander;
+    protected void onStop(Task interruptTask) {
+        AltoClef.getInstance().getClientBaritone().getPathingBehavior().forceCancel();
+        if (isFinished()) {
+            if (increaseRange) {
+                _wanderDistanceExtension += distanceToWander;
                 Debug.logMessage("Increased wander range");
             }
         }
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         // Why the heck did I add this in?
         //if (_origin == null) return true;
 
-        if (Float.isInfinite(_distanceToWander)) return false;
+        if (Float.isInfinite(distanceToWander)) return false;
 
         // If we fail 10 times or more, we may as well try the previous task again.
-        if (_failCounter > 10) {
+        if (failCounter > 10) {
             return true;
         }
 
-        if (mod.getPlayer() != null && mod.getPlayer().getPos() != null && (mod.getPlayer().isOnGround() ||
-                mod.getPlayer().isTouchingWater())) {
-            double sqDist = mod.getPlayer().getPos().squaredDistanceTo(_origin);
-            double toWander = _distanceToWander + _wanderDistanceExtension;
+        ClientPlayerEntity player = AltoClef.getInstance().getPlayer();
+
+        if (player != null && player.getPos() != null && (player.isOnGround() ||
+                player.isTouchingWater())) {
+            double sqDist = player.getPos().squaredDistanceTo(origin);
+            double toWander = distanceToWander + _wanderDistanceExtension;
             return sqDist > toWander * toWander;
         } else {
             return false;
@@ -263,16 +272,16 @@ public class TimeoutWanderTask extends Task implements ITaskRequiresGrounded {
     @Override
     protected boolean isEqual(Task other) {
         if (other instanceof TimeoutWanderTask task) {
-            if (Float.isInfinite(task._distanceToWander) || Float.isInfinite(_distanceToWander)) {
-                return Float.isInfinite(task._distanceToWander) == Float.isInfinite(_distanceToWander);
+            if (Float.isInfinite(task.distanceToWander) || Float.isInfinite(distanceToWander)) {
+                return Float.isInfinite(task.distanceToWander) == Float.isInfinite(distanceToWander);
             }
-            return Math.abs(task._distanceToWander - _distanceToWander) < 0.5f;
+            return Math.abs(task.distanceToWander - distanceToWander) < 0.5f;
         }
         return false;
     }
 
     @Override
     protected String toDebugString() {
-        return "Wander for " + (_distanceToWander + _wanderDistanceExtension) + " blocks";
+        return "Wander for " + (distanceToWander + _wanderDistanceExtension) + " blocks";
     }
 }

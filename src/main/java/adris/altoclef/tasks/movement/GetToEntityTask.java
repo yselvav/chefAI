@@ -96,19 +96,21 @@ public class GetToEntityTask extends Task implements ITaskRequiresGrounded {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
-        mod.getClientBaritone().getPathingBehavior().forceCancel();
+    protected void onStart() {
+        AltoClef.getInstance().getClientBaritone().getPathingBehavior().forceCancel();
         _progress.reset();
         stuckCheck.reset();
         _wanderTask.resetWander();
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         if (mod.getClientBaritone().getPathingBehavior().isPathing()) {
             _progress.reset();
         }
-        if (WorldHelper.isInNetherPortal(mod)) {
+        if (WorldHelper.isInNetherPortal()) {
             if (!mod.getClientBaritone().getPathingBehavior().isPathing()) {
                 setDebugState("Getting out from nether portal");
                 mod.getInputControls().hold(Input.SNEAK);
@@ -126,7 +128,7 @@ public class GetToEntityTask extends Task implements ITaskRequiresGrounded {
                 mod.getInputControls().release(Input.MOVE_FORWARD);
             }
         }
-        if (_unstuckTask != null && _unstuckTask.isActive() && !_unstuckTask.isFinished(mod) && stuckInBlock(mod) != null) {
+        if (_unstuckTask != null && _unstuckTask.isActive() && !_unstuckTask.isFinished() && stuckInBlock(mod) != null) {
             setDebugState("Getting unstuck from block.");
             stuckCheck.reset();
             // Stop other tasks, we are JUST shimmying
@@ -142,7 +144,7 @@ public class GetToEntityTask extends Task implements ITaskRequiresGrounded {
             }
             stuckCheck.reset();
         }
-        if (_wanderTask.isActive() && !_wanderTask.isFinished(mod)) {
+        if (_wanderTask.isActive() && !_wanderTask.isFinished()) {
             _progress.reset();
             setDebugState("Failed to get to target, wandering for a bit.");
             return _wanderTask;
@@ -165,8 +167,8 @@ public class GetToEntityTask extends Task implements ITaskRequiresGrounded {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
-        mod.getClientBaritone().getPathingBehavior().forceCancel();
+    protected void onStop(Task interruptTask) {
+        AltoClef.getInstance().getClientBaritone().getPathingBehavior().forceCancel();
     }
 
     @Override

@@ -97,6 +97,6 @@ public class KillEndermanTask extends ResourceTask {
 
     @Override
     protected String toDebugStringName() {
-        return "Hunting endermen for pearls - " + AltoClef.INSTANCE.getItemStorage().getItemCount(Items.ENDER_PEARL) + "/" + _count;
+        return "Hunting endermen for pearls - " + AltoClef.getInstance().getItemStorage().getItemCount(Items.ENDER_PEARL) + "/" + _count;
     }
 }

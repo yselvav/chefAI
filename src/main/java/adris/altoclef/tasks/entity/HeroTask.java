@@ -18,12 +18,14 @@ import java.util.Optional;
 
 public class HeroTask extends Task {
     @Override
-    protected void onStart(AltoClef mod) {
+    protected void onStart() {
 
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
+        AltoClef mod = AltoClef.getInstance();
+
         if (mod.getFoodChain().needsToEat()) {
             setDebugState("Eat first.");
             return null;
@@ -55,7 +57,7 @@ public class HeroTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task interruptTask) {
+    protected void onStop(Task interruptTask) {
 
     }
 

@@ -41,7 +41,7 @@ public class GetSmithingTemplateTask extends ResourceTask {
         // }
         if (_chestloc == null) {
             for (BlockPos pos : mod.getBlockScanner().getKnownLocations(Blocks.CHEST)) {
-                if (WorldHelper.isInteractableBlock(mod, pos)) {
+                if (WorldHelper.isInteractableBlock(pos)) {
                     _chestloc = pos;
                     break;
                 }
@@ -50,12 +50,12 @@ public class GetSmithingTemplateTask extends ResourceTask {
         if (_chestloc != null) {
             //if (!_chestloc.isWithinDistance(mod.getPlayer().getPos(), 150)) {
             setDebugState("Destroying Chest"); // TODO: Make It check the chest instead of destroying it
-            if (WorldHelper.isInteractableBlock(mod, _chestloc)) {
+            if (WorldHelper.isInteractableBlock(_chestloc)) {
                 return new DestroyBlockTask(_chestloc);
             } else {
                 _chestloc = null;
                 for (BlockPos pos : mod.getBlockScanner().getKnownLocations(Blocks.CHEST)) {
-                    if (WorldHelper.isInteractableBlock(mod, pos)) {
+                    if (WorldHelper.isInteractableBlock(pos)) {
                         _chestloc = pos;
                         break;
                     }

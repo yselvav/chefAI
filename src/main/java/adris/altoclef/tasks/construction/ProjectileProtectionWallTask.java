@@ -49,13 +49,13 @@ public class ProjectileProtectionWallTask extends Task implements ITaskRequiresG
 	}
 	
 	@Override
-	protected void onStart(AltoClef mod) {
+	protected void onStart() {
 		waitForBlockPlacement.forceElapse();
 	}
 
 	@Override
-	protected Task onTick(AltoClef mod) {
-		if (targetPlacePos != null && !WorldHelper.isSolidBlock(mod, targetPlacePos)) {
+	protected Task onTick() {
+		if (targetPlacePos != null && !WorldHelper.isSolidBlock(targetPlacePos)) {
 			Optional<adris.altoclef.util.slots.Slot> slot = StorageHelper.getSlotWithThrowawayBlock(this.mod, true);
 			if(slot.isPresent()) {
 				place(targetPlacePos, Hand.MAIN_HAND, slot.get().getInventorySlot());
@@ -92,13 +92,13 @@ public class ProjectileProtectionWallTask extends Task implements ITaskRequiresG
 	}
 
 	@Override
-	protected void onStop(AltoClef mod, Task interruptTask) {
+	protected void onStop(Task interruptTask) {
 		// TODO Auto-generated method stub
 		
 	}
 	
 	@Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         assert MinecraftClient.getInstance().world != null;
         
         Optional<Entity> entity = mod.getEntityTracker().getClosestEntity((e) -> {
@@ -110,7 +110,7 @@ public class ProjectileProtectionWallTask extends Task implements ITaskRequiresG
         	return false;
         }, SkeletonEntity.class);
         
-        return targetPlacePos != null && WorldHelper.isSolidBlock(mod, targetPlacePos) || entity.isEmpty();
+        return targetPlacePos != null && WorldHelper.isSolidBlock(targetPlacePos) || entity.isEmpty();
     }
 
 	@Override

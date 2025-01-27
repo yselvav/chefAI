@@ -2,7 +2,6 @@ package adris.altoclef.util.helpers;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.mixins.ClientConnectionAccessor;
-import adris.altoclef.mixins.EntityAccessor;
 import adris.altoclef.multiversion.MethodWrapper;
 import adris.altoclef.multiversion.world.WorldVer;
 import adris.altoclef.util.Dimension;
@@ -17,6 +16,7 @@ import net.minecraft.block.entity.MobSpawnerBlockEntity;
 import net.minecraft.block.enums.BedPart;
 import net.minecraft.block.enums.ChestType;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -28,6 +28,9 @@ import net.minecraft.world.biome.BiomeKeys;
 
 //#if MC >= 11802
 import net.minecraft.registry.entry.RegistryEntry;
+//#endif
+//#if MC <= 12006
+//$$ import adris.altoclef.mixins.EntityAccessor;
 //#endif
 
 import java.util.*;
@@ -62,14 +65,16 @@ public interface WorldHelper {
         return new BlockPos((int) pos.getX(), (int) pos.getY(), (int) pos.getZ());
     }
 
-    static boolean isSourceBlock(AltoClef mod, BlockPos pos, boolean onlyAcceptStill) {
-        BlockState s = mod.getWorld().getBlockState(pos);
+    static boolean isSourceBlock(BlockPos pos, boolean onlyAcceptStill) {
+        ClientWorld world = AltoClef.getInstance().getWorld();
+
+        BlockState s = world.getBlockState(pos);
         if (s.getBlock() instanceof FluidBlock) {
             // Only accept still fluids.
             if (!s.getFluidState().isStill() && onlyAcceptStill) return false;
             int level = s.getFluidState().getLevel();
             // Ignore if there's liquid above, we can't tell if it's a source block or not.
-            BlockState above = mod.getWorld().getBlockState(pos.up());
+            BlockState above = world.getBlockState(pos.up());
             if (above.getBlock() instanceof FluidBlock) return false;
             return level == 8;
         }
@@ -121,18 +126,22 @@ public interface WorldHelper {
      *
      * better method for blocks that can be walked on should be created instead
      */
-    static boolean isSolidBlock(AltoClef mod, BlockPos pos) {
-        return mod.getWorld().getBlockState(pos).isSolidBlock(mod.getWorld(), pos);
+    static boolean isSolidBlock(BlockPos pos) {
+        ClientWorld world = AltoClef.getInstance().getWorld();
+
+        return world.getBlockState(pos).isSolidBlock(world, pos);
     }
 
     /**
      * Get the "head" of a block with a bed, if the block is a bed.
      */
-    static BlockPos getBedHead(AltoClef mod, BlockPos posWithBed) {
-        BlockState state = mod.getWorld().getBlockState(posWithBed);
+    static BlockPos getBedHead(BlockPos posWithBed) {
+        ClientWorld world = AltoClef.getInstance().getWorld();
+
+        BlockState state = world.getBlockState(posWithBed);
         if (state.getBlock() instanceof BedBlock) {
             Direction facing = state.get(BedBlock.FACING);
-            if (mod.getWorld().getBlockState(posWithBed).get(BedBlock.PART).equals(BedPart.HEAD)) {
+            if (world.getBlockState(posWithBed).get(BedBlock.PART).equals(BedPart.HEAD)) {
                 return posWithBed;
             }
             return posWithBed.offset(facing);
@@ -143,11 +152,13 @@ public interface WorldHelper {
     /**
      * Get the "foot" of a block with a bed, if the block is a bed.
      */
-    static BlockPos getBedFoot(AltoClef mod, BlockPos posWithBed) {
-        BlockState state = mod.getWorld().getBlockState(posWithBed);
+    static BlockPos getBedFoot(BlockPos posWithBed) {
+        ClientWorld world = AltoClef.getInstance().getWorld();
+
+        BlockState state = world.getBlockState(posWithBed);
         if (state.getBlock() instanceof BedBlock) {
             Direction facing = state.get(BedBlock.FACING);
-            if (mod.getWorld().getBlockState(posWithBed).get(BedBlock.PART).equals(BedPart.FOOT)) {
+            if (world.getBlockState(posWithBed).get(BedBlock.PART).equals(BedPart.FOOT)) {
                 return posWithBed;
             }
             return posWithBed.offset(facing.getOpposite());
@@ -157,8 +168,9 @@ public interface WorldHelper {
 
     // Get the left side of a chest, given a block pos.
     // Used to consistently identify whether a double chest is part of the same chest.
-    static BlockPos getChestLeft(AltoClef mod, BlockPos posWithChest) {
-        BlockState state = mod.getWorld().getBlockState(posWithChest);
+    static BlockPos getChestLeft(BlockPos posWithChest) {
+        BlockState state = AltoClef.getInstance().getWorld().getBlockState(posWithChest);
+
         if (state.getBlock() instanceof ChestBlock) {
             ChestType type = state.get(ChestBlock.CHEST_TYPE);
             if (type == ChestType.SINGLE || type == ChestType.LEFT) {
@@ -170,8 +182,8 @@ public interface WorldHelper {
         return null;
     }
 
-    static boolean isChestBig(AltoClef mod, BlockPos posWithChest) {
-        BlockState state = mod.getWorld().getBlockState(posWithChest);
+    static boolean isChestBig(BlockPos posWithChest) {
+        BlockState state = AltoClef.getInstance().getWorld().getBlockState(posWithChest);
         if (state.getBlock() instanceof ChestBlock) {
             ChestType type = state.get(ChestBlock.CHEST_TYPE);
             return (type == ChestType.RIGHT || type == ChestType.LEFT);
@@ -179,21 +191,25 @@ public interface WorldHelper {
         return false;
     }
 
-    static int getGroundHeight(AltoClef mod, int x, int z) {
-        for (int y = mod.getWorld().getTopY(); y >= mod.getWorld().getBottomY(); --y) {
+    static int getGroundHeight(int x, int z) {
+        ClientWorld world = AltoClef.getInstance().getWorld();
+
+        for (int y = world.getTopY(); y >= world.getBottomY(); --y) {
             BlockPos check = new BlockPos(x, y, z);
-            if (isSolidBlock(mod, check)) return y;
+            if (isSolidBlock(check)) return y;
         }
         return -1;
     }
 
-    static BlockPos getADesertTemple(AltoClef mod) {
-        List<BlockPos> stonePressurePlates = mod.getBlockScanner().getKnownLocations(Blocks.STONE_PRESSURE_PLATE);
+    static BlockPos getADesertTemple() {
+        ClientWorld world = AltoClef.getInstance().getWorld();
+
+        List<BlockPos> stonePressurePlates = AltoClef.getInstance().getBlockScanner().getKnownLocations(Blocks.STONE_PRESSURE_PLATE);
         if (!stonePressurePlates.isEmpty()) {
             for (BlockPos pos : stonePressurePlates) {
-                if (mod.getWorld().getBlockState(pos).getBlock() == Blocks.STONE_PRESSURE_PLATE && // Duct tape
-                        mod.getWorld().getBlockState(pos.down()).getBlock() == Blocks.CUT_SANDSTONE &&
-                        mod.getWorld().getBlockState(pos.down(2)).getBlock() == Blocks.TNT) {
+                if (world.getBlockState(pos).getBlock() == Blocks.STONE_PRESSURE_PLATE && // Duct tape
+                        world.getBlockState(pos.down()).getBlock() == Blocks.CUT_SANDSTONE &&
+                        world.getBlockState(pos.down(2)).getBlock() == Blocks.TNT) {
                     return pos;
                 }
             }
@@ -201,49 +217,61 @@ public interface WorldHelper {
         return null;
     }
 
-    static boolean isUnopenedChest(AltoClef mod, BlockPos pos) {
-        return mod.getItemStorage().getContainerAtPosition(pos).isEmpty();
+    static boolean isUnopenedChest(BlockPos pos) {
+        return AltoClef.getInstance().getItemStorage().getContainerAtPosition(pos).isEmpty();
     }
 
-    static int getGroundHeight(AltoClef mod, int x, int z, Block... groundBlocks) {
+    static int getGroundHeight(int x, int z, Block... groundBlocks) {
+        ClientWorld world = AltoClef.getInstance().getWorld();
+
         Set<Block> possibleBlocks = new HashSet<>(Arrays.asList(groundBlocks));
-        for (int y = mod.getWorld().getTopY(); y >= mod.getWorld().getBottomY(); --y) {
+        for (int y = world.getTopY(); y >= world.getBottomY(); --y) {
             BlockPos check = new BlockPos(x, y, z);
-            if (possibleBlocks.contains(mod.getWorld().getBlockState(check).getBlock())) return y;
+            if (possibleBlocks.contains(world.getBlockState(check).getBlock())) return y;
 
         }
         return -1;
     }
 
-    static boolean canBreak(AltoClef mod, BlockPos pos) {
+    static boolean canBreak(BlockPos pos) {
+        AltoClef altoClef = AltoClef.getInstance();
+
         // JANK: Temporarily check if we can break WITHOUT paused interactions.
         // Not doing this creates bugs where we loop back and forth through the nether portal and stuff.
-        boolean prevInteractionPaused = mod.getExtraBaritoneSettings().isInteractionPaused();
-        mod.getExtraBaritoneSettings().setInteractionPaused(false);
-        boolean result = mod.getWorld().getBlockState(pos).getHardness(mod.getWorld(), pos) >= 0
-                && !mod.getExtraBaritoneSettings().shouldAvoidBreaking(pos)
-                && MineProcess.plausibleToBreak(new CalculationContext(mod.getClientBaritone()), pos)
-                && canReach(mod, pos);
-        mod.getExtraBaritoneSettings().setInteractionPaused(prevInteractionPaused);
-        return result;
+        boolean prevInteractionPaused = altoClef.getExtraBaritoneSettings().isInteractionPaused();
+
+        altoClef.getExtraBaritoneSettings().setInteractionPaused(false);
+
+        boolean canBreak = altoClef.getWorld().getBlockState(pos).getHardness(altoClef.getWorld(), pos) >= 0
+                && !altoClef.getExtraBaritoneSettings().shouldAvoidBreaking(pos)
+                && MineProcess.plausibleToBreak(new CalculationContext(altoClef.getClientBaritone()), pos)
+                && canReach(pos);
+
+        altoClef.getExtraBaritoneSettings().setInteractionPaused(prevInteractionPaused);
+
+        return canBreak;
     }
 
-    static boolean isInNetherPortal(AltoClef mod) {
-        if (mod.getPlayer() == null)
+    static boolean isInNetherPortal() {
+        ClientPlayerEntity player = AltoClef.getInstance().getPlayer();
+
+        if (player == null)
             return false;
-        return adris.altoclef.multiversion.entity.EntityHelper.isInNetherPortal(mod.getPlayer());
+        return adris.altoclef.multiversion.entity.EntityHelper.isInNetherPortal(player);
     }
 
-    static boolean dangerousToBreakIfRightAbove(AltoClef mod, BlockPos toBreak) {
+    static boolean dangerousToBreakIfRightAbove(BlockPos toBreak) {
+        AltoClef altoClef = AltoClef.getInstance();
+
         // There might be mumbo jumbo next to it, we fall and we get killed by lava or something.
-        if (MovementHelper.avoidBreaking(mod.getClientBaritone().bsi, toBreak.getX(), toBreak.getY(), toBreak.getZ(), mod.getWorld().getBlockState(toBreak))) {
+        if (MovementHelper.avoidBreaking(altoClef.getClientBaritone().bsi, toBreak.getX(), toBreak.getY(), toBreak.getZ(), altoClef.getWorld().getBlockState(toBreak))) {
             return true;
         }
         // Fall down
-        for (int dy = 1; dy <= toBreak.getY() - mod.getWorld().getBottomY(); ++dy) {
+        for (int dy = 1; dy <= toBreak.getY() - altoClef.getWorld().getBottomY(); ++dy) {
             BlockPos check = toBreak.down(dy);
-            BlockState s = mod.getWorld().getBlockState(check);
-            boolean tooFarToFall = dy > mod.getClientBaritoneSettings().maxFallHeightNoWater.value;
+            BlockState s = altoClef.getWorld().getBlockState(check);
+            boolean tooFarToFall = dy > altoClef.getClientBaritoneSettings().maxFallHeightNoWater.value;
             // Don't fall in lava
             if (MovementHelper.isLava(s))
                 return true;
@@ -252,7 +280,7 @@ public interface WorldHelper {
             if (MovementHelper.isWater(s))
                 return true;
             // We hit ground, depends
-            if (WorldHelper.isSolidBlock(mod, check)) {
+            if (WorldHelper.isSolidBlock(check)) {
                 return tooFarToFall;
             }
         }
@@ -260,23 +288,25 @@ public interface WorldHelper {
         return true;
     }
 
-    static boolean canPlace(AltoClef mod, BlockPos pos) {
-        return !mod.getExtraBaritoneSettings().shouldAvoidPlacingAt(pos)
-                && canReach(mod, pos);
+    static boolean canPlace(BlockPos pos) {
+        return !AltoClef.getInstance().getExtraBaritoneSettings().shouldAvoidPlacingAt(pos)
+                && canReach(pos);
     }
 
-    static boolean canReach(AltoClef mod, BlockPos pos) {
-        if (mod.getModSettings().shouldAvoidOcean()) {
+    static boolean canReach(BlockPos pos) {
+        AltoClef altoClef = AltoClef.getInstance();
+
+        if (altoClef.getModSettings().shouldAvoidOcean()) {
             // 45 is roughly the ocean floor. We add 2 just cause why not.
             // This > 47 can clearly cause a stuck bug.
-            if (mod.getPlayer().getY() > 47 && mod.getChunkTracker().isChunkLoaded(pos) && isOcean(mod.getWorld().getBiome(pos))) { // But if we stuck, add more oceans
+            if (altoClef.getPlayer().getY() > 47 && altoClef.getChunkTracker().isChunkLoaded(pos) && isOcean(altoClef.getWorld().getBiome(pos))) { // But if we stuck, add more oceans
                 // Block is in an ocean biome. If it's below sea level...
-                if (pos.getY() < 64 && getGroundHeight(mod, pos.getX(), pos.getZ(), Blocks.WATER) > pos.getY()) {
+                if (pos.getY() < 64 && getGroundHeight(pos.getX(), pos.getZ(), Blocks.WATER) > pos.getY()) {
                     return false;
                 }
             }
         }
-        return !mod.getBlockScanner().isUnreachable(pos);
+        return !altoClef.getBlockScanner().isUnreachable(pos);
     }
 
     //#if MC >= 11802
@@ -295,8 +325,8 @@ public interface WorldHelper {
                 || WorldVer.isBiome(b,BiomeKeys.FROZEN_OCEAN));
     }
 
-    static boolean isAir(AltoClef mod, BlockPos pos) {
-        return mod.getBlockScanner().isBlockAtPosition(pos, Blocks.AIR, Blocks.CAVE_AIR, Blocks.VOID_AIR);
+    static boolean isAir(BlockPos pos) {
+        return AltoClef.getInstance().getBlockScanner().isBlockAtPosition(pos, Blocks.AIR, Blocks.CAVE_AIR, Blocks.VOID_AIR);
         //return state.isAir() || isAir(state.getBlock());
     }
 
@@ -304,8 +334,8 @@ public interface WorldHelper {
         return block == Blocks.AIR || block == Blocks.CAVE_AIR || block == Blocks.VOID_AIR;
     }
 
-    static boolean isInteractableBlock(AltoClef mod, BlockPos pos) {
-        Block block = mod.getWorld().getBlockState(pos).getBlock();
+    static boolean isInteractableBlock(BlockPos pos) {
+        Block block = AltoClef.getInstance().getWorld().getBlockState(pos).getBlock();
         return (block instanceof ChestBlock
                 || block instanceof EnderChestBlock
                 || block instanceof CraftingTableBlock
@@ -318,21 +348,21 @@ public interface WorldHelper {
         );
     }
 
-    static boolean isInsidePlayer(AltoClef mod, BlockPos pos) {
-        return pos.isWithinDistance(mod.getPlayer().getPos(), 2);
+    static boolean isInsidePlayer(BlockPos pos) {
+        return pos.isWithinDistance(AltoClef.getInstance().getPlayer().getPos(), 2);
     }
 
-    static Iterable<BlockPos> getBlocksTouchingPlayer(AltoClef mod) {
-        return getBlocksTouchingBox(mod, mod.getPlayer().getBoundingBox());
+    static Iterable<BlockPos> getBlocksTouchingPlayer() {
+        return getBlocksTouchingBox(AltoClef.getInstance().getPlayer().getBoundingBox());
     }
 
-    static Iterable<BlockPos> getBlocksTouchingBox(AltoClef mod, Box box) {
+    static Iterable<BlockPos> getBlocksTouchingBox(Box box) {
         BlockPos min = new BlockPos((int) box.minX, (int) box.minY, (int) box.minZ);
         BlockPos max = new BlockPos((int) box.maxX, (int) box.maxY, (int) box.maxZ);
-        return scanRegion(mod, min, max);
+        return scanRegion(min, max);
     }
 
-    static Iterable<BlockPos> scanRegion(AltoClef mod, BlockPos start, BlockPos end) {
+    static Iterable<BlockPos> scanRegion(BlockPos start, BlockPos end) {
         return () -> new Iterator<>() {
             int x = start.getX(), y = start.getY(), z = start.getZ();
 
@@ -376,12 +406,14 @@ public interface WorldHelper {
         return w.getBlockState(pos).getBlock() instanceof FallingBlock;
     }
 
-    static Entity getSpawnerEntity(AltoClef mod, BlockPos pos) {
-        BlockState state = mod.getWorld().getBlockState(pos);
+    static Entity getSpawnerEntity(BlockPos pos) {
+        ClientWorld world = AltoClef.getInstance().getWorld();
+
+        BlockState state = world.getBlockState(pos);
         if (state.getBlock() instanceof SpawnerBlock) {
-            BlockEntity be = mod.getWorld().getBlockEntity(pos);
+            BlockEntity be = world.getBlockEntity(pos);
             if (be instanceof MobSpawnerBlockEntity blockEntity) {
-                return MethodWrapper.getRenderedEntity(blockEntity.getLogic(), mod.getWorld(),pos);
+                return MethodWrapper.getRenderedEntity(blockEntity.getLogic(), world, pos);
             }
         }
         return null;
@@ -401,8 +433,8 @@ public interface WorldHelper {
         return pos;
     }
 
-    static boolean isChest(AltoClef mod, BlockPos block) {
-        Block b = mod.getWorld().getBlockState(block).getBlock();
+    static boolean isChest(BlockPos block) {
+        Block b = AltoClef.getInstance().getWorld().getBlockState(block).getBlock();
         return isChest(b);
     }
 
@@ -410,8 +442,8 @@ public interface WorldHelper {
         return b instanceof ChestBlock || b instanceof EnderChestBlock;
     }
 
-    static boolean isBlock(AltoClef mod, BlockPos pos, Block block) {
-        return mod.getWorld().getBlockState(pos).getBlock() == block;
+    static boolean isBlock(BlockPos pos, Block block) {
+        return AltoClef.getInstance().getWorld().getBlockState(pos).getBlock() == block;
     }
 
     static boolean canSleep() {
@@ -438,23 +470,28 @@ public interface WorldHelper {
         return 0;
     }
 
-    static boolean isVulnerable(AltoClef mod) {
-        int armor = mod.getPlayer().getArmor();
-        float health = mod.getPlayer().getHealth();
+    static boolean isVulnerable() {
+        ClientPlayerEntity player = AltoClef.getInstance().getPlayer();
+
+        int armor = player.getArmor();
+        float health = player.getHealth();
+
         if (armor <= 15 && health < 3) return true;
         if (armor < 10 && health < 10) return true;
+
         return armor < 5 && health < 18;
     }
 
-    static boolean isSurroundedByHostiles(AltoClef mod) {
-        List<LivingEntity> hostiles = mod.getEntityTracker().getHostiles();
-        return isSurrounded(mod, hostiles);
+    static boolean isSurroundedByHostiles() {
+        List<LivingEntity> hostiles = AltoClef.getInstance().getEntityTracker().getHostiles();
+        return isSurrounded(hostiles);
     }
 
     // Function to check if the player is surrounded on two or more sides
-    static boolean isSurrounded(AltoClef mod, List<LivingEntity> entities) {
+    static boolean isSurrounded(List<LivingEntity> entities) {
+        ClientPlayerEntity player = AltoClef.getInstance().getPlayer();
 
-        BlockPos playerPos = mod.getPlayer().getBlockPos();
+        BlockPos playerPos = player.getBlockPos();
 
         // Minimum number of sides to consider the origin surrounded
         final int MIN_SIDES_TO_SURROUND = 2;
@@ -464,7 +501,7 @@ public interface WorldHelper {
 
         // Iterate through each point and calculate the angle with the origin
         for (Entity entity : entities) {
-            if(!entity.isInRange(mod.getPlayer(), 8)) continue;
+            if(!entity.isInRange(player, 8)) continue;
             BlockPos entityPos = entity.getBlockPos();
             double angle = calculateAngle(playerPos, entityPos);
 

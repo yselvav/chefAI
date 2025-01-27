@@ -29,20 +29,20 @@ public class LootDesertTempleTask extends Task {
     }
 
     @Override
-    protected void onStart(AltoClef mod) {
-        mod.getClientBaritoneSettings().blocksToAvoid.value.add(Blocks.STONE_PRESSURE_PLATE);
+    protected void onStart() {
+        AltoClef.getInstance().getClientBaritoneSettings().blocksToAvoid.value.add(Blocks.STONE_PRESSURE_PLATE);
     }
 
     @Override
-    protected Task onTick(AltoClef mod) {
+    protected Task onTick() {
         if (lootTask != null) {
-            if (!lootTask.isFinished(mod)) {
+            if (!lootTask.isFinished()) {
                 setDebugState("Looting a desert temple chest");
                 return lootTask;
             }
             looted++;
         }
-        if (mod.getWorld().getBlockState(temple).getBlock() == Blocks.STONE_PRESSURE_PLATE) {
+        if (AltoClef.getInstance().getWorld().getBlockState(temple).getBlock() == Blocks.STONE_PRESSURE_PLATE) {
             setDebugState("Breaking pressure plate");
             return new DestroyBlockTask(temple);
         }
@@ -56,8 +56,8 @@ public class LootDesertTempleTask extends Task {
     }
 
     @Override
-    protected void onStop(AltoClef mod, Task task) {
-        mod.getClientBaritoneSettings().blocksToAvoid.value.remove(Blocks.STONE_PRESSURE_PLATE);
+    protected void onStop(Task task) {
+        AltoClef.getInstance().getClientBaritoneSettings().blocksToAvoid.value.remove(Blocks.STONE_PRESSURE_PLATE);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class LootDesertTempleTask extends Task {
     }
 
     @Override
-    public boolean isFinished(AltoClef mod) {
+    public boolean isFinished() {
         return looted == 4;
     }
 

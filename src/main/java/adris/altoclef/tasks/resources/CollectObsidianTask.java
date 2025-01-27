@@ -50,8 +50,8 @@ public class CollectObsidianTask extends ResourceTask {
     private static BlockPos getGoodObsidianPosition(AltoClef mod) {
         BlockPos start = mod.getPlayer().getBlockPos().add(-3,-3,-3);
         BlockPos end = mod.getPlayer().getBlockPos().add(3,3,3);
-        for (BlockPos pos : WorldHelper.scanRegion(mod, start, end)) {
-            if (!WorldHelper.canBreak(mod, pos) || !WorldHelper.canPlace(mod, pos)) {
+        for (BlockPos pos : WorldHelper.scanRegion(start, end)) {
+            if (!WorldHelper.canBreak(pos) || !WorldHelper.canPlace(pos)) {
                 return null;
             }
         }
@@ -93,18 +93,18 @@ public class CollectObsidianTask extends ResourceTask {
         }
 
         // Get a diamond pickaxe FIRST
-        if (!StorageHelper.miningRequirementMet(mod, MiningRequirement.DIAMOND)) {
+        if (!StorageHelper.miningRequirementMet(MiningRequirement.DIAMOND)) {
             setDebugState("Getting diamond pickaxe first");
             return new SatisfyMiningRequirementTask(MiningRequirement.DIAMOND);
         }
 
-        if (_forceCompleteTask != null && _forceCompleteTask.isActive() && !_forceCompleteTask.isFinished(mod)) {
+        if (_forceCompleteTask != null && _forceCompleteTask.isActive() && !_forceCompleteTask.isFinished()) {
             return _forceCompleteTask;
         }
 
         Predicate<BlockPos> goodObsidian = (blockPos ->
                 blockPos.isWithinDistance(mod.getPlayer().getPos(), 800)
-                        && WorldHelper.canBreak(mod, blockPos)
+                        && WorldHelper.canBreak(blockPos)
         );
 
         /*

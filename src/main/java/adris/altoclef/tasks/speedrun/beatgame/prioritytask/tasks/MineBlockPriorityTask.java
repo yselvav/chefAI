@@ -2,7 +2,6 @@ package adris.altoclef.tasks.speedrun.beatgame.prioritytask.tasks;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.tasks.resources.MineAndCollectTask;
-import adris.altoclef.tasks.speedrun.beatgame.BeatMinecraftTask;
 import adris.altoclef.tasks.speedrun.beatgame.prioritytask.prioritycalculators.DistancePriorityCalculator;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.ItemTarget;
@@ -63,7 +62,7 @@ public class MineBlockPriorityTask extends PriorityTask{
 
     @Override
     protected double getPriority(AltoClef mod) {
-        if (!StorageHelper.miningRequirementMet(mod, miningRequirement)) return Double.NEGATIVE_INFINITY;
+        if (!StorageHelper.miningRequirementMet(miningRequirement)) return Double.NEGATIVE_INFINITY;
 
         double closestDist = getClosestDist(mod);
         int itemCount = mod.getItemStorage().getItemCount(droppedItem);
