@@ -138,7 +138,7 @@ public class Butler {
         return currentUser != null;
     }
 
-    private void executeWhisper(String username, String message) {
+    public void executeWhisper(String username, String message) {
         String prevUser = currentUser;
         commandInstantRan = true;
         commandFinished = false;

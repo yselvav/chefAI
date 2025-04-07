@@ -1,5 +1,6 @@
 package adris.altoclef;
 
+import adris.altoclef.player2api.Character;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
@@ -36,6 +37,15 @@ public class Debug {
             MinecraftClient.getInstance().player.sendMessage(Text.of(message), false);
 
         } else {
+            logInternal(message);
+        }
+    }
+
+    public static void logCharacterMessage(String message, Character character){
+        message = String.format("\u00A71\u00A7l\u00A7o<%s>\u00A7r %s", character.name, message);
+        if(MinecraftClient.getInstance() != null && MinecraftClient.getInstance().player != null){
+            MinecraftClient.getInstance().player.sendMessage(Text.of(message), false);
+        } else{
             logInternal(message);
         }
     }

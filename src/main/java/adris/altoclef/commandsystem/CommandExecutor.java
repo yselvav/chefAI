@@ -26,7 +26,7 @@ public class CommandExecutor {
         }
     }
 
-    private String getCommandPrefix() {
+    public String getCommandPrefix() {
         return mod.getModSettings().getCommandPrefix();
     }
 

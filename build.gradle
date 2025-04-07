@@ -77,6 +77,10 @@ repositories {
         name = 'babbaj-repo'
         url = 'https://babbaj.github.io/maven/'
     }
+//    maven {
+//        name 'codemc'
+//        url 'https://repo.codemc.org/repository/maven-public/'
+//    }
     flatDir {
         dirs '../baritone/dist'
     }
@@ -117,6 +121,7 @@ dependencies {
     }
     //modImplementation 'baritone-api-fabric:baritone-api-fabric:1.6.3'
     //implementation files('baritone-plus/build/libs/baritone-unoptimized-fabric-1.6.3.jar')
+    implementation 'org.apache.httpcomponents:httpmime:4.5.14';
 }
 shadowJar {
     configurations = [project.configurations.shadow]

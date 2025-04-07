@@ -16,6 +16,8 @@ import adris.altoclef.eventbus.events.TitleScreenEntryEvent;
 import adris.altoclef.multiversion.DrawContextWrapper;
 import adris.altoclef.multiversion.RenderLayerVer;
 import adris.altoclef.multiversion.versionedfields.Blocks;
+import adris.altoclef.player2api.AICommandBridge;
+import adris.altoclef.player2api.Character;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.tasksystem.TaskRunner;
 import adris.altoclef.trackers.*;
@@ -83,6 +85,9 @@ public class AltoClef implements ModInitializer {
     // Pausing
     private boolean paused = false;
     private Task storedTask;
+
+    // AI Command
+    private AICommandBridge aiBridge;
 
     private static AltoClef instance;
 
@@ -153,6 +158,8 @@ public class AltoClef implements ModInitializer {
         slotHandler = new SlotHandler(this);
 
         butler = new Butler(this);
+        aiBridge = new AICommandBridge(commandExecutor, this);
+
 
         initializeCommands();
 
@@ -180,6 +187,10 @@ public class AltoClef implements ModInitializer {
             if (getCommandExecutor().isClientCommand(line)) {
                 evt.cancel();
                 getCommandExecutor().execute(line);
+            }
+            else{
+                evt.cancel();
+                this.aiBridge.processChatWithAPI(line);
             }
         });
 
@@ -532,6 +543,11 @@ public class AltoClef implements ModInitializer {
      */
     public void log(String message, MessagePriority priority) {
         Debug.logMessage(message);
+    }
+
+
+    public void logCharacterMessage(String message, Character character){
+        Debug.logCharacterMessage(message, character);
     }
 
     public void logWarning(String message) {
