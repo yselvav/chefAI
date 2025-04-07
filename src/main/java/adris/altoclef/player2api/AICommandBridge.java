@@ -6,8 +6,11 @@ import adris.altoclef.commandsystem.Command;
 import adris.altoclef.commandsystem.CommandExecutor;
 import adris.altoclef.skinchanger.SkinChanger;
 import adris.altoclef.skinchanger.SkinType;
+import adris.altoclef.tasksystem.Task;
 import adris.altoclef.ui.MessagePriority;
 import com.google.gson.JsonObject;
+
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -40,6 +43,10 @@ Always follow this JSON format regardless of previous conversations.
 Valid Commands:
 {{validCommands}}
 
+
+Current Status:
+{{currentStatus}}
+
 """;
     private CommandExecutor cmdExecutor = null;
     private AltoClef mod = null;
@@ -53,10 +60,13 @@ Valid Commands:
      * Updates this. (conversationHistory, character) based on the currently selected character.
      */
     private void updateInfo() {
+        System.out.println("Updating info");
         Character newCharacter = Player2APIService.getSelectedCharacter();
         System.out.println(newCharacter);
         SkinChanger.changeSkinFromUsername("Dream", SkinType.CLASSIC);
         this.character = newCharacter;
+
+        // GET COMMANDS:
         int padSize = 10;
         StringBuilder commandListBuilder = new StringBuilder();
 
@@ -70,7 +80,15 @@ Valid Commands:
         }
         String validCommandsFormatted = commandListBuilder.toString();
 
-        String newPrompt = Utils.replacePlaceholders(initialPrompt, Map.of("characterDescription", character.description, "characterName", character.name, "validCommands", validCommandsFormatted));
+        // GET CURRENT STATUS:
+        String currentStatus;
+        List<Task> tasks = mod.getUserTaskChain().getTasks();
+        if (tasks.isEmpty()) {
+            currentStatus = ("No tasks currently running.");
+        } else {
+            currentStatus = ("CURRENT TASK: " + tasks.get(0).toString());
+        }
+        String newPrompt = Utils.replacePlaceholders(initialPrompt, Map.of("characterDescription", character.description, "characterName", character.name, "validCommands", validCommandsFormatted, "currentStatus", currentStatus));
         System.out.println("AAA" + newPrompt);
         if (this.conversationHistory == null) {
             this.conversationHistory = new ConversationHistory(newPrompt);
@@ -82,8 +100,8 @@ Valid Commands:
     public void processChatWithAPI(String message){
         executorService.submit(() -> {
             try {
-                updateInfo(); // this. is allowed here
-
+                updateInfo(); // this. is not allowed here
+                System.out.println("Sending message " + message + " to LLM");
                 conversationHistory.addUserMessage(message);
 
                 JsonObject response = Player2APIService.completeConversation(conversationHistory);
@@ -111,6 +129,13 @@ Valid Commands:
                 e.printStackTrace();
                 System.err.println("Error communicating with API");
             }
+        });
+    }
+    public void sendGreeting(){
+        System.out.println("Sending Greeting");
+        executorService.submit(() ->{
+            updateInfo();
+            processChatWithAPI(character.greetingInfo + " Since this is the first message, do not send a command.");
         });
     }
 

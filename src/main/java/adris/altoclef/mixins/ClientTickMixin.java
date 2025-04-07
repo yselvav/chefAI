@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // Changed this from player to client, I hope this doesn't break anything.
 @Mixin(MinecraftClient.class)
-public final class ClientTickMixin {
+public final class  ClientTickMixin {
     @Inject(
             method = "tick",
             at = @At("HEAD")

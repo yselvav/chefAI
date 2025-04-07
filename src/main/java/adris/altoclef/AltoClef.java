@@ -9,10 +9,7 @@ import adris.altoclef.control.InputControls;
 import adris.altoclef.control.PlayerExtraController;
 import adris.altoclef.control.SlotHandler;
 import adris.altoclef.eventbus.EventBus;
-import adris.altoclef.eventbus.events.ClientRenderEvent;
-import adris.altoclef.eventbus.events.ClientTickEvent;
-import adris.altoclef.eventbus.events.SendChatEvent;
-import adris.altoclef.eventbus.events.TitleScreenEntryEvent;
+import adris.altoclef.eventbus.events.*;
 import adris.altoclef.multiversion.DrawContextWrapper;
 import adris.altoclef.multiversion.RenderLayerVer;
 import adris.altoclef.multiversion.versionedfields.Blocks;
@@ -91,6 +88,10 @@ public class AltoClef implements ModInitializer {
 
     private static AltoClef instance;
 
+
+
+    private boolean inGame = false;
+
     // Are we in game (playing in a server/world)
     public static boolean inGame() {
         return MinecraftClient.getInstance().player != null && MinecraftClient.getInstance().getNetworkHandler() != null;
@@ -108,13 +109,17 @@ public class AltoClef implements ModInitializer {
         // This code runs as soon as Minecraft is in a mod-load-ready state.
         // However, some things (like resources) may still be uninitialized.
         // As such, nothing will be loaded here but basic initialization.
-        EventBus.subscribe(TitleScreenEntryEvent.class, evt -> onInitializeLoad());
-
+        EventBus.subscribe( TitleScreenEntryEvent.class, evt -> onInitializeLoad());
         if (instance != null) {
             throw new IllegalStateException("AltoClef already loaded!");
         }
         instance = this;
+//        EventBus.subscribe(ClientLoginEvent.class, evt -> {
+//           System.out.println("LOGGED IN");
+//        });
+
     }
+
 
     public void onInitializeLoad() {
         // This code should be run after Minecraft loads everything else in.
@@ -209,9 +214,10 @@ public class AltoClef implements ModInitializer {
 
         // External mod initialization
         runEnqueuedPostInits();
-    }
+}
 
     // Client tick
+
     private void onClientTick() {
         runEnqueuedPostInits();
 
@@ -236,6 +242,10 @@ public class AltoClef implements ModInitializer {
         messageSender.tick();
 
         inputControls.onTickPost();
+        if(!inGame && AltoClef.inGame() ){
+            inGame = true;
+            onLogin();
+        }
     }
 
     /// GETTERS AND SETTERS
@@ -250,7 +260,10 @@ public class AltoClef implements ModInitializer {
             altoClefTickChart.render(this, context, 1, context.getScaledWindowWidth() / 2 - 124);
         }
     }
-
+    private void onLogin() {
+        // Sends greeting
+        this.aiBridge.sendGreeting();
+    }
     private void initializeBaritoneSettings() {
         getExtraBaritoneSettings().canWalkOnEndPortal(false);
         getClientBaritoneSettings().freeLook.value = false;
