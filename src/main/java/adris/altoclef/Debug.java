@@ -73,14 +73,14 @@ public class Debug {
             System.out.println("ALTO CLEF: WARNING: " + message);
         }
 
-        AltoClef altoClef = AltoClef.getInstance();
-        if (altoClef != null && !altoClef.getModSettings().shouldHideAllWarningLogs()) {
-            if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().player != null) {
-                String msg = "\u00A72\u00A7l\u00A7o" + getLogPrefix() + "\u00A7c" + message + "\u00A7r";
-                MinecraftClient.getInstance().player.sendMessage(Text.of(msg), false);
-
-            }
-        }
+//        AltoClef altoClef = AltoClef.getInstance();
+//        if (altoClef != null && !altoClef.getModSettings().shouldHideAllWarningLogs()) {
+//            if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().player != null) {
+//                String msg = "\u00A72\u00A7l\u00A7o" + getLogPrefix() + "\u00A7c" + message + "\u00A7r";
+//                MinecraftClient.getInstance().player.sendMessage(Text.of(msg), false);
+//
+//            }
+//        }
     }
 
     public static void logWarning(String format, Object... args) {
@@ -95,11 +95,10 @@ public class Debug {
             System.err.println("at:");
             System.err.println(stacktrace);
         }
-
-        if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().player != null) {
-            String msg = "\u00A72\u00A7l\u00A7c" + getLogPrefix() + "[ERROR] " + message + "\nat:\n" + stacktrace + "\u00A7r";
-            MinecraftClient.getInstance().player.sendMessage(Text.of(msg), false);
-        }
+//        if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().player != null) {
+//            String msg = "\u00A72\u00A7l\u00A7c" + getLogPrefix() + "[ERROR] " + message + "\nat:\n" + stacktrace + "\u00A7r";
+//            MinecraftClient.getInstance().player.sendMessage(Text.of(msg), false);
+//        }
     }
 
     public static void logError(String format, Object... args) {
