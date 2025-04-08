@@ -1,9 +1,9 @@
 # ChatClef  
-*Plays block game.*  
-*Built on top of AltoClef and Baritone.*
+*AI plays block game.*  
+*Built on top of Player2 App, AltoClef and Baritone.*
 
 **ChatClef is an AI-powered Minecraft mod** that can play the game *for* you or *with* you.  
-It builds on top of [AltoClef](https://github.com/MiranCZ/altoclef) and [Baritone](https://github.com/cabaletta/baritone), automating Minecraft tasks from start to finish — including beating the game completely solo.
+It builds on top of [Player2](https://player2.game) [AltoClef](https://github.com/MiranCZ/altoclef) and [Baritone](https://github.com/cabaletta/baritone), automating Minecraft tasks from start to finish — including beating the game completely solo.
 
 ## What is ChatClef?
 
