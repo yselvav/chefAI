@@ -7,10 +7,12 @@ It builds on top of [Player2](https://player2.game), [AltoClef](https://github.c
 
 ## What is ChatClef?
 
-ChatClef is a client-side AI mod designed to play Minecraft by itself — or act as a second AI-controlled player in multiplayer.  
-If you can open a second client, ChatClef can take over that instance using the [Player2 app](https://player2.game/), allowing the AI to:
+ChatClef is a client-side AI mod designed to be your Minecraft copilot/friend.
+If you can open a second client, ChatClef can take over that instance and act as a second AI-controlled player in multiplayer.
 
-- Follow you around
+To get the AI working you need to have [Player2 app](https://player2.game/) app and this mod installed, allowing the AI to:
+
+- Chat with you and follow you around
 - Complete tasks for you
 - Beat the game solo
 - Or just mess around with you like a chaotic Minecraft sidekick
@@ -20,10 +22,11 @@ It’s completely free, open-source, and constantly being improved.
 ---
 
 ## How it works
-This mod adds the Player2 interface to [AltoClef](https://github.com/MiranCZ/altoclef) and [Baritone](https://github.com/cabaletta/baritone), you can find more info about these here:
+This mod adds the Player2 interface to [AltoClef](https://github.com/MiranCZ/altoclef) and [Baritone](https://github.com/cabaletta/baritone).
 
-Take a look at this [Guide from the wiki](https://github.com/MiranCZ/altoclef/wiki/1:-Documentation:-Big-Picture)  
-or this [Video explanation](https://youtu.be/q5OmcinQ2ck?t=387)
+The Player2 App provides free STT, TTS and LLM functions. Make sure Player2 APP is running while using this mod.
+
+For AltoClef, take a look at this [Guide from the wiki](https://github.com/MiranCZ/altoclef/wiki/1:-Documentation:-Big-Picture) or this [Video explanation](https://youtu.be/q5OmcinQ2ck?t=387)
 
 ---
 
