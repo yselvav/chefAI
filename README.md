@@ -36,7 +36,7 @@ For AltoClef, take a look at this [Guide from the wiki](https://github.com/Miran
 **Note:** After installing, please move/delete your old Baritone configurations if you have any.  
 Existing Baritone configs can interfere with ChatClef and introduce bugs (this will be fixed in the future).
 
-👉 [Check releases](https://github.com/elefant-ai/clefcraft/releases)
+👉 [Check releases](https://github.com/elefant-ai/chatclef/releases)
 
 ---
 
