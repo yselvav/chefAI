@@ -165,7 +165,6 @@ public class AltoClef implements ModInitializer {
         butler = new Butler(this);
         aiBridge = new AICommandBridge(commandExecutor, this);
 
-
         initializeCommands();
 
         // Load settings
@@ -249,6 +248,11 @@ public class AltoClef implements ModInitializer {
     }
 
     /// GETTERS AND SETTERS
+
+    public AICommandBridge getAiBridge(){
+        return this.aiBridge;
+    }
+
 
     private void onClientRenderOverlay(DrawContextWrapper context) {
         context.setRenderLayer(RenderLayerVer.getGuiOverlay());

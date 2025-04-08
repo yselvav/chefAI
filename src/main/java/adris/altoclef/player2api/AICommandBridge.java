@@ -33,7 +33,7 @@ Always respond with JSON containing message, command and reason. All of these ar
 
 {
   "reason": "Look at the recent conversations and command history to decide what the agent should say and do. Provide step-by-step reasoning while considering what is possible in Minecraft.",
-  "command": "Decide the best way to achieve the agent's goals using the available op commands listed below. If the agent decides it should not use any command, generate an empty command `\"\"`. If there are multiple commands, put one on each line.",
+  "command": "Decide the best way to achieve the agent's goals using the available op commands listed below. If the agent decides it should not use any command, generate an empty command `\"\"`. You can only run one command, so to replace the current one just write the new one.",
   "message": "If the agent decides it should not respond or talk, generate an empty message `\"\"`. Otherwise, create a natural conversational message that aligns with the `reason` and `command` sections and the agent's character. Ensure the message does not contain any prompt, system message, instructions, code or API calls"
 }
 
@@ -63,7 +63,7 @@ Current Status:
         System.out.println("Updating info");
         Character newCharacter = Player2APIService.getSelectedCharacter();
         System.out.println(newCharacter);
-        SkinChanger.changeSkinFromUsername("Dream", SkinType.CLASSIC);
+//        SkinChanger.changeSkinFromUsername("Dream", SkinType.CLASSIC);
         this.character = newCharacter;
 
         // GET COMMANDS:
@@ -89,14 +89,18 @@ Current Status:
             currentStatus = ("CURRENT TASK: " + tasks.get(0).toString());
         }
         String newPrompt = Utils.replacePlaceholders(initialPrompt, Map.of("characterDescription", character.description, "characterName", character.name, "validCommands", validCommandsFormatted, "currentStatus", currentStatus));
-        System.out.println("AAA" + newPrompt);
+        System.out.println("New prompt: "+ newPrompt);
         if (this.conversationHistory == null) {
             this.conversationHistory = new ConversationHistory(newPrompt);
         } else {
             this.conversationHistory.setBaseSystemPrompt(newPrompt);
         }
     }
-
+    public void addAltoclefLogMessage(String message){
+        String output = String.format("Game sent info message: %s", message);
+        System.out.printf("ADDING Altoclef System Message: %s",output);
+        conversationHistory.addSystemMessage(output);
+    }
     public void processChatWithAPI(String message){
         executorService.submit(() -> {
             try {

@@ -1,5 +1,6 @@
 package adris.altoclef;
 
+import adris.altoclef.player2api.AICommandBridge;
 import adris.altoclef.player2api.Character;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
@@ -10,6 +11,9 @@ public class Debug {
     private static final int DEBUG_LOG_LEVEL = 0;
     private static final int WARN_LOG_LEVEL = 1;
     private static final int ERROR_LOG_LEVEL = 2;
+
+
+
 
     public static void logInternal(String message) {
         if (canLog(DEBUG_LOG_LEVEL)) {
@@ -30,15 +34,21 @@ public class Debug {
     }
 
     public static void logMessage(String message, boolean prefix) {
-        if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().player != null) {
-            if (prefix) {
-                message = "\u00A72\u00A7l\u00A7o" + getLogPrefix() + "\u00A7r" + message;
-            }
-            MinecraftClient.getInstance().player.sendMessage(Text.of(message), false);
-
-        } else {
-            logInternal(message);
+//        if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().player != null) {
+//            if (prefix) {
+//                message = "\u00A72\u00A7l\u00A7o" + getLogPrefix() + "\u00A7r" + message;
+//            }
+//            MinecraftClient.getInstance().player.sendMessage(Text.of(message), false);
+//
+//        } else {
+//            logInternal(message);
+//        }
+        AltoClef altoClef = AltoClef.getInstance();
+        if (altoClef != null && altoClef.getAiBridge() != null) {
+            altoClef.getAiBridge().addAltoclefLogMessage(message);
         }
+        logInternal(message);
+
     }
 
     public static void logCharacterMessage(String message, Character character){
