@@ -173,4 +173,17 @@ public class Player2APIService {
             return e.getMessage();
         }
     }
+
+    public static void sendHeartbeat(){
+        try{
+            System.out.println("Sending Heartbeat");
+            Map<String, JsonElement> responseMap = sendRequest("/v1/health", false, null);
+            if(responseMap.containsKey("client_version")){
+                System.out.println("Heartbeat Successful");
+            }
+        }
+        catch(Exception e){
+            System.err.printf("Heartbeat Fail: %s",e.getMessage());
+        }
+    }
 }
