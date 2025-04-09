@@ -143,6 +143,13 @@ Current Status:
         });
     }
 
+    public void sendHeartbeat(){
+
+        executorService.submit(() -> {
+            Player2APIService.sendHeartbeat();
+        });
+    }
+
 
 
 

@@ -83,8 +83,9 @@ public class AltoClef implements ModInitializer {
     private boolean paused = false;
     private Task storedTask;
 
-    // AI Command
+    // AI Command & API
     private AICommandBridge aiBridge;
+    private long lastHeartbeatTime = System.nanoTime();
 
     private static AltoClef instance;
 
@@ -228,6 +229,13 @@ public class AltoClef implements ModInitializer {
             if (taskRunner.getCurrentTaskChain() != null) {
                 taskRunner.getCurrentTaskChain().stop();
             }
+        }
+
+        // Call heartbeat every 60 seconds
+        long now = System.nanoTime();
+        if (now - lastHeartbeatTime > 60_000_000_000L) {
+            aiBridge.sendHeartbeat();
+            lastHeartbeatTime = now;
         }
 
         // TODO: should this go here?
