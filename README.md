@@ -11,9 +11,10 @@ It builds on top of [Player2](https://player2.game), [AltoClef](https://github.c
 ChatClef is a client-side AI mod designed to be your Minecraft copilot/friend.
 If you can open a second client, ChatClef can take over that instance and act as a second AI-controlled player in multiplayer.
 
-To get the AI working you need to have [Player2 app](https://player2.game/) app and this mod installed, allowing the AI to:
+To get the AI working you need to have [Player2 app](https://player2.game/) app, install Fabric API and this mod in Minecraft and start Minecraft.
+Once installed, the AI will be able to:
 
-- Chat with you and follow you around
+- Chat with you
 - Complete tasks for you
 - Beat the game solo
 - Or just mess around with you like a chaotic Minecraft sidekick
