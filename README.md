@@ -6,6 +6,8 @@
 **ChatClef is an AI-powered Minecraft mod** that can play the game *for* you or *with* you.  
 It builds on top of [Player2](https://player2.game), [AltoClef](https://github.com/MiranCZ/altoclef) and [Baritone](https://github.com/cabaletta/baritone), automating Minecraft tasks from start to finish — including beating the game completely solo.
 
+👉 [Check releases](https://github.com/elefant-ai/chatclef/releases)
+
 ## What is ChatClef?
 
 ChatClef is a client-side AI mod designed to be your Minecraft copilot/friend.
@@ -36,8 +38,6 @@ For AltoClef, take a look at this [Guide from the wiki](https://github.com/Miran
 
 **Note:** After installing, please move/delete your old Baritone configurations if you have any.  
 Existing Baritone configs can interfere with ChatClef and introduce bugs (this will be fixed in the future).
-
-👉 [Check releases](https://github.com/elefant-ai/chatclef/releases)
 
 ---
 
