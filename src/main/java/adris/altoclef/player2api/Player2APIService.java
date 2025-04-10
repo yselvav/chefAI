@@ -28,6 +28,7 @@ public class Player2APIService {
 
         connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
         connection.setRequestProperty("Accept", "application/json; charset=utf-8");
+        connection.setRequestProperty("player2-game-key", "chatclef");
 
         if (postRequest && requestBody != null) {
             connection.setDoOutput(true);
