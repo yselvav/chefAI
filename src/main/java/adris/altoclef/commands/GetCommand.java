@@ -2,14 +2,18 @@ package adris.altoclef.commands;
 
 import adris.altoclef.AltoClef;
 import adris.altoclef.TaskCatalogue;
-import adris.altoclef.commandsystem.*;
+import adris.altoclef.commandsystem.Arg;
+import adris.altoclef.commandsystem.ArgParser;
+import adris.altoclef.commandsystem.Command;
+import adris.altoclef.commandsystem.CommandException;
+import adris.altoclef.commandsystem.ItemList;
 import adris.altoclef.tasksystem.Task;
 import adris.altoclef.util.ItemTarget;
 
 public class GetCommand extends Command {
 
     public GetCommand() throws CommandException {
-        super("get", "Get an item/resource. Examples: `@get log 20` gets 20 logs, `@get diamond_chestplate 1` gets 1 diamond chestplate. Not all resources are gettable", new Arg<>(ItemList.class, "items"));
+        super("get", "Get a resource, Get / Craft an item. Examples: `@get log 20` gets 20 logs, `get diamond_chestplate 1` gets 1 diamond chestplate.", new Arg<>(ItemList.class, "items"));
     }
 
 
