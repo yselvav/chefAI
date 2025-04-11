@@ -10,7 +10,7 @@ import net.minecraft.item.Item;
 
 public class EquipCommand extends Command {
     public EquipCommand() throws CommandException {
-        super("equip", "Equips items", new Arg<>(ItemList.class, "[equippable_items]"));
+        super("equip", "Equips items. Example; `equip iron_chestplate` equips an iron chestplate.", new Arg<>(ItemList.class, "[equippable_items]"));
     }
 
     @Override

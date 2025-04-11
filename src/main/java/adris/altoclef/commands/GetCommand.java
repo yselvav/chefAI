@@ -9,7 +9,7 @@ import adris.altoclef.util.ItemTarget;
 public class GetCommand extends Command {
 
     public GetCommand() throws CommandException {
-        super("get", "Get an item/resource", new Arg<>(ItemList.class, "items"));
+        super("get", "Get an item/resource. Examples: `@get log 20` gets 20 logs, `@get diamond_chestplate 1` gets 1 diamond chestplate. Not all resources are gettable", new Arg<>(ItemList.class, "items"));
     }
 
 
