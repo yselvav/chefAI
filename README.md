@@ -41,4 +41,10 @@ Existing Baritone configs can interfere with ChatClef and introduce bugs (this w
 
 ---
 
+## Development Setup
+
+Simply open the project in a java IDE such as IntelliJ or Eclipse, then change your SDK to a valid version (we used temurin-21), then wait for the project to build. Once you do, you should be able to run Gradle tasks such as runClient to test the bot, and build to build the jar files. To collect all of the jar files for different versions into a single folder, run `project_root/gather_jars.sh`, which will copy all of the jar files to `project_root/build`.
+
+---
+
 
