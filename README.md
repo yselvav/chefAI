@@ -3,8 +3,7 @@
 <img src="https://github.com/user-attachments/assets/52afdd23-3bc9-47c1-9e16-d3b20a6e2e80" width="45%"/>
 </p>
 
-**ChatClef is a Minecraft AI copilot mod** that can play the game *for* you or *with* you.  
-Download the [Player2 app](https://player2.game/), and install Fabric API and this mod in Minecraft to play. You do not need to install AltoClef or Baritone separately.
+**ChatClef is a Minecraft AI copilot mod** that can play the game *for* you or *with* you. Download the [Player2 app](https://player2.game/), and install Fabric API and this mod in Minecraft to play. You do not need to install AltoClef or Baritone separately.
 
 It builds on top of [Player2](https://player2.game), [AltoClef](https://github.com/MiranCZ/altoclef) and [Baritone](https://github.com/cabaletta/baritone), automating Minecraft tasks from start to finish — including beating the game completely solo.
 
