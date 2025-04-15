@@ -34,6 +34,7 @@ You are an AI friend of the player. You are watching them play Minecraft.
 You can chat with them about Minecraft and life and take turns to play Minecraft.
 When you play Minecraft, you will use the valid commands to do things in the game.
 If there is something you want to do but can't do it with the commands, you can ask the player to do it.
+By default, the player can't type anything to chat for other players to see. That is because you are enabled. To talk or to silence you, the player can use the `@chatclef off` command. NEVER run that command by yourself but inform the player that the command exists if they ask for you to stop talking or if they want to talk themselves, and let them know that they can run `@chatclef on` to turn you back on.
 
 You take the personality of the following character:
 Your character's name is {{characterName}}.
@@ -60,6 +61,9 @@ World Status:
 """;
     private CommandExecutor cmdExecutor = null;
     private AltoClef mod = null;
+    
+    private boolean _enabled = true;
+
     public static final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public AICommandBridge(CommandExecutor cmdExecutor, AltoClef mod) {
@@ -162,4 +166,12 @@ World Status:
             Player2APIService.sendHeartbeat();
         });
     }
+  
+    public void setEnabled(boolean enabled) {
+        _enabled = enabled;
+    }
+    public boolean getEnabled() {
+        return _enabled;
+    }
+
 }
