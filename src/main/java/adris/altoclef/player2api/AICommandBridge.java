@@ -69,6 +69,8 @@ Valid Commands:
     
     private boolean _enabled = true;
 
+    private String _lastQueuedMessage = null;
+
     private boolean llmProcessing = false;
 
     private boolean eventPolling = false;
@@ -130,10 +132,16 @@ Valid Commands:
 
     public void addMessageToQueue(String message) {
         if (message == null) return;
+        // 1) skip if it’s identical to the last one we added
+        if (message.equals(_lastQueuedMessage)) return;
+
+        // 2) enqueue & remember it
         messageQueue.offer(message);
+        _lastQueuedMessage = message;
+
+        // 3) enforce max size
         if (messageQueue.size() > 10) {
-            // System.out.println("Message queue too long, removing oldest message");
-            messageQueue.poll(); // remove oldest message if queue is too long
+            messageQueue.poll(); // remove oldest
         }
     }
 
