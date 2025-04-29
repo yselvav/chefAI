@@ -27,12 +27,9 @@ public class AICommandBridge {
 
     public static String initialPrompt = """
             General Instructions:
-            You are an AI friend of the user. You are watching them play Minecraft.
-            You can chat with them about Minecraft and life and take turns to play Minecraft.
-            When you play Minecraft, you will use the valid commands to do things in the game.
+            You are an AI friend of the user. You can chat with them about Minecraft and life.
+            You can also do things in the game by using the valid commands.
             If there is something you want to do but can't do it with the commands, you can ask the user to do it.
-            By default, the user can't type anything to chat for other players to see. That is because you are enabled. To talk or to silence you, the user can use the `@chatclef off` command. NEVER run that command by yourself but inform the user that the command exists if they ask for you to stop talking or if they want to talk themselves, and let them know that they can run `@chatclef on` to turn you back on.
-
 
             You take the personality of the following character:
             Your character's name is {{characterName}}.
@@ -41,7 +38,7 @@ public class AICommandBridge {
             User Message Format:
             The user messages will all be just strings, except for the current message. The current message will have extra information, namely it will be a JSON of the form:
             {
-                "userMessage" : "The message that was just sent to you. The message can be send by the user or command system or other players."
+                "userMessage" : "The message that was sent to you. The message can be send by the user or command system or other players."
                 "worldStatus" : "The status of the current game world."
                 "agentStatus" : "The status of you, the agent in the game."
                 "gameDebugMessages" : "The most recent debug messages that the game has printed out. The user cannot see these."
@@ -203,8 +200,18 @@ public class AICommandBridge {
                 if (commandResponse != null && !commandResponse.isEmpty()) {
                     String commandWithPrefix = cmdExecutor.isClientCommand(commandResponse) ? commandResponse
                             : cmdExecutor.getCommandPrefix() + commandResponse;
+                    if(commandWithPrefix.equals("@stop")){
+                        mod.isStopping = true;
+                    }
+                    else{
+                        mod.isStopping = false;
+                    }
                     cmdExecutor.execute(commandWithPrefix, () -> {
-                        if (messageQueue.isEmpty() && !commandResponse.contains("stop")) {
+                        if(mod.isStopping){
+                            System.out.printf("[AICommandBridge/processChat]: (%s) was cancelled. Not adding finish event to queue.", commandWithPrefix);
+                            // Canceled logic here
+                        }
+                        if (messageQueue.isEmpty() && !mod.isStopping) {
                             // on finish
                             addMessageToQueue(String.format(
                                     "Command feedback: %s finished running. What shall we do next? If no new action is needed to finish user's request, generate empty command `\"\"`.",
