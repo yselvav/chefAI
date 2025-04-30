@@ -1,6 +1,7 @@
 package adris.altoclef.control;
 
 import adris.altoclef.AltoClef;
+import adris.altoclef.chains.MobDefenseChain;
 import adris.altoclef.multiversion.versionedfields.Entities;
 import adris.altoclef.multiversion.item.ItemVer;
 import adris.altoclef.util.helpers.LookHelper;
@@ -20,7 +21,7 @@ import net.minecraft.entity.projectile.thrown.PotionEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.SwordItem;
+import net.minecraft.item.ToolItem;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.math.Vec3d;
 
@@ -40,23 +41,10 @@ public class KillAura {
     public boolean attackedLastTick = false;
 
     public static void equipWeapon(AltoClef mod) {
-        List<ItemStack> invStacks = mod.getItemStorage().getItemStacksPlayerInventory(true);
-        if (!invStacks.isEmpty()) {
-            float handDamage = Float.NEGATIVE_INFINITY;
-            for (ItemStack invStack : invStacks) {
-                if (invStack.getItem() instanceof SwordItem item) {
-                    float itemDamage = item.getMaterial().getAttackDamage();
-                    Item handItem = StorageHelper.getItemStackInSlot(PlayerSlot.getEquipSlot()).getItem();
-                    if (handItem instanceof SwordItem handToolItem) {
-                        handDamage = handToolItem.getMaterial().getAttackDamage();
-                    }
-                    if (itemDamage > handDamage) {
-                        mod.getSlotHandler().forceEquipItem(item);
-                    } else {
-                        mod.getSlotHandler().forceEquipItem(handItem);
-                    }
-                }
-            }
+        // Equip the best weapon that we would attack with
+        Item bestWeapon = MobDefenseChain.getBestWeapon(mod);
+        if (bestWeapon != null) {
+            mod.getSlotHandler().forceEquipItem(bestWeapon);
         }
     }
 
@@ -164,7 +152,7 @@ public class KillAura {
         attack(mod, entity, false);
     }
 
-    private void attack(AltoClef mod, Entity entity, boolean equipSword) {
+    private void attack(AltoClef mod, Entity entity, boolean equipWeapon) {
         if (entity == null) return;
         if (!(entity instanceof FireballEntity)) {
             double xAim = entity.getX();
@@ -178,7 +166,7 @@ public class KillAura {
                 mod.getControllerExtras().attack(entity);
             }
             boolean canAttack;
-            if (equipSword) {
+            if (equipWeapon) {
                 equipWeapon(mod);
                 canAttack = true;
             } else {
