@@ -1,15 +1,20 @@
 package adris.altoclef.commands.random;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import adris.altoclef.AltoClef;
 import adris.altoclef.commands.BlockScanner;
 import adris.altoclef.commandsystem.Arg;
 import adris.altoclef.commandsystem.ArgParser;
 import adris.altoclef.commandsystem.Command;
 import adris.altoclef.commandsystem.CommandException;
+import adris.altoclef.util.helpers.FuzzySearchHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-
-import java.lang.reflect.Field;
+import net.minecraft.util.math.BlockPos;
 
 public class ScanCommand extends Command {
 
@@ -24,10 +29,14 @@ public class ScanCommand extends Command {
         Field[] declaredFields = Blocks.class.getDeclaredFields();
         Block block = null;
 
+        List<String> allBlockNames = new ArrayList<>();
+
         for (Field field : declaredFields) {
             field.setAccessible(true);
             try {
-                if (field.getName().equalsIgnoreCase(blockStr)) {
+                String fieldName = field.getName();
+                allBlockNames.add(fieldName.toLowerCase());
+                if (fieldName.equalsIgnoreCase(blockStr)) {
                     block = (Block) field.get(Blocks.class);
                 }
             } catch (IllegalAccessException e) {
@@ -37,12 +46,20 @@ public class ScanCommand extends Command {
         }
 
         if (block == null) {
-            mod.logWarning("Block named: " + blockStr + " not found :(");
+            String closest = FuzzySearchHelper.getClosestMatchMinecraftItems(blockStr, allBlockNames);
+            mod.log("Block named: \"" + blockStr + "\" not a valid block. Perhaps the user meant \"" + closest + "\"?");
+            finish();
             return;
         }
 
         BlockScanner blockScanner = mod.getBlockScanner();
-        mod.log(blockScanner.getNearestBlock(block,mod.getPlayer().getPos())+"");
+        Optional<BlockPos> p = blockScanner.getNearestBlock(block,mod.getPlayer().getPos());
+        if (p.isPresent()) {
+            mod.log("Closest " + blockStr + ": " + p.get().toString());
+        } else {
+            mod.log("No blocks of type " + blockStr + " found nearby.");
+        }
+        finish();
     }
 
 }
