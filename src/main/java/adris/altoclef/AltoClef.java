@@ -76,6 +76,7 @@ public class AltoClef implements ModInitializer {
     private SimpleChunkTracker chunkTracker;
     private MiscBlockTracker miscBlockTracker;
     private CraftingRecipeTracker craftingRecipeTracker;
+    private EntityStuckTracker entityStuckTracker;
     // Renderers
     private CommandStatusOverlay commandStatusOverlay;
     private AltoClefTickChart altoClefTickChart;
@@ -160,13 +161,10 @@ public class AltoClef implements ModInitializer {
         // This code should be run after Minecraft loads everything else in.
         // This is the actual start point, controlled by a mixin.
 
-        initializeBaritoneSettings();
-
         // Central Managers
         commandExecutor = new CommandExecutor(this);
         taskRunner = new TaskRunner(this);
         trackerManager = new TrackerManager(this);
-        botBehaviour = new BotBehaviour(this);
         extraController = new PlayerExtraController(this);
 
         // Task chains
@@ -188,6 +186,7 @@ public class AltoClef implements ModInitializer {
         chunkTracker = new SimpleChunkTracker(this);
         miscBlockTracker = new MiscBlockTracker(this);
         craftingRecipeTracker = new CraftingRecipeTracker(trackerManager);
+        entityStuckTracker = new EntityStuckTracker(trackerManager);
 
         // Renderers
         commandStatusOverlay = new CommandStatusOverlay();
@@ -200,6 +199,12 @@ public class AltoClef implements ModInitializer {
 
         butler = new Butler(this);
         aiBridge = new AICommandBridge(commandExecutor, this);
+
+        // Baritone
+        initializeBaritoneSettings();
+
+        // Initialize behavior (after baritone and other state that is set to start)
+        botBehaviour = new BotBehaviour(this);
 
         initializeCommands();
 
@@ -358,6 +363,8 @@ public class AltoClef implements ModInitializer {
 
     private void initializeBaritoneSettings() {
         getExtraBaritoneSettings().canWalkOnEndPortal(false);
+        // avoid block place on stuck entity
+        getExtraBaritoneSettings().avoidBlockPlace(entityStuckTracker::isBlockedByEntity);
         getClientBaritoneSettings().freeLook.value = false;
         getClientBaritoneSettings().overshootTraverse.value = false;
         getClientBaritoneSettings().allowOvershootDiagonalDescend.value = true;
