@@ -8,10 +8,13 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          persist-credentials: false
       - uses: actions/setup-java@v2
         with:
           java-version: 21
@@ -21,8 +24,8 @@ jobs:
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.8
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: javadoc
-          CLEAN: true
-          FOLDER: build/docs/javadoc
-          TARGET_FOLDER: javadoc
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: javadoc
+          clean: true
+          folder: versions/1.21.1/build/docs/javadoc
+          target-folder: javadoc
