@@ -11,9 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      LATEST_VERSION: "1.21.5"
+      LATEST_VERSION: "1.21.1"
       INCLUDE_DEVLIBS: "true"
-      VERSIONS_TO_BUILD: "1.21.5"
+      VERSIONS_TO_BUILD: "1.21.1"
 
     steps:
       - uses: actions/checkout@v2
@@ -32,11 +32,11 @@ jobs:
 
       - name: Create artifact directory structure
         run: |
-          mkdir -p artifacts/1.21.5/libs
-          cp ./versions/1.21.5/build/libs/*.jar artifacts/1.21.5/libs/ 2>/dev/null || true
+          mkdir -p artifacts/1.21.1/libs
+          cp ./versions/1.21.1/build/libs/*.jar artifacts/1.21.1/libs/ 2>/dev/null || true
           if [ "$INCLUDE_DEVLIBS" = "true" ]; then
-            mkdir -p artifacts/1.21.5/devlibs
-            cp ./versions/1.21.5/build/devlibs/*.jar artifacts/1.21.5/devlibs/ 2>/dev/null || true
+            mkdir -p artifacts/1.21.1/devlibs
+            cp ./versions/1.21.1/build/devlibs/*.jar artifacts/1.21.1/devlibs/ 2>/dev/null || true
           fi
 
       - name: Compute hashes
