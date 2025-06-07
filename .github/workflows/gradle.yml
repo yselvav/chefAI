@@ -45,10 +45,10 @@ jobs:
           mkdir -p artifacts
           for version in $VERSIONS_TO_BUILD; do
             mkdir -p artifacts/$version/libs
-            cp ./versions/$version/build/libs/*.jar artifacts/$version/libs/
+            cp ./versions/$version/build/libs/*.jar artifacts/$version/libs/ 2>/dev/null || true
             if [ "$INCLUDE_DEVLIBS" = "true" ]; then
               mkdir -p artifacts/$version/devlibs
-              cp ./versions/$version/build/devlibs/*.jar artifacts/$version/devlibs/
+              cp ./versions/$version/build/devlibs/*.jar artifacts/$version/devlibs/ 2>/dev/null || true
             fi
           done
 
